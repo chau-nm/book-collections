@@ -68,6 +68,13 @@ td code{white-space:nowrap}
 .task b{color:var(--amber);font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:2px}
 .tip{color:var(--muted);font-size:14.5px}
 footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:20px}
+.lesson{display:grid;gap:10px;min-width:0}
+.lesson h4,.ch h4.sub{margin:6px 0 0;font:600 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.lesson-muc{background:var(--accent-soft);border-radius:8px;padding:12px 16px}
+.lesson-muc p{max-width:none}
+.lesson-loi h4{color:var(--amber)}
+.lesson-loi ul{gap:8px}
+.lesson p,.lesson li{max-width:70ch}
 .ex{display:grid;gap:10px;margin-top:4px}
 .ex h4{margin:0;font:600 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
 .ex ol{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:ex}
@@ -97,7 +104,7 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <header class="intro">
   <div class="eyebrow">Học theo sách · William Shotts · 36 chương</div>
   <h1>Giáo trình Linux Command Line</h1>
-  <p class="lede">Bản tóm lược tiếng Việt của cuốn <i>The Linux Command Line</i>. Mỗi chương gồm ý chính, lệnh cần nhớ kèm ví dụ, và 5 bài tập từ dễ đến khó kèm lời giải để bạn gõ thử ngay trên terminal (Linux, WSL hoặc macOS đều được, macOS có vài khác biệt nhỏ). Đánh dấu “Đã học” để theo dõi tiến độ.</p>
+  <p class="lede">Bản tóm lược tiếng Việt của cuốn <i>The Linux Command Line</i>. Mỗi chương gồm mục đích của chương, lệnh cần nhớ kèm ví dụ, giải thích cách hoạt động, các lỗi thường gặp, và 5 bài tập từ dễ đến khó kèm lời giải để bạn gõ thử ngay trên terminal (Linux, WSL hoặc macOS đều được, macOS có vài khác biệt nhỏ). Đánh dấu “Đã học” để theo dõi tiến độ.</p>
   <div class="ex-tools"><button type="button" id="openAll">Mở mọi lời giải</button><button type="button" id="closeAll">Đóng mọi lời giải</button></div>
   <div class="progress"><div class="bar"><span id="bar"></span></div><span id="count">0/36 chương</span></div>
 </header>
@@ -121,6 +128,11 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 
 <section class="ch" id="c1" data-title="Shell là gì?">
 <div class="ch-head"><span class="ch-num">01</span><h3>Shell là gì?</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Chương này trả lời câu hỏi đầu tiên: khi mở cửa sổ đen kia, mình đang nói chuyện với ai? Nhiều người nhầm “terminal”, “shell” và “dòng lệnh” là một. Nếu không tách bạch được, bạn sẽ khó hiểu vì sao cùng một lệnh lại chạy khác nhau trên máy khác, hay vì sao đổi cấu hình bash mà terminal không đổi.</p>
+<p>Tình huống thực tế: bạn SSH vào một máy chủ không có giao diện đồ họa. Ở đó chỉ có shell. Mọi thao tác như xem log, khởi động lại dịch vụ hay sửa cấu hình đều đi qua shell, nên làm quen với nó là bước bắt buộc.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p><b>Shell</b> là chương trình nhận lệnh bạn gõ và chuyển cho hệ điều hành thực thi. Trên hầu hết Linux, shell mặc định là <b>bash</b> (Bourne Again SHell). Bạn mở shell qua một <b>terminal emulator</b> (GNOME Terminal, Konsole…).</p>
 <ul>
 <li>Dấu nhắc <code>user@host:~$</code>: kết thúc bằng <code>$</code> là người dùng thường, <code>#</code> là root (quản trị).</li>
@@ -131,10 +143,36 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <span class="p">$ </span>cal         <span class="c"># lịch tháng này</span>
 <span class="p">$ </span>df          <span class="c"># dung lượng trống của các ổ đĩa</span>
 <span class="p">$ </span>free        <span class="c"># bộ nhớ RAM trống</span></code></pre>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Có ba lớp tách biệt:</p>
+<ul>
+<li><b>Terminal emulator</b> (GNOME Terminal, Konsole, iTerm…) chỉ là cửa sổ. Nó nhận phím bạn gõ, gửi đi, rồi vẽ lại chữ trả về. Nó không hiểu lệnh nào cả.</li>
+<li><b>Shell</b> (bash) là chương trình chạy bên trong cửa sổ đó. Nó in dấu nhắc, đọc một dòng bạn gõ, phân tích dòng đó thành tên lệnh và đối số, tìm chương trình tương ứng, chạy nó, rồi chờ nó xong để in dấu nhắc mới.</li>
+<li><b>Kernel</b> (Linux) là phần thực sự tạo tiến trình, đọc ổ đĩa, cấp bộ nhớ. Shell nhờ kernel làm những việc đó.</li>
+</ul>
+<p>Vòng lặp của shell rất đơn giản: <i>in dấu nhắc → đọc dòng → mở rộng và phân tích → chạy → lặp lại</i>. Các chương sau đều là chi tiết của vòng lặp này. Dấu nhắc <code>me@linuxbox:~$</code> cho bạn biết user, tên máy, thư mục hiện tại, và ký hiệu cuối (<code>$</code> là user thường, <code>#</code> là root).</p>
+<p>Bash còn ghi nhớ các lệnh đã gõ (mặc định khoảng 500–1000 lệnh, lưu vào <code>~/.bash_history</code> khi thoát). Đó là lý do phím ↑ gọi lại được lệnh cũ, kể cả ở phiên làm việc hôm trước.</p>
+<pre><code>$ date          # shell tìm thấy /usr/bin/date và chạy nó
+$ kaekfjaeifj   # không tìm thấy chương trình nào → "command not found"</code></pre>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Nhầm terminal với shell</b> — đổi font hoặc màu trong cài đặt terminal không ảnh hưởng tới bash, và ngược lại sửa <code>~/.bashrc</code> không đổi giao diện cửa sổ. Biết mình đang chỉnh lớp nào.</li>
+<li><b>Gõ lệnh khi đang là root</b> — dấu nhắc kết thúc bằng <code>#</code> nghĩa là mọi lệnh có toàn quyền phá hệ thống. Chỉ dùng root khi thật cần, thoát ngay bằng <code>exit</code>.</li>
+<li><b>Dùng Ctrl-C / Ctrl-V để chép dán</b> — trong terminal, <code>Ctrl-C</code> là ngắt chương trình đang chạy. Chép dán dùng <code>Ctrl-Shift-C</code> / <code>Ctrl-Shift-V</code>, hoặc bôi đen rồi bấm chuột giữa.</li>
+<li><b>Đóng cửa sổ khi chương trình còn chạy</b> — chương trình chạy trong terminal thường bị dừng theo. Dùng <code>exit</code> để thoát gọn, và học cách chạy nền ở chương 10.</li>
+<li><b>Hoảng khi thấy “command not found”</b> — thường chỉ là gõ sai chính tả, sai hoa thường (<code>Date</code> khác <code>date</code>) hoặc chương trình chưa được cài.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c2" data-title="Di chuyển (Navigation)">
 <div class="ch-head"><span class="ch-num">02</span><h3>Di chuyển trong hệ thống file</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Mọi thứ trong Linux, từ tài liệu của bạn đến cấu hình hệ thống, đều là file nằm đâu đó trong cây thư mục. Không biết mình đang đứng ở đâu và đi tới chỗ khác thế nào thì không làm được gì: không mở được file, không chạy được script, không biết lệnh vừa tạo file ra chỗ nào.</p>
+<p>Chương này dạy cách định hướng: đọc vị trí hiện tại, đi tới chỗ khác bằng đường dẫn tuyệt đối hoặc tương đối, và dùng các lối tắt để đỡ gõ.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Linux tổ chức file thành <b>một cây thư mục duy nhất</b> bắt đầu từ gốc <code>/</code> (không có ổ C:, D: như Windows). Tại mỗi thời điểm bạn đứng ở một <b>thư mục làm việc hiện tại</b>.</p>
 <div class="tbl"><table><tr><th>Lệnh</th><th>Ý nghĩa</th></tr>
 <tr><td><code>pwd</code></td><td>In thư mục hiện tại</td></tr>
@@ -145,10 +183,37 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <tr><td><code>cd -</code></td><td>Quay về thư mục vừa ở trước đó</td></tr>
 <tr><td><code>cd ~bob</code></td><td>Vào home của user bob</td></tr></table></div>
 <p class="tip">Lưu ý: tên file phân biệt hoa thường; file bắt đầu bằng dấu chấm (<code>.bashrc</code>) là file ẩn; tránh dùng dấu cách trong tên file, hãy dùng <code>_</code> hoặc <code>-</code>.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Linux dùng <b>một cây duy nhất</b> bắt đầu từ gốc <code>/</code>. Ổ cứng thứ hai hay USB không có chữ cái riêng như Windows, mà được “gắn” vào một thư mục trong cây đó (chương 15).</p>
+<p>Shell luôn giữ một biến trạng thái gọi là <b>thư mục làm việc hiện tại</b>. Mọi đường dẫn không bắt đầu bằng <code>/</code> được hiểu là tính từ chỗ này. Lệnh <code>cd</code> chỉ đơn giản là đổi giá trị đó, và <code>pwd</code> in nó ra.</p>
+<ul>
+<li><b>Đường dẫn tuyệt đối</b> bắt đầu bằng <code>/</code> và đúng ở mọi nơi: <code>/usr/bin</code>.</li>
+<li><b>Đường dẫn tương đối</b> tính từ thư mục hiện tại. Mỗi thư mục đều có hai mục đặc biệt: <code>.</code> (chính nó) và <code>..</code> (thư mục cha). Vì vậy <code>../bin</code> nghĩa là “lên một cấp rồi vào bin”.</li>
+<li>Trong hầu hết trường hợp có thể bỏ <code>./</code>: <code>cd bin</code> giống <code>cd ./bin</code>.</li>
+</ul>
+<pre><code>Đang ở /usr/share
+cd ../bin      →  /usr/share  +  ..  →  /usr  +  bin  →  /usr/bin
+cd /usr/bin    →  bỏ qua thư mục hiện tại, đi thẳng từ gốc</code></pre>
+<p>Tên file trong Linux phân biệt hoa thường, có thể chứa dấu chấm, dấu cách và hầu hết ký tự. Phần mở rộng như <code>.txt</code> chỉ là một phần của tên, hệ thống không dựa vào đó để biết loại file. File bắt đầu bằng dấu chấm bị ẩn khỏi <code>ls</code> thường.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Quên dấu <code>/</code> đầu</b> — <code>cd usr/bin</code> khi đang ở home sẽ tìm <code>~/usr/bin</code> và báo “No such file or directory”. Muốn đi từ gốc phải viết <code>/usr/bin</code>.</li>
+<li><b>Sai hoa thường</b> — <code>cd documents</code> không vào được <code>Documents</code>. Dùng phím Tab để shell tự điền đúng tên.</li>
+<li><b>Tên có dấu cách</b> — <code>cd My Files</code> bị hiểu là hai đối số. Viết <code>cd "My Files"</code> hoặc <code>cd My\ Files</code>; tốt nhất là đặt tên bằng <code>_</code> hoặc <code>-</code>.</li>
+<li><b>Không biết mình đang ở đâu</b> — chạy lệnh tạo hoặc xóa file mà không kiểm tra vị trí. Gõ <code>pwd</code> trước những thao tác quan trọng.</li>
+<li><b>Tưởng file ẩn đã mất</b> — <code>ls</code> không hiện <code>.bashrc</code>. Dùng <code>ls -a</code> để thấy.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c3" data-title="Khám phá hệ thống">
 <div class="ch-head"><span class="ch-num">03</span><h3>Khám phá hệ thống</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Sau khi đi lại được, bạn cần “nhìn” được: file này to bao nhiêu, của ai, sửa lúc nào, là văn bản hay chương trình, bên trong viết gì. Chương này trang bị ba công cụ quan sát chính là <code>ls</code>, <code>file</code>, <code>less</code>, và dẫn bạn đi tham quan các thư mục quan trọng của hệ thống.</p>
+<p>Khi một dịch vụ lỗi, việc đầu tiên thường là vào <code>/var/log</code> đọc log, hoặc vào <code>/etc</code> xem cấu hình. Biết mỗi thư mục chứa gì giúp bạn tìm đúng chỗ thay vì đoán.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Cú pháp chung của lệnh: <code>lệnh -tùy_chọn đối_số</code>. Tùy chọn ngắn có thể gộp (<code>ls -lt</code>), tùy chọn dài dùng hai gạch (<code>--reverse</code>).</p>
 <pre><code><span class="p">$ </span>ls -l          <span class="c"># định dạng dài</span>
 <span class="p">$ </span>ls -la         <span class="c"># kể cả file ẩn</span>
@@ -161,10 +226,40 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <p>Trong <code>less</code>: <kbd>Space</kbd>/<kbd>b</kbd> trang sau/trước, <kbd>G</kbd> cuối file, <kbd>g</kbd> đầu file, <code>/từ</code> tìm, <kbd>n</kbd> kết quả tiếp, <kbd>q</kbd> thoát.</p>
 <p>Các thư mục quan trọng: <code>/bin</code> <code>/sbin</code> (chương trình hệ thống), <code>/etc</code> (cấu hình), <code>/home</code> (dữ liệu người dùng), <code>/root</code>, <code>/tmp</code>, <code>/usr</code> (chương trình người dùng), <code>/usr/local</code> (phần mềm tự cài), <code>/var</code> (dữ liệu thay đổi, log ở <code>/var/log</code>), <code>/dev</code> (thiết bị), <code>/proc</code> (cửa sổ nhìn vào kernel), <code>/boot</code>, <code>/lib</code>, <code>/media</code> <code>/mnt</code> (điểm gắn ổ).</p>
 <p><b>Symbolic link</b> (liên kết mềm) hiện trong <code>ls -l</code> dạng <code>libc.so.6 -&gt; libc-2.6.so</code>: một tên trỏ đến file khác.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Cấu trúc của một lệnh</b>: <code>lệnh -tùy_chọn đối_số</code>. Tùy chọn thay đổi cách lệnh làm việc, đối số là thứ lệnh làm việc trên đó. Tùy chọn ngắn có thể gộp (<code>-lt</code>), tùy chọn dài dùng <code>--</code>.</p>
+<p><b>Đọc một dòng <code>ls -l</code></b>:</p>
+<pre><code>-rw-r--r-- 1 root root 3576 2026-04-25 13:58 passwd
+│└──┬───┘  │  │    │    │        │            └ tên
+│   │      │  │    │    │        └ lần sửa cuối
+│   │      │  │    │    └ kích thước (byte)
+│   │      │  │    └ nhóm sở hữu
+│   │      │  └ chủ sở hữu
+│   │      └ số hard link
+│   └ quyền (chương 9)
+└ loại: - file, d thư mục, l symlink</code></pre>
+<p><b>Lệnh <code>file</code></b> không nhìn phần mở rộng mà đọc vài byte đầu của file (“magic number”) để đoán loại. Vì thế nó nhận ra ảnh PNG dù file tên <code>abc.txt</code>. Câu nói nổi tiếng “trong Unix mọi thứ là file” cũng bắt đầu từ đây: thiết bị, tiến trình đều được trình bày dưới dạng file.</p>
+<p><b><code>less</code></b> là trình xem văn bản: nó chỉ đọc phần đang hiện nên mở file vài GB vẫn nhanh, và không bao giờ sửa file. Nhiều file cấu hình và script trong hệ thống là văn bản thuần, nên bạn có thể đọc chúng để học.</p>
+<p><b>Symbolic link</b> là một file đặc biệt chỉ chứa đường dẫn tới file khác. Hệ thống dùng nó để một chương trình có nhiều tên, hoặc để đổi phiên bản thư viện chỉ bằng cách đổi chỗ trỏ của link.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Mở file nhị phân bằng <code>less</code> hoặc <code>cat</code></b> — màn hình đầy ký tự rác, có khi terminal bị rối. Kiểm tra bằng <code>file</code> trước. Nếu terminal bị rối, gõ <code>reset</code>.</li>
+<li><b>Tin vào phần mở rộng</b> — <code>photo.jpg</code> có thể là file nén hoặc script. <code>file photo.jpg</code> mới cho biết thật.</li>
+<li><b>Đọc nhầm kích thước</b> — <code>ls -l</code> hiện byte; một thư mục luôn hiện khoảng 4096 vì đó là kích thước của chính thư mục chứ không phải tổng nội dung (dùng <code>du -sh</code> cho việc đó).</li>
+<li><b>Kẹt trong <code>less</code></b> — bấm <code>q</code> để thoát; bấm <code>h</code> để xem trợ giúp.</li>
+<li><b>Sửa linh tinh trong <code>/etc</code> hay <code>/boot</code></b> khi đang “tham quan” với quyền root — chỉ xem, đừng sửa nếu chưa hiểu.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c4" data-title="Thao tác file & thư mục">
 <div class="ch-head"><span class="ch-num">04</span><h3>Thao tác với file và thư mục</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Đây là chương “công việc hằng ngày”: tạo, chép, di chuyển, đổi tên, xóa file và thư mục. Trình quản lý file đồ họa làm được những việc đơn giản, nhưng dòng lệnh làm được những việc như “chép mọi file HTML trong thư mục này sang thư mục kia, nhưng chỉ file nào chưa có ở đích hoặc mới hơn” chỉ bằng một dòng <code>cp -u *.html dest</code>.</p>
+<p>Sức mạnh đó đi kèm rủi ro: dòng lệnh không có thùng rác và ít khi hỏi lại. Chương này cũng dạy cách làm an toàn.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p><b>Wildcard</b> giúp chọn nhiều file cùng lúc:</p>
 <div class="tbl"><table><tr><th>Mẫu</th><th>Khớp với</th></tr>
 <tr><td><code>*</code></td><td>Mọi chuỗi ký tự</td></tr>
@@ -185,10 +280,38 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <li><b>Không có thùng rác</b> trên dòng lệnh. Mẹo an toàn: thử wildcard bằng <code>ls *.html</code> trước rồi mới <code>rm *.html</code>. Cẩn thận lỗi gõ <code>rm * .html</code> (có dấu cách) sẽ xóa sạch thư mục.</li>
 <li><b>Hard link</b>: thêm một tên cho cùng dữ liệu (cùng inode, xem bằng <code>ls -li</code>); không trỏ tới thư mục, không vượt sang ổ khác. <b>Symlink</b>: file đặc biệt chứa đường dẫn tới file đích; xóa đích thì symlink thành “gãy”.</li>
 </ul>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Wildcard do shell mở rộng, không phải do lệnh.</b> Khi bạn gõ <code>rm *.html</code>, shell tự thay <code>*.html</code> bằng danh sách file khớp trước rồi mới gọi <code>rm a.html b.html c.html</code>. <code>rm</code> không hề thấy dấu <code>*</code>. Vì vậy wildcard dùng được với mọi lệnh, và vì vậy thử trước bằng <code>ls</code> cho bạn thấy chính xác danh sách sẽ bị xóa.</p>
+<p><b>File, tên và inode.</b> Trên đĩa, dữ liệu của file được mô tả bởi một <b>inode</b> (chứa kích thước, quyền, vị trí dữ liệu). Thư mục chỉ là bảng ánh xạ “tên → số inode”. Từ đó:</p>
+<ul>
+<li><code>mv</code> trong cùng phân vùng chỉ sửa bảng tên nên tức thì, kể cả file 50 GB. Qua phân vùng khác thì phải chép thật rồi xóa.</li>
+<li><b>Hard link</b> là thêm một dòng “tên → cùng inode”. Hai tên ngang hàng nhau; dữ liệu chỉ bị xóa khi tên cuối cùng bị xóa. Vì inode thuộc về một phân vùng, hard link không vượt phân vùng được, và không được trỏ tới thư mục.</li>
+<li><b>Symlink</b> là một file riêng có inode riêng, nội dung là chuỗi đường dẫn. Nó trỏ được tới thư mục và qua phân vùng khác, nhưng nếu đích bị xóa hay đổi tên thì nó thành link gãy.</li>
+</ul>
+<pre><code>$ ls -li
+1068 -rw-r--r-- 2 me me 1650 fun         ← số 2 = có 2 tên
+1068 -rw-r--r-- 2 me me 1650 fun-hard    ← cùng inode 1068
+1070 lrwxrwxrwx 1 me me    3 fun-sym -&gt; fun</code></pre>
+<p>Khi đích của <code>cp</code> hay <code>mv</code> là một thư mục có sẵn, file được đặt vào bên trong; nếu không, nó được hiểu là tên mới. Chép thư mục cần <code>-r</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Dấu cách thừa với <code>rm</code></b> — <code>rm * .html</code> (có dấu cách) xóa <i>mọi</i> file trong thư mục rồi mới báo không có file <code>.html</code>. Luôn thử <code>ls *.html</code> trước, rồi bấm ↑ và đổi <code>ls</code> thành <code>rm</code>.</li>
+<li><b>Ghi đè không hỏi</b> — <code>cp</code> và <code>mv</code> ghi đè file trùng tên mà không báo. Dùng <code>-i</code> khi không chắc.</li>
+<li><b>Nhầm đích của <code>mv</code></b> — <code>mv dir1 dir2</code> chuyển dir1 <i>vào trong</i> dir2 nếu dir2 đã tồn tại, còn nếu chưa thì đổi tên dir1 thành dir2.</li>
+<li><b>Symlink tương đối bị gãy</b> — <code>ln -s fun dir1/fun-sym</code> trỏ tới <code>dir1/fun</code> chứ không phải <code>./fun</code>, vì đường dẫn trong symlink tính từ vị trí của chính link.</li>
+<li><b><code>rm -rf</code> với biến rỗng hay đường dẫn sai</b> — <code>rm -rf /$DIR</code> khi <code>DIR</code> rỗng thành <code>rm -rf /</code>. Kiểm tra kỹ và tránh chạy với quyền root.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c5" data-title="Làm việc với lệnh">
 <div class="ch-head"><span class="ch-num">05</span><h3>Làm việc với lệnh</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Linux có hàng nghìn lệnh, không ai nhớ hết. Kỹ năng thật sự là <b>tự tìm câu trả lời</b>: lệnh này là gì, nằm ở đâu, có tùy chọn nào, và có lệnh nào làm được việc tôi cần không. Chương này dạy cách tra cứu ngay trên máy, không cần mạng.</p>
+<p>Cuối chương, bạn còn tạo được lệnh riêng bằng <code>alias</code>, bước đầu tiên để biến dòng lệnh thành công cụ của chính mình.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Một “lệnh” có thể là 4 thứ: <b>chương trình thực thi</b> (file trong <code>/usr/bin</code>), <b>lệnh dựng sẵn của shell</b> (builtin như <code>cd</code>), <b>hàm shell</b>, hoặc <b>alias</b>.</p>
 <pre><code><span class="p">$ </span>type ls        <span class="c"># ls is aliased to `ls --color=auto'</span>
 <span class="p">$ </span>type cd        <span class="c"># cd is a shell builtin</span>
@@ -206,10 +329,36 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <span class="p">$ </span>unalias foo
 <span class="p">$ </span>alias            <span class="c"># xem tất cả alias</span></code></pre>
 <p class="tip">Alias tạo trên dòng lệnh mất khi đóng shell; muốn giữ lâu dài thì ghi vào <code>~/.bashrc</code> (chương 11).</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Khi bạn gõ một tên, bash tìm theo thứ tự: <b>alias</b> → <b>hàm shell</b> → <b>builtin</b> (lệnh nằm sẵn trong bash) → <b>chương trình</b> trong các thư mục của biến <code>PATH</code>. Cái nào thấy trước thì dùng cái đó. <code>type</code> cho biết tên đó rơi vào loại nào.</p>
+<ul>
+<li><code>which</code> chỉ tìm trong <code>PATH</code>, nên nó không thấy builtin và alias.</li>
+<li>Builtin như <code>cd</code> phải nằm trong shell vì chúng thay đổi trạng thái của chính shell. Một chương trình riêng không thể đổi thư mục hiện tại của shell đã gọi nó.</li>
+<li>Tài liệu cũng chia theo loại: builtin dùng <code>help</code>; chương trình dùng <code>--help</code>, <code>man</code>, <code>info</code>.</li>
+</ul>
+<p><b>Trang man</b> chia thành các section: 1 lệnh người dùng, 5 định dạng file, 8 lệnh quản trị… Cùng tên <code>passwd</code> có trang ở section 1 (lệnh) và 5 (file <code>/etc/passwd</code>). <code>man passwd</code> mở section thấp nhất; <code>man 5 passwd</code> chọn rõ. <code>apropos</code> tìm theo từ khóa trong mô tả một dòng của mọi trang man.</p>
+<p>Cách đọc phần SYNOPSIS: <code>[ ]</code> là tùy chọn có thể bỏ, <code>...</code> là lặp lại được, <code>|</code> là chọn một.</p>
+<pre><code>ls [OPTION]... [FILE]...   → có thể không có tùy chọn, không có file, hoặc nhiều</code></pre>
+<p><b>Alias</b> là một chuỗi thay thế: shell thay tên alias bằng nội dung của nó trước khi chạy. Dấu <code>;</code> cho phép ghép nhiều lệnh thành một alias.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Dùng <code>which</code> cho builtin</b> — <code>which cd</code> không ra gì nên tưởng lệnh không tồn tại. Dùng <code>type cd</code>.</li>
+<li><b>Đặt alias trùng tên lệnh có sẵn</b> mà quên — ví dụ <code>alias ls='ls -a'</code> rồi thắc mắc vì sao <code>ls</code> lạ. Kiểm tra bằng <code>type ls</code>; gọi bản gốc bằng <code>\ls</code>.</li>
+<li><b>Có dấu cách quanh dấu bằng</b> — <code>alias foo = 'ls'</code> báo lỗi. Viết liền: <code>alias foo='ls'</code>.</li>
+<li><b>Tưởng alias được lưu lại</b> — alias gõ trên dòng lệnh mất khi đóng shell. Muốn giữ phải ghi vào <code>~/.bashrc</code>.</li>
+<li><b>Ngại đọc man</b> — trang man dài nhưng có thể tìm bằng <code>/từ_khóa</code> như trong <code>less</code>. Đọc phần EXAMPLES (nếu có) trước.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c6" data-title="Chuyển hướng (Redirection)">
 <div class="ch-head"><span class="ch-num">06</span><h3>Chuyển hướng và đường ống</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Đây có lẽ là ý tưởng quan trọng nhất của Unix: mỗi chương trình làm tốt một việc nhỏ, và ta <b>nối chúng lại</b> để giải việc lớn. Chuyển hướng cho phép lưu kết quả vào file hoặc lấy dữ liệu từ file; đường ống cho phép kết quả của lệnh này thành đầu vào của lệnh kia.</p>
+<p>Ví dụ: “trong log hôm nay, địa chỉ IP nào truy cập nhiều nhất?” không có lệnh riêng nào làm, nhưng ghép <code>grep</code>, <code>cut</code>, <code>sort</code>, <code>uniq</code> bằng <code>|</code> là ra.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Mọi chương trình có 3 luồng: <b>stdin</b> (số 0, bàn phím), <b>stdout</b> (1, màn hình), <b>stderr</b> (2, màn hình). Ta có thể chuyển hướng chúng.</p>
 <pre><code><span class="p">$ </span>ls -l /usr/bin &gt; out.txt      <span class="c"># ghi đè stdout vào file</span>
 <span class="p">$ </span>ls -l /usr/bin &gt;&gt; out.txt     <span class="c"># nối thêm</span>
@@ -229,10 +378,38 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <span class="p">$ </span>tail -f /var/log/syslog               <span class="c"># theo dõi log trực tiếp</span>
 <span class="p">$ </span>ls /usr/bin | tee ls.txt | grep zip   <span class="c"># vừa lưu file vừa chuyển tiếp</span></code></pre>
 <p class="tip">Lỗi kinh điển: dùng <code>&gt;</code> thay cho <code>|</code> (<code>lệnh1 &gt; lệnh2</code>) sẽ ghi đè lên file tên lệnh2. Đừng làm thế trong <code>/usr/bin</code> với quyền root.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Mỗi tiến trình mở sẵn ba “kênh” đánh số gọi là <b>file descriptor</b>:</p>
+<ul>
+<li><b>0 = stdin</b>: nơi chương trình đọc dữ liệu vào (mặc định là bàn phím).</li>
+<li><b>1 = stdout</b>: nơi ghi kết quả (mặc định là màn hình).</li>
+<li><b>2 = stderr</b>: nơi ghi thông báo lỗi (cũng là màn hình).</li>
+</ul>
+<p>Chương trình chỉ ghi vào “số 1” hay “số 2” mà không biết đó là màn hình hay file. <b>Shell nối các số đó tới đâu trước khi chạy chương trình.</b> <code>&gt; file</code> nghĩa là “nối số 1 vào file”, <code>2&gt; file</code> là nối số 2, <code>&lt; file</code> là nối số 0.</p>
+<p>Vì kết quả và lỗi đi hai kênh riêng, bạn có thể lưu kết quả vào file mà lỗi vẫn hiện ra màn hình, hoặc vứt riêng lỗi vào <code>/dev/null</code>.</p>
+<p><code>2&gt;&amp;1</code> nghĩa là “cho số 2 trỏ tới <i>chỗ số 1 đang trỏ lúc này</i>”. Shell xử lý chuyển hướng từ trái sang phải, nên thứ tự quan trọng:</p>
+<pre><code>ls &gt; out 2&gt;&amp;1    1→out, rồi 2→(chỗ của 1 = out)        → cả hai vào file
+ls 2&gt;&amp;1 &gt; out    2→(chỗ của 1 = màn hình), rồi 1→out   → lỗi vẫn ra màn hình</code></pre>
+<p><b>Đường ống</b> <code>a | b</code>: shell chạy cả hai chương trình <i>cùng lúc</i> và nối stdout của a vào stdin của b. Dữ liệu chảy dần qua ống, nên <code>ls -R / | head</code> dừng ngay khi đủ 10 dòng. Chỉ stdout đi qua ống; stderr vẫn ra màn hình. <code>&gt;</code> làm rỗng file <i>ngay khi</i> shell mở nó, trước khi lệnh chạy.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Dùng <code>&gt;</code> thay cho <code>|</code></b> — <code>ls &gt; less</code> tạo ra file tên <code>less</code> thay vì xem phân trang. Tệ hơn, làm thế trong <code>/usr/bin</code> với quyền root sẽ ghi đè lên chính chương trình <code>less</code>.</li>
+<li><b>Đọc và ghi cùng một file</b> — <code>sort data.txt &gt; data.txt</code> cho ra file rỗng, vì shell làm rỗng file trước khi <code>sort</code> kịp đọc. Ghi ra file khác rồi đổi tên.</li>
+<li><b>Sai thứ tự <code>2&gt;&amp;1</code></b> — phải đặt sau <code>&gt; file</code>. Hoặc dùng gọn <code>&amp;&gt; file</code> trong bash.</li>
+<li><b>Dùng <code>&gt;</code> khi muốn <code>&gt;&gt;</code></b> — mỗi lần chạy lại xóa sạch nội dung cũ của file log.</li>
+<li><b>Dùng <code>uniq</code> khi chưa <code>sort</code></b> — <code>uniq</code> chỉ gộp các dòng trùng <i>liền kề</i>. Luôn <code>sort | uniq</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c7" data-title="Shell nhìn thế giới thế nào">
 <div class="ch-head"><span class="ch-num">07</span><h3>Nhìn thế giới như shell nhìn</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Chương này giải thích vì sao nhiều lệnh “chạy không như mong đợi”. Trước khi chương trình nhận được đối số, shell đã biến đổi dòng bạn gõ: thay <code>*</code> thành danh sách file, <code>~</code> thành thư mục home, <code>$USER</code> thành tên user, và tách dòng thành các từ theo dấu cách.</p>
+<p>Hiểu cơ chế này giúp bạn xử lý đúng tên file có dấu cách, viết được những lệnh như tạo 100 thư mục trong một dòng, và sau này viết script không bị lỗi khó hiểu.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Trước khi chạy lệnh, shell <b>mở rộng (expansion)</b> những gì bạn gõ. Dùng <code>echo</code> để thấy kết quả mở rộng.</p>
 <div class="tbl"><table><tr><th>Loại</th><th>Ví dụ</th><th>Kết quả</th></tr>
 <tr><td>Pathname</td><td><code>echo D*</code></td><td>Desktop Documents Downloads</td></tr>
@@ -251,10 +428,42 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <pre><code><span class="p">$ </span>echo text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER
 <span class="p">$ </span>echo "text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER"
 <span class="p">$ </span>echo 'text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER'</code></pre>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Bash xử lý một dòng lệnh theo thứ tự đại ý như sau:</p>
+<ul>
+<li><b>Brace</b>: <code>{a,b}</code>, <code>{1..5}</code> sinh ra nhiều từ (không cần file tồn tại).</li>
+<li><b>Tilde</b>: <code>~</code> → <code>/home/me</code>.</li>
+<li><b>Tham số, số học, thay thế lệnh</b>: <code>$VAR</code>, <code>$((…))</code>, <code>$(…)</code> được thay bằng giá trị.</li>
+<li><b>Tách từ (word splitting)</b>: kết quả của bước trên bị cắt tại dấu cách, tab, xuống dòng.</li>
+<li><b>Pathname</b>: từ nào chứa <code>* ? [ ]</code> được thay bằng tên file khớp.</li>
+<li><b>Bỏ dấu nháy</b> rồi mới chạy chương trình.</li>
+</ul>
+<pre><code>$ echo ~/*.txt $((2+2))
+↓ tilde:     /home/me/*.txt $((2+2))
+↓ số học:    /home/me/*.txt 4
+↓ pathname:  /home/me/a.txt /home/me/b.txt 4
+→ echo nhận 3 đối số</code></pre>
+<p><b>Dấu nháy tắt bớt các bước</b>. Nháy kép <code>"…"</code> giữ lại tham số, số học, thay thế lệnh, nhưng tắt tách từ và pathname, nên <code>"$file"</code> luôn là <i>một</i> đối số dù chứa dấu cách. Nháy đơn <code>'…'</code> tắt tất cả. Dấu <code>\</code> tắt ý nghĩa của đúng một ký tự kế tiếp.</p>
+<p>Nếu wildcard không khớp file nào, bash để nguyên chuỗi đó. Vì vậy <code>ls *.xyz</code> báo lỗi “cannot access '*.xyz'”: <code>ls</code> nhận đúng chuỗi có dấu sao.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Không đặt biến trong nháy kép</b> — <code>rm $f</code> với <code>f="my file.txt"</code> thành <code>rm my file.txt</code>, xóa nhầm hai file <code>my</code> và <code>file.txt</code>. Luôn viết <code>rm "$f"</code>.</li>
+<li><b>Dùng nháy đơn khi cần giá trị biến</b> — <code>echo 'Xin chào $USER'</code> in nguyên văn <code>$USER</code>.</li>
+<li><b>Dấu cách trong brace</b> — <code>{a, b}</code> không mở rộng. Viết liền <code>{a,b}</code>.</li>
+<li><b>Mong đợi số thực</b> — <code>$((5/2))</code> ra <code>2</code> vì chỉ hỗ trợ số nguyên.</li>
+<li><b>Wildcard không khớp</b> — script lặp <code>for f in *.log</code> sẽ nhận chuỗi <code>*.log</code> nếu không có file nào. Kiểm tra <code>[[ -e "$f" ]]</code>.</li>
+<li><b>Mất định dạng nhiều dòng</b> — <code>echo $(cal)</code> dồn mọi thứ lên một dòng vì tách từ; <code>echo "$(cal)"</code> giữ nguyên.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c8" data-title="Mẹo bàn phím nâng cao">
 <div class="ch-head"><span class="ch-num">08</span><h3>Mẹo bàn phím nâng cao</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Người dùng dòng lệnh lâu năm gõ ít hơn bạn nghĩ. Họ dùng phím tắt để sửa lệnh, Tab để hoàn thành tên, và lịch sử để gọi lại lệnh cũ. Chương này giúp bạn làm việc nhanh hơn và ít lỗi chính tả hơn, nhất là với đường dẫn dài và lệnh phức tạp.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <div class="tbl"><table><tr><th>Phím</th><th>Tác dụng</th></tr>
 <tr><td><code>Ctrl-A</code> / <code>Ctrl-E</code></td><td>Về đầu / cuối dòng</td></tr>
 <tr><td><code>Alt-F</code> / <code>Alt-B</code></td><td>Tiến / lùi một từ</td></tr>
@@ -269,10 +478,33 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <span class="p">$ </span>!!        <span class="c"># chạy lại lệnh vừa rồi (vd: sudo !!)</span>
 <span class="p">$ </span>!ls       <span class="c"># chạy lại lệnh gần nhất bắt đầu bằng "ls"</span></code></pre>
 <p class="tip">Lệnh <code>script</code> ghi lại toàn bộ phiên terminal vào file, hữu ích khi cần lưu lại thao tác.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Bash dùng thư viện <b>Readline</b> để đọc dòng lệnh. Các phím tắt mặc định lấy từ trình soạn thảo Emacs: <code>Ctrl</code> thường thao tác theo ký tự, <code>Alt</code> theo từ.</p>
+<p><b>Cắt và dán (kill và yank)</b>: phần bị cắt bằng <code>Ctrl-K</code>, <code>Ctrl-U</code>, <code>Alt-D</code> được đưa vào một bộ nhớ riêng gọi là kill-ring, không phải clipboard của hệ thống. <code>Ctrl-Y</code> dán lại từ đó.</p>
+<p><b>Hoàn thành bằng Tab</b>: bash nhìn vị trí con trỏ để đoán bạn đang gõ gì. Từ đầu tiên thì tìm tên lệnh; sau đó thì tìm tên file; bắt đầu bằng <code>$</code> thì tìm tên biến; bắt đầu bằng <code>~</code> thì tìm tên user. Nếu có nhiều khả năng, Tab lần hai liệt kê chúng. Nhiều bản Linux còn cài thêm “programmable completion” để Tab gợi ý cả tùy chọn và tên gói.</p>
+<p><b>Lịch sử</b>: mỗi lệnh được đánh số. Shell lưu lịch sử trong bộ nhớ và ghi ra <code>~/.bash_history</code> khi thoát. <b>History expansion</b> như <code>!!</code>, <code>!88</code>, <code>!ls</code> được shell thay thế <i>trước khi chạy</i>, giống các loại mở rộng ở chương 7.</p>
+<pre><code>$ ls -l /usr/bin/zip      (lệnh số 120)
+$ sudo !!                 → sudo ls -l /usr/bin/zip
+$ Ctrl-R  zip             → (reverse-i-search)`zip': ls -l /usr/bin/zip</code></pre>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Chạy <code>!lệnh</code> mà không xem trước</b> — <code>!rm</code> chạy lại lệnh <code>rm</code> gần nhất, có thể là lệnh bạn không nhớ. Dùng <code>!rm:p</code> để chỉ in ra, hoặc dùng <code>Ctrl-R</code> để thấy trước khi Enter.</li>
+<li><b>Alt bị terminal chiếm</b> — trong một số terminal, <code>Alt-F</code> mở menu File. Dùng <code>Esc</code> rồi <code>f</code> thay cho Alt-F, hoặc tắt phím tắt menu.</li>
+<li><b>Gõ mật khẩu ngay trên dòng lệnh</b> — chẳng hạn <code>mysql -pMatKhau</code>; mật khẩu sẽ nằm lại trong <code>~/.bash_history</code>.</li>
+<li><b>Gõ tay đường dẫn dài</b> — dễ sai chính tả. Gõ vài chữ đầu rồi bấm Tab.</li>
+<li><b>Mở nhiều terminal rồi mất lịch sử</b> — mỗi cửa sổ ghi đè <code>.bash_history</code> khi đóng. Có thể bật <code>shopt -s histappend</code> trong <code>~/.bashrc</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c9" data-title="Quyền (Permissions)">
 <div class="ch-head"><span class="ch-num">09</span><h3>Quyền truy cập</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Linux được thiết kế cho nhiều người dùng cùng lúc, nên phải trả lời được câu hỏi “ai được làm gì với file nào”. Quyền truy cập bảo vệ dữ liệu của người này khỏi người khác, và bảo vệ hệ thống khỏi chính người dùng (kể cả khỏi lỗi gõ nhầm của bạn).</p>
+<p>Bạn sẽ gặp quyền liên tục: script không chạy được vì thiếu quyền <code>x</code>, khóa SSH bị từ chối vì quyền quá rộng, máy chủ web không đọc được file vì sai chủ sở hữu. Chương này còn dạy cách tạm làm root bằng <code>su</code> và <code>sudo</code>.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Linux là hệ thống nhiều người dùng. Mỗi file có <b>chủ sở hữu (u)</b>, <b>nhóm (g)</b>, và <b>người khác (o)</b>; mỗi đối tượng có quyền <b>r</b> đọc, <b>w</b> ghi, <b>x</b> thực thi. Xem danh tính bằng <code>id</code>.</p>
 <pre><code>-rwxr-x---  1 me  dev  ...  script.sh
 <span class="c"># loại | u=rwx | g=r-x | o=---</span></code></pre>
@@ -291,10 +523,34 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <span class="p">$ </span>chgrp users file
 <span class="p">$ </span>passwd                      <span class="c"># đổi mật khẩu</span></code></pre>
 <p class="tip">Quyền đặc biệt: <b>setuid</b> (4000, chạy với quyền chủ file, vd <code>passwd</code>), <b>setgid</b> (2000), <b>sticky bit</b> (1000, như ở <code>/tmp</code>: chỉ chủ mới xóa được file của mình).</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Mỗi người dùng có một <b>UID</b> và thuộc một hoặc nhiều <b>nhóm</b> (GID); xem bằng <code>id</code>. Thông tin này lấy từ <code>/etc/passwd</code> và <code>/etc/group</code>. Mỗi file lưu trong inode của nó: UID chủ sở hữu, GID nhóm, và 9 bit quyền.</p>
+<p>Khi bạn truy cập file, kernel kiểm tra theo thứ tự và <b>dừng ở nhóm đầu tiên khớp</b>: nếu bạn là chủ thì dùng 3 bit của chủ; nếu không mà thuộc nhóm file thì dùng 3 bit của nhóm; còn lại dùng 3 bit của others. Root bỏ qua phần lớn kiểm tra này.</p>
+<p>Mỗi bộ 3 bit <code>rwx</code> chính là một số nhị phân, nên viết được bằng một chữ số bát phân: r=4, w=2, x=1. <code>rwxr-x---</code> = 7,5,0 = <code>750</code>.</p>
+<p>Ý nghĩa với <b>thư mục</b> khác với file: <code>r</code> là liệt kê tên, <code>w</code> là tạo/xóa/đổi tên mục bên trong, <code>x</code> là được đi vào và truy cập mục bên trong. Hệ quả: xóa được một file hay không phụ thuộc quyền <code>w</code> trên <i>thư mục chứa nó</i>, không phải trên chính file.</p>
+<p><b>umask</b> là mặt nạ bit được “trừ” khỏi quyền mặc định khi tạo file mới. File mới khởi đầu là <code>666</code>, thư mục là <code>777</code>; với umask <code>0022</code> ta được <code>644</code> và <code>755</code>.</p>
+<pre><code>  666  rw-rw-rw-     (mặc định cho file)
+- 022  ----w--w-     (umask)
+= 644  rw-r--r--</code></pre>
+<p><b>su</b> mở hẳn một shell mới dưới danh tính khác (cần mật khẩu của người đó). <b>sudo</b> chạy một lệnh với quyền khác, hỏi mật khẩu <i>của bạn</i>, và chỉ cho phép theo cấu hình trong <code>/etc/sudoers</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b><code>chmod 777</code> để “sửa cho chạy”</b> — mọi người trên máy đều sửa được file đó. Hãy tìm đúng người cần quyền và chỉ cấp quyền đó, ví dụ <code>chmod 755 script.sh</code>.</li>
+<li><b>Quên quyền <code>x</code> cho thư mục</b> — <code>chmod 644 mydir</code> khiến không ai <code>cd</code> vào hay đọc file bên trong được. Thư mục thường cần <code>755</code> hoặc <code>700</code>.</li>
+<li><b>Dùng <code>sudo</code> với chuyển hướng</b> — <code>sudo echo x &gt; /etc/file</code> vẫn lỗi “Permission denied”, vì phần <code>&gt;</code> do shell của bạn (không phải root) thực hiện. Dùng <code>echo x | sudo tee /etc/file</code>.</li>
+<li><b>Tạo file bằng <code>sudo</code> trong home</b> — file thuộc về root, sau đó bạn không sửa được. Sửa bằng <code>sudo chown $USER: file</code>.</li>
+<li><b><code>chmod -R</code> bừa bãi</b> — <code>chmod -R 644 dir</code> làm mất quyền <code>x</code> của mọi thư mục con. Dùng dạng ký hiệu <code>chmod -R u+rwX,go+rX dir</code> (chữ <code>X</code> hoa chỉ áp cho thư mục).</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c10" data-title="Tiến trình (Processes)">
 <div class="ch-head"><span class="ch-num">10</span><h3>Tiến trình</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Linux chạy cùng lúc hàng trăm chương trình. Khi máy chậm, một ứng dụng bị treo, hay bạn muốn chạy một việc lâu mà vẫn dùng terminal cho việc khác, bạn cần biết đang có gì chạy, cái nào ngốn tài nguyên, và cách dừng, tạm ngưng hay cho nó chạy nền.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Mỗi chương trình đang chạy là một <b>tiến trình</b> có số hiệu <b>PID</b>. Tiến trình đầu tiên (init/systemd) có PID 1.</p>
 <pre><code><span class="p">$ </span>ps            <span class="c"># tiến trình của terminal này</span>
 <span class="p">$ </span>ps x          <span class="c"># mọi tiến trình của tôi</span>
@@ -309,6 +565,31 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 <span class="p">$ </span>kill -9 2345  <span class="c"># KILL: buộc dừng, dùng khi hết cách</span>
 <span class="p">$ </span>killall xlogo <span class="c"># theo tên</span></code></pre>
 <p>Trạng thái trong cột STAT: <code>R</code> đang chạy, <code>S</code> ngủ, <code>D</code> chờ I/O, <code>T</code> đã dừng, <code>Z</code> zombie, <code>&lt;</code> ưu tiên cao, <code>N</code> ưu tiên thấp (nice). Tín hiệu hay gặp: HUP (1), INT (2), KILL (9), TERM (15), CONT (18), STOP (19). Lệnh liên quan: <code>pstree</code>, <code>vmstat</code>, <code>shutdown</code>.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Mỗi chương trình đang chạy là một <b>tiến trình</b> có PID riêng. Tiến trình không tự sinh ra: một tiến trình cha tạo ra tiến trình con. Khi khởi động, kernel chạy <code>init</code> (nay thường là <code>systemd</code>) với PID 1, và mọi tiến trình khác đều là con cháu của nó. Shell của bạn cũng vậy: mỗi lệnh bạn gõ là một tiến trình con của shell. <code>pstree</code> vẽ cây này.</p>
+<p>Kernel chia CPU cho các tiến trình theo từng lát thời gian rất ngắn, nên chúng trông như chạy song song. Mỗi tiến trình có trạng thái (chạy, ngủ chờ việc, dừng, zombie) và độ ưu tiên (<code>nice</code>).</p>
+<p><b>Job control</b>: terminal chỉ có một chương trình ở <b>tiền cảnh</b> (nhận phím bạn gõ). Thêm <code>&amp;</code> cuối lệnh để chạy nền: shell in số job và PID rồi trả lại dấu nhắc ngay.</p>
+<p><b>Tín hiệu (signal)</b> là cách kernel và người dùng “gõ cửa” một tiến trình. <code>Ctrl-C</code> thật ra là terminal gửi tín hiệu <b>INT</b>; <code>Ctrl-Z</code> gửi <b>TSTP</b> (tạm dừng). Lệnh <code>kill</code> không nhất thiết là “giết”, nó chỉ gửi tín hiệu, mặc định là <b>TERM</b>.</p>
+<ul>
+<li>Chương trình có thể <i>bắt</i> TERM, INT, HUP để dọn dẹp (lưu file, xóa file tạm) rồi mới thoát.</li>
+<li><b>KILL (9)</b> và <b>STOP</b> không bắt được: kernel dừng tiến trình ngay, chương trình không có cơ hội dọn dẹp.</li>
+<li><b>HUP</b> trước kia nghĩa là “đường dây điện thoại bị ngắt”; nay nhiều dịch vụ dùng nó để đọc lại cấu hình.</li>
+</ul>
+<pre><code>$ sleep 300        tiền cảnh, terminal bị chiếm
+Ctrl-Z             → TSTP: [1]+ Stopped  sleep 300
+$ bg %1            → CONT: chạy tiếp ở nền
+$ kill %1          → TERM: kết thúc</code></pre>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Dùng <code>kill -9</code> ngay từ đầu</b> — chương trình không kịp lưu dữ liệu hay xóa file khóa, lần sau có thể không khởi động được. Thử <code>kill</code> (TERM) trước, đợi vài giây, rồi mới <code>-9</code>.</li>
+<li><b>Gõ nhầm PID</b> — <code>kill 1234</code> với số sai có thể dừng chương trình khác. Kiểm tra bằng <code>ps</code> hoặc dùng <code>pgrep -a tên</code> trước.</li>
+<li><b>Đóng terminal làm chết job nền</b> — job chạy bằng <code>&amp;</code> vẫn là con của shell, đóng terminal sẽ gửi HUP. Dùng <code>nohup lệnh &amp;</code> hoặc <code>disown</code> nếu cần chạy tiếp.</li>
+<li><b>Tưởng Ctrl-Z là thoát</b> — chương trình chỉ tạm dừng và vẫn giữ tài nguyên (file, cổng mạng). Xem bằng <code>jobs</code>, rồi <code>fg</code> hoặc <code>kill</code>.</li>
+<li><b><code>killall</code> quá rộng</b> — <code>killall python</code> dừng mọi tiến trình python của bạn, kể cả những cái đang làm việc quan trọng.</li>
+<li><b>Hoảng với tiến trình zombie</b> — zombie (<code>Z</code>) đã chết, chỉ chờ cha nhận kết quả; nó không ngốn CPU và <code>kill</code> không có tác dụng. Vấn đề nằm ở tiến trình cha.</li>
+</ul>
+</div>
 </section>
 </div>
 
@@ -318,6 +599,11 @@ footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid v
 
 <section class="ch" id="c11" data-title="Môi trường (Environment)">
 <div class="ch-head"><span class="ch-num">11</span><h3>Môi trường</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Mỗi lần mở terminal, shell không bắt đầu từ con số không. Nó đã biết thư mục home của bạn, biết tìm chương trình ở đâu, dùng ngôn ngữ nào, dấu nhắc trông ra sao. Tất cả những thông tin đó nằm trong <b>môi trường</b> (environment). Chương này giải thích môi trường chứa gì, được tạo ra từ đâu, và cách sửa nó để thay đổi đó còn giữ lại cho lần sau.</p>
+<p>Bạn sẽ cần đến chương này rất sớm trong thực tế: cài một công cụ vào <code>~/bin</code> mà gõ tên không chạy, muốn alias <code>ll</code> còn đó khi mở terminal mới, hay phần mềm yêu cầu “hãy đặt biến <code>JAVA_HOME</code>”. Tất cả đều là việc sửa môi trường.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Shell lưu thông tin trong <b>môi trường</b>: biến môi trường, biến shell, alias, hàm.</p>
 <pre><code><span class="p">$ </span>printenv | less     <span class="c"># biến môi trường</span>
 <span class="p">$ </span>set | less          <span class="c"># cả biến shell và hàm</span>
@@ -335,10 +621,40 @@ alias l.='ls -d .* --color=auto'
 alias ll='ls -l --color=auto'
 <span class="c"># Áp dụng ngay mà không cần mở terminal mới</span>
 <span class="p">$ </span>source ~/.bashrc</code></pre>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Biến shell và biến môi trường.</b> Biến bạn gán (<code>X=1</code>) ban đầu chỉ là biến shell, chỉ shell hiện tại thấy. Khi <code>export X</code>, nó trở thành biến môi trường và được <b>sao chép</b> sang mọi tiến trình con mà shell khởi chạy. Đây là điểm mấu chốt: môi trường đi một chiều, từ cha xuống con. Tiến trình con sửa biến thì cha không hề biết.</p>
+<p><b>Môi trường được dựng lúc khởi động shell</b> bằng cách đọc các file khởi động (startup file), theo loại phiên:</p>
+<ul>
+<li><b>Login shell</b> (đăng nhập bằng user/mật khẩu, ví dụ console ảo hoặc SSH): đọc <code>/etc/profile</code>, rồi file đầu tiên tìm thấy trong <code>~/.bash_profile</code>, <code>~/.bash_login</code>, <code>~/.profile</code>.</li>
+<li><b>Non-login shell</b> (mở terminal trong giao diện đồ họa): đọc <code>/etc/bash.bashrc</code> và <code>~/.bashrc</code>, đồng thời thừa hưởng môi trường từ tiến trình cha (thường là login shell của phiên đăng nhập).</li>
+</ul>
+<p>Vì vậy <code>~/.bashrc</code> là file quan trọng nhất với người dùng thường: gần như luôn được đọc. File của login shell thường có đoạn tự gọi nó:</p>
+<pre><code>if [ -f ~/.bashrc ]; then
+    . ~/.bashrc      # dấu chấm = source: chạy file trong shell hiện tại
+fi</code></pre>
+<p><b>PATH hoạt động thế nào:</b> khi bạn gõ <code>ls</code>, shell (nếu không phải alias/builtin/hàm) duyệt lần lượt các thư mục trong <code>PATH</code> từ trái sang phải và chạy file thực thi tên <code>ls</code> đầu tiên tìm thấy. Thứ tự quyết định: thư mục đứng trước “thắng”. Dòng <code>PATH=$PATH:$HOME/bin</code> nghĩa là “lấy PATH cũ, nối thêm <code>~/bin</code> vào cuối”.</p>
+<p><b>Sửa xong vì sao chưa có tác dụng?</b> File khởi động chỉ được đọc lúc shell bắt đầu. Shell đang mở không tự đọc lại; bạn phải mở terminal mới hoặc chạy <code>source ~/.bashrc</code> để thực thi file đó ngay trong shell hiện tại.</p>
+<p class="tip">Ngày nay macOS dùng zsh làm mặc định, file tương ứng là <code>~/.zshrc</code> và <code>~/.zprofile</code>; nguyên lý giống hệt.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Quên export</b> — gán <code>EDITOR=vim</code> nhưng chương trình con (git, crontab) không thấy. Dùng <code>export EDITOR=vim</code>, kiểm tra bằng <code>printenv EDITOR</code>.</li>
+<li><b>Ghi đè PATH thay vì nối thêm</b> — <code>PATH=~/bin</code> làm mất hết thư mục hệ thống, lệnh <code>ls</code> cũng báo “command not found”. Luôn viết <code>PATH="$PATH:$HOME/bin"</code>. Nếu lỡ tay, mở terminal mới là PATH trở lại bình thường.</li>
+<li><b>Sửa đúng file nhưng không thấy thay đổi</b> — vì shell đang chạy chưa đọc lại. Chạy <code>source ~/.bashrc</code> hoặc mở terminal mới.</li>
+<li><b>Sửa sai file</b> — ghi alias vào <code>~/.bash_profile</code> rồi thắc mắc terminal GUI không có. Quy tắc của sách: PATH và biến môi trường vào <code>.bash_profile</code>/<code>.profile</code>, còn alias, hàm, <code>umask</code> vào <code>.bashrc</code>.</li>
+<li><b>Không sao lưu trước khi sửa</b> — một dòng lỗi cú pháp trong <code>.bashrc</code> có thể làm mọi terminal báo lỗi. Luôn <code>cp ~/.bashrc ~/.bashrc.bak</code> trước, và chú thích thay đổi bằng <code>#</code>.</li>
+<li><b>Có dấu cách quanh dấu bằng</b> — <code>export PATH = ...</code> là sai cú pháp. Viết liền: <code>export PATH=...</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c12" data-title="Làm quen với vi">
 <div class="ch-head"><span class="ch-num">12</span><h3>Nhập môn trình soạn thảo vi</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Phần lớn cấu hình trên Linux là <b>file văn bản</b>: <code>~/.bashrc</code>, <code>/etc/fstab</code>, file cấu hình web server… Muốn làm chủ dòng lệnh, bạn phải sửa được file văn bản ngay trong terminal. <b>vi</b> (thường là bản cải tiến <b>vim</b>) là trình soạn thảo có mặt trên gần như mọi máy Unix, kể cả máy chủ tối giản không có giao diện đồ họa hay không cài nano.</p>
+<p>Tình huống điển hình: bạn SSH vào một máy chủ để sửa cấu hình, hoặc git mở vi để bạn viết commit message. Nếu không biết vi, bạn sẽ bị “kẹt” và không biết thoát ra. Sách không đòi bạn thành chuyên gia vi, chỉ cần đủ để sống sót và làm việc cơ bản.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p><b>vi</b> (thường là <b>vim</b>) có mặt trên gần như mọi hệ Unix, nhẹ và nhanh, nên rất đáng học. Điểm mấu chốt: vi có <b>chế độ</b>. Khi mở là <b>command mode</b> (phím là lệnh), nhấn <kbd>i</kbd> để vào <b>insert mode</b> (gõ chữ), <kbd>Esc</kbd> để quay lại.</p>
 <div class="tbl"><table><tr><th>Phím</th><th>Tác dụng</th></tr>
 <tr><td><code>:w</code> · <code>:q</code> · <code>:wq</code> · <code>:q!</code></td><td>Lưu · thoát · lưu và thoát · thoát không lưu</td></tr>
@@ -352,16 +668,66 @@ alias ll='ls -l --color=auto'
 <tr><td><code>:%s/cũ/mới/g</code> · <code>:%s/cũ/mới/gc</code></td><td>Thay thế toàn file · có hỏi xác nhận</td></tr>
 <tr><td><code>:bn</code> <code>:bp</code> · <code>:e file</code> · <code>:r file</code></td><td>Chuyển file · mở thêm file · chèn nội dung file khác</td></tr></table></div>
 <p class="tip">Bị “kẹt” trong vi? Nhấn <kbd>Esc</kbd> vài lần rồi gõ <code>:q!</code>. Gõ <code>vimtutor</code> để có bài học tương tác 30 phút.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>vi là trình soạn thảo có chế độ (modal).</b> Đây là ý tưởng quan trọng nhất và cũng là lý do người mới hay bối rối. Cùng một phím mang ý nghĩa khác nhau tùy chế độ:</p>
+<ul>
+<li><b>Command mode</b> (mặc định khi mở): mỗi phím là một lệnh. <code>x</code> xóa ký tự, <code>dd</code> xóa dòng, <code>j</code> xuống dòng. Gõ chữ ở đây không chèn chữ mà thực hiện lệnh.</li>
+<li><b>Insert mode</b>: vào bằng <code>i</code>, <code>a</code>, <code>o</code>…; lúc này phím gõ ra chữ như trình soạn thảo bình thường. Nhấn <code>Esc</code> để quay lại command mode.</li>
+<li><b>Ex mode / dòng lệnh</b>: gõ <code>:</code> từ command mode, con trỏ xuống cuối màn hình để nhập lệnh như <code>:w</code>, <code>:q</code>, <code>:%s/a/b/g</code>. Đây là di sản của trình soạn thảo dòng <i>ex</i> mà vi được xây trên đó.</li>
+</ul>
+<p><b>Lệnh có ngữ pháp: [số lần] + toán tử + chuyển động.</b> <code>d</code> (xóa) kết hợp với chuyển động <code>w</code> (một từ) thành <code>dw</code>; <code>d$</code> xóa tới cuối dòng; <code>d0</code> xóa tới đầu dòng; <code>dG</code> xóa tới cuối file; <code>3dd</code> xóa 3 dòng. <code>y</code> (yank, chép) cũng ghép như vậy: <code>yw</code>, <code>y$</code>, <code>yG</code>. Học được ngữ pháp này, bạn tự suy ra hàng trăm lệnh mà không cần học thuộc.</p>
+<pre><code>:%s/Line/line/gc
+ │ │  │    │   └─ g: mọi chỗ trên dòng; c: hỏi xác nhận
+ │ │  │    └─ chuỗi thay thế
+ │ │  └─ mẫu cần tìm (là regex, xem chương 19)
+ │ └─ s: substitute (thay thế)
+ └─ %: phạm vi toàn file (1,5 = dòng 1 đến 5)</code></pre>
+<p><b>Buffer:</b> vi không sửa trực tiếp file trên đĩa mà sửa một bản sao trong bộ nhớ (buffer). Chỉ khi <code>:w</code> thì buffer mới được ghi xuống đĩa. Vì thế <code>:q!</code> bỏ mọi thay đổi chưa lưu. Có thể mở nhiều file (<code>vi a.txt b.txt</code>), mỗi file là một buffer, chuyển qua lại bằng <code>:bn</code>/<code>:bp</code>.</p>
+<p class="tip">Ngày nay có thể dùng nano cho việc nhanh, nhưng vi vẫn là kỹ năng nền vì luôn có sẵn.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Gõ chữ khi đang ở command mode</b> — các ký tự bị hiểu là lệnh, văn bản bị xóa hay nhảy lung tung. Nhấn <code>u</code> để hoàn tác, rồi <code>i</code> trước khi gõ.</li>
+<li><b>Không thoát được vi</b> — nhấn <code>Esc</code> vài lần (về command mode chắc chắn), rồi gõ <code>:q!</code> và Enter.</li>
+<li><b>Thoát mà không lưu (hoặc lưu nhầm)</b> — <code>:q!</code> bỏ thay đổi, <code>:wq</code> lưu rồi thoát. Đọc kỹ trước khi Enter.</li>
+<li><b>Thông báo “E37: No write since last change”</b> — bạn gõ <code>:q</code> khi còn thay đổi chưa lưu. Chọn <code>:wq</code> hoặc <code>:q!</code>.</li>
+<li><b>Thông báo “E45: readonly” hoặc không ghi được file hệ thống</b> — bạn mở file trong <code>/etc</code> không có quyền. Thoát và mở lại bằng <code>sudo vi /etc/hosts</code>.</li>
+<li><b>Thông báo về file swap (.swp)</b> — lần trước vi bị tắt đột ngột hoặc file đang được mở ở cửa sổ khác. Chọn Recover nếu cần khôi phục, sau đó xóa file <code>.ten.swp</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c13" data-title="Tùy biến dấu nhắc">
 <div class="ch-head"><span class="ch-num">13</span><h3>Tùy biến dấu nhắc lệnh</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Dấu nhắc lệnh là thứ bạn nhìn thấy hàng nghìn lần mỗi ngày. Chương này dạy cách tùy biến nó để hiển thị thông tin hữu ích: đang ở thư mục nào, đang là user nào, trên máy nào, mấy giờ. Đây cũng là bài thực hành nhẹ nhàng về biến shell, mã thoát (escape sequence) và cách lưu thay đổi lâu dài đã học ở chương 11.</p>
+<p>Tình huống thực tế: khi SSH vào nhiều máy chủ, một dấu nhắc tô đỏ cho máy production hoặc cho tài khoản root giúp bạn tránh gõ nhầm lệnh nguy hiểm ở sai chỗ.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Dấu nhắc được quy định bởi biến <code>PS1</code>. Các mã đặc biệt: <code>\u</code> user, <code>\h</code> host, <code>\w</code> thư mục đầy đủ, <code>\W</code> tên thư mục cuối, <code>\t</code> giờ, <code>\d</code> ngày, <code>\$</code> (<code>$</code> hoặc <code>#</code>), <code>\n</code> xuống dòng, <code>\!</code> số thứ tự lịch sử. Bọc mã điều khiển không in ra bằng <code>\[ \]</code>.</p>
 <pre><code><span class="p">$ </span>ps1_old="$PS1"                 <span class="c"># sao lưu</span>
 <span class="p">$ </span>PS1="\A \h:\W\$ "               <span class="c"># 17:33 host:dir$</span>
 <span class="p">$ </span>PS1="\[\033[0;32m\]\u@\h:\w\$\[\033[0m\] "   <span class="c"># màu xanh lá</span>
 <span class="p">$ </span>PS1="$ps1_old"                 <span class="c"># khôi phục</span></code></pre>
 <p>Mã màu ANSI: <code>\033[0;30m</code> đến <code>\033[0;37m</code> (đen, đỏ, xanh lá, nâu, xanh dương, tím, lục lam, xám); <code>1;</code> cho bản sáng; <code>4Xm</code> cho nền; <code>\033[0m</code> trả về mặc định. Muốn giữ lâu dài thì thêm <code>PS1=...</code> và <code>export PS1</code> vào <code>~/.bashrc</code>.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Dấu nhắc chỉ là giá trị của biến <code>PS1</code>. Trước mỗi lần hiện dấu nhắc, bash đọc <code>PS1</code> và thay các mã đặc biệt có dấu gạch chéo ngược bằng giá trị thật: <code>\u</code> thành tên user, <code>\w</code> thành thư mục hiện tại… Vì được tính lại mỗi lần, dấu nhắc tự cập nhật khi bạn <code>cd</code>.</p>
+<p><b>Màu và di chuyển con trỏ</b> không phải tính năng của bash mà của <b>terminal emulator</b>. Terminal hiểu các <b>chuỗi điều khiển ANSI</b>: bắt đầu bằng ký tự Escape (mã bát phân <code>\033</code>) và <code>[</code>, theo sau là lệnh. Ví dụ <code>\033[0;31m</code> nghĩa là “từ đây chữ màu đỏ”, <code>\033[0m</code> là “trở về mặc định”. Chuỗi này không in ra ký tự nào, chỉ ra lệnh cho terminal.</p>
+<p><b>Vì sao phải bọc trong <code>\[ \]</code>?</b> Bash cần biết dấu nhắc dài bao nhiêu ký tự <i>hiển thị</i> để biết khi nào xuống dòng và đặt con trỏ đúng chỗ khi bạn sửa lệnh dài. Mã màu dài cả chục byte nhưng hiển thị 0 ký tự. Bọc chúng trong <code>\[ … \]</code> báo cho bash: “đoạn này không chiếm chỗ”.</p>
+<pre><code>PS1="\[\033[0;31m\]\u@\h\[\033[0m\]:\w\$ "
+      └─ đổi đỏ ─┘ └──┘ └─ về mặc định ┘
+                   user@host màu đỏ, phần còn lại màu thường</code></pre>
+<p>Sách còn minh họa chuỗi <code>\033[s</code> (lưu vị trí con trỏ), <code>\033[0;0H</code> (nhảy về góc trên trái), <code>\033[u</code> (khôi phục) để vẽ một thanh đồng hồ ở đầu màn hình. Thay đổi <code>PS1</code> trên dòng lệnh chỉ tồn tại trong phiên hiện tại; muốn giữ, ghi vào <code>~/.bashrc</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Quên <code>\[ \]</code> quanh mã màu</b> — gõ lệnh dài thì chữ đè lên nhau, con trỏ lệch khi dùng phím ↑ hoặc sửa lệnh. Bọc mọi chuỗi <code>\033[...m</code> trong <code>\[ \]</code>.</li>
+<li><b>Quên trả màu về mặc định</b> — thiếu <code>\033[0m</code> ở cuối làm toàn bộ lệnh và output cũng bị tô màu.</li>
+<li><b>Dùng nháy kép làm biến bị “đóng băng”</b> — <code>PS1="$(date +%T) \$ "</code> chỉ tính giờ một lần lúc gán. Dùng nháy đơn <code>PS1='$(date +%T) \$ '</code> hoặc mã có sẵn <code>\t</code>.</li>
+<li><b>Không sao lưu PS1 cũ</b> — thử nghiệm hỏng không biết quay lại. Trước khi thử: <code>ps1_old="$PS1"</code>; hỏng thì <code>PS1="$ps1_old"</code> hoặc mở terminal mới.</li>
+<li><b>Màu khó đọc trên nền terminal</b> — xanh dương đậm trên nền đen gần như vô hình. Thử dạng sáng <code>1;34</code> hoặc màu khác.</li>
+</ul>
+</div>
 </section>
 </div>
 
@@ -371,6 +737,11 @@ alias ll='ls -l --color=auto'
 
 <section class="ch" id="c14" data-title="Quản lý gói phần mềm">
 <div class="ch-head"><span class="ch-num">14</span><h3>Quản lý gói phần mềm</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Trên Windows, cài phần mềm thường là tải file <code>.exe</code> từ một trang web nào đó rồi bấm Next. Linux có cách tốt hơn: <b>hệ thống quản lý gói</b> (package management). Phần mềm được đóng gói sẵn, lưu trong kho chính thức của bản phân phối, cài và cập nhật bằng một lệnh. Chương này giải thích hệ thống đó vận hành ra sao và các thao tác thường dùng.</p>
+<p>Sách nhấn mạnh: chất lượng hệ thống gói và cộng đồng đứng sau nó là yếu tố quan trọng nhất khi chọn bản phân phối. Trong công việc hằng ngày, từ cài <code>git</code>, <code>nginx</code> đến cập nhật bản vá bảo mật, bạn đều dùng tới nó.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Hai họ chính: <b>Debian</b> (<code>.deb</code>: Debian, Ubuntu, Mint) và <b>Red Hat</b> (<code>.rpm</code>: Fedora, RHEL, CentOS, openSUSE). Gói được lấy từ <b>kho (repository)</b>; công cụ cấp cao tự giải quyết <b>phụ thuộc (dependency)</b>.</p>
 <div class="tbl"><table><tr><th>Việc</th><th>Debian / Ubuntu</th><th>Red Hat / Fedora</th></tr>
 <tr><td>Tìm gói</td><td><code>apt-cache search x</code></td><td><code>yum search x</code></td></tr>
@@ -383,10 +754,38 @@ alias ll='ls -l --color=auto'
 <tr><td>Thông tin gói</td><td><code>apt-cache show x</code></td><td><code>yum info x</code></td></tr>
 <tr><td>File thuộc gói nào</td><td><code>dpkg -S /bin/ls</code></td><td><code>rpm -qf /bin/ls</code></td></tr></table></div>
 <p class="tip">Ngày nay thường dùng <code>apt</code> (Ubuntu) và <code>dnf</code> (Fedora) thay cho <code>apt-get</code>/<code>yum</code>, cú pháp gần như giống hệt. Cần <code>sudo</code> cho các lệnh cài/gỡ.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<ul>
+<li><b>Gói (package file)</b>: một file nén chứa các file của chương trình, kèm <b>metadata</b> (tên, phiên bản, mô tả, danh sách phụ thuộc) và các script chạy trước/sau khi cài. Gói do người đóng gói (packager) của bản phân phối tạo ra từ mã nguồn gốc.</li>
+<li><b>Kho (repository)</b>: máy chủ chứa hàng nghìn gói đã được kiểm thử cho đúng phiên bản bản phân phối của bạn. Thường có kho chính, kho cập nhật bảo mật, kho bên thứ ba.</li>
+<li><b>Phụ thuộc (dependency)</b>: chương trình hiếm khi đứng một mình; chúng dùng chung thư viện (shared library). Gói ghi rõ “tôi cần thư viện X phiên bản ≥ Y”, và hệ thống gói tự cài X trước.</li>
+</ul>
+<p><b>Hai tầng công cụ:</b> tầng thấp (<code>dpkg</code>, <code>rpm</code>) chỉ cài/gỡ một file gói cụ thể và <b>không</b> tự tải phụ thuộc. Tầng cao (<code>apt</code>, <code>yum</code>/<code>dnf</code>) tra kho, tính toán cây phụ thuộc, tải về rồi gọi tầng thấp để cài.</p>
+<pre><code>sudo apt install nginx
+ → đọc danh sách gói đã tải về (apt update làm mới danh sách này)
+ → nginx cần libssl, libpcre… → tính toán gói còn thiếu
+ → tải các file .deb từ kho → gọi dpkg cài từng gói theo thứ tự đúng</code></pre>
+<p>Hệ thống gói còn ghi lại file nào thuộc gói nào, nên có thể hỏi ngược (“<code>/bin/ls</code> do gói nào cài?”) và gỡ sạch sẽ. Sách viết năm 2012 dùng <code>apt-get</code>/<code>yum</code>; nay Ubuntu khuyên dùng <code>apt</code>, Fedora/RHEL dùng <code>dnf</code>, ngoài ra còn các định dạng độc lập bản phân phối như Snap, Flatpak.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Cài mà quên cập nhật danh sách gói</b> — <code>apt install</code> báo “Unable to locate package” hoặc tải bản cũ bị 404. Chạy <code>sudo apt update</code> trước.</li>
+<li><b>Cài file .deb/.rpm bằng công cụ tầng thấp</b> — <code>dpkg -i x.deb</code> báo thiếu phụ thuộc. Dùng <code>sudo apt install ./x.deb</code> (hoặc <code>sudo apt -f install</code> để sửa) để apt tự lo phụ thuộc.</li>
+<li><b>Tải phần mềm từ nguồn lạ</b> — gói ngoài kho chính thức không được kiểm định, có thể chứa mã độc hoặc xung đột thư viện. Ưu tiên kho chính thức.</li>
+<li><b>Quên sudo</b> — lỗi “Permission denied / are you root?”. Cài/gỡ cần quyền root: <code>sudo apt remove x</code>.</li>
+<li><b>Nhầm lệnh giữa hai họ bản phân phối</b> — gõ <code>yum</code> trên Ubuntu. Kiểm tra bằng <code>cat /etc/os-release</code>.</li>
+<li><b>Nhầm tên lệnh với tên gói</b> — lệnh <code>convert</code> nằm trong gói <code>imagemagick</code>. Dùng <code>apt search</code> hoặc <code>apt-file search bin/convert</code> để tìm.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c15" data-title="Thiết bị lưu trữ">
 <div class="ch-head"><span class="ch-num">15</span><h3>Thiết bị lưu trữ</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Chương này bàn về cách Linux làm việc với thiết bị lưu trữ: ổ cứng, USB, thẻ nhớ, file ảnh đĩa ISO. Môi trường đồ họa thường tự gắn USB khi bạn cắm vào, nhưng trên máy chủ, hoặc khi cần chia phân vùng, format, sửa lỗi hệ thống file, sao chép nguyên một ổ, bạn phải làm bằng tay trên dòng lệnh.</p>
+<p>Tình huống thực tế: gắn thêm ổ đĩa cho máy chủ, ghi file ISO cài đặt ra USB, cứu dữ liệu khi máy báo lỗi hệ thống file, hoặc kiểm tra checksum file tải về.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Một thiết bị phải được <b>gắn (mount)</b> vào một thư mục trong cây file mới dùng được. Cấu hình gắn lúc khởi động nằm ở <code>/etc/fstab</code>.</p>
 <pre><code><span class="p">$ </span>mount                          <span class="c"># liệt kê hệ thống file đang gắn</span>
 <span class="p">$ </span>df -h                          <span class="c"># dung lượng từng phân vùng</span>
@@ -402,10 +801,36 @@ alias ll='ls -l --color=auto'
 <span class="p">$ </span>md5sum image.iso               <span class="c"># kiểm tra toàn vẹn</span></code></pre>
 <p>Tên thiết bị: <code>/dev/sda</code>, <code>/dev/sdb</code>… là ổ đĩa (SATA/USB), <code>/dev/sda1</code> là phân vùng 1. Ổ NVMe hiện đại có dạng <code>/dev/nvme0n1p1</code>.</p>
 <p class="tip">Cảnh báo: <code>dd</code>, <code>mkfs</code>, <code>fdisk</code> ghi thẳng vào thiết bị. Gõ nhầm tên ổ là mất dữ liệu. Luôn kiểm tra lại bằng <code>lsblk</code> trước.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Một cây thư mục duy nhất.</b> Linux không có ổ C:, D:. Mỗi thiết bị có một hệ thống file riêng, và phải được <b>gắn (mount)</b> vào một thư mục rỗng (gọi là <b>mount point</b>) trong cây chung. Sau khi gắn, nội dung thiết bị hiện ra tại thư mục đó. <code>umount</code> tách nó ra. File <code>/etc/fstab</code> liệt kê những gì được gắn tự động khi khởi động (thiết bị, điểm gắn, loại hệ thống file, tùy chọn).</p>
+<p><b>Thiết bị cũng là file.</b> Kernel đại diện mỗi thiết bị bằng một file đặc biệt trong <code>/dev</code>: <code>/dev/sda</code> là cả ổ đĩa thứ nhất, <code>/dev/sda1</code> là phân vùng 1 của nó. Vì là file, ta có thể đọc/ghi thô bằng <code>dd</code>, hoặc dùng file ISO như một ổ đĩa qua thiết bị “loop” (<code>mount -o loop</code>).</p>
+<p><b>Các lớp của một ổ đĩa:</b></p>
+<pre><code>thiết bị /dev/sdb
+ └─ bảng phân vùng (fdisk tạo)      → /dev/sdb1, /dev/sdb2
+     └─ hệ thống file (mkfs tạo)    → ext4, vfat, ntfs…
+         └─ gắn vào cây (mount)     → /mnt/usb</code></pre>
+<p><b>Vì sao phải umount trước khi rút?</b> Linux dùng <b>bộ đệm (buffer)</b>: dữ liệu ghi được giữ trong RAM và ghi xuống thiết bị sau, để máy chạy nhanh hơn. <code>umount</code> buộc ghi nốt dữ liệu còn trong bộ đệm. Rút USB khi chưa umount có thể làm hỏng file hoặc cả hệ thống file.</p>
+<p>Sách viết năm 2012 nên có phần đĩa mềm, ghi CD (<code>genisoimage</code>, <code>wodim</code>). Nay các phần đó ít dùng; nguyên lý vẫn đúng, và <code>lsblk</code> là cách nhanh nhất để xem tên thiết bị. Ổ NVMe có dạng <code>/dev/nvme0n1p1</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Ghi nhầm ổ đĩa</b> — <code>dd if=x.iso of=/dev/sda</code> khi USB thật ra là <code>/dev/sdb</code> sẽ xóa ổ hệ thống. Luôn kiểm tra bằng <code>lsblk</code> ngay trước khi chạy <code>dd</code>, <code>mkfs</code>, <code>fdisk</code>.</li>
+<li><b>Rút thiết bị khi chưa umount</b> — mất dữ liệu đang chờ ghi. Chạy <code>sudo umount /dev/sdb1</code> trước.</li>
+<li><b>Lỗi “target is busy” khi umount</b> — có tiến trình (thường chính shell của bạn) đang đứng trong thư mục đó. <code>cd ~</code> rồi umount lại; dùng <code>lsof +D /mnt/usb</code> để tìm tiến trình khác.</li>
+<li><b>Chạy fsck trên phân vùng đang gắn</b> — có thể làm hỏng thêm. Umount trước khi <code>fsck</code>.</li>
+<li><b>Gắn vào thư mục có dữ liệu</b> — nội dung cũ bị che khuất (không mất) cho tới khi umount. Dùng thư mục rỗng làm mount point.</li>
+<li><b>Nhầm ổ với phân vùng</b> — <code>mount /dev/sdb</code> thay vì <code>/dev/sdb1</code> thường thất bại; mkfs lên <code>/dev/sdb</code> sẽ xóa cả bảng phân vùng.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c16" data-title="Mạng (Networking)">
 <div class="ch-head"><span class="ch-num">16</span><h3>Mạng</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Linux sinh ra trong thế giới mạng, và phần lớn máy chủ Linux được quản lý từ xa. Chương này giới thiệu các công cụ để kiểm tra mạng có hoạt động không, tải file qua mạng, và quan trọng nhất là <b>đăng nhập và truyền file an toàn tới máy khác bằng SSH</b>.</p>
+<p>Nếu bạn làm phát triển phần mềm hay vận hành hệ thống, SSH là công cụ dùng hằng ngày: vào máy chủ, chép bản build lên, chạy lệnh từ xa, đẩy code lên Git.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code><span class="p">$ </span>ping -c 4 example.com          <span class="c"># kiểm tra kết nối (Ctrl-C để dừng nếu không có -c)</span>
 <span class="p">$ </span>traceroute example.com         <span class="c"># các chặng gói tin đi qua</span>
 <span class="p">$ </span>netstat -ie                    <span class="c"># giao diện mạng (nay: ip addr)</span>
@@ -417,10 +842,38 @@ alias ll='ls -l --color=auto'
 <span class="p">$ </span>scp server:doc.txt .           <span class="c"># chép file qua SSH</span>
 <span class="p">$ </span>sftp server                    <span class="c"># như ftp nhưng mã hóa</span></code></pre>
 <p><code>ftp</code> gửi mật khẩu dạng chữ thường, không an toàn; chỉ dùng cho FTP ẩn danh. <code>lftp</code> là bản ftp tốt hơn. SSH lần đầu kết nối sẽ hỏi xác nhận “host key”; nếu sau này cảnh báo key thay đổi, có thể là tấn công man-in-the-middle hoặc máy chủ đã cài lại.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Chẩn đoán theo từng lớp.</b> <code>ping</code> gửi gói ICMP ECHO_REQUEST; máy đích trả lời thì biết đường truyền thông suốt và đo được độ trễ. <code>traceroute</code> lần ra từng router (chặng) mà gói đi qua, giúp xác định mạng hỏng ở đâu. <code>netstat</code> (nay là <code>ip</code> và <code>ss</code>) cho biết giao diện mạng, địa chỉ IP, bảng định tuyến, cổng đang mở. Lưu ý: nhiều máy chặn ping vì lý do bảo mật, nên ping không trả lời chưa chắc là máy đó chết.</p>
+<p><b>Vì sao cần SSH?</b> Các giao thức cũ như <code>telnet</code>, <code>ftp</code> gửi mọi thứ, kể cả mật khẩu, ở dạng chữ thường; ai nghe lén trên đường truyền đều đọc được. SSH giải quyết hai vấn đề:</p>
+<ul>
+<li><b>Xác thực máy chủ</b>: mỗi máy chủ có một cặp khóa (host key). Lần đầu kết nối, SSH hỏi bạn có tin dấu vân tay (fingerprint) của máy không và lưu vào <code>~/.ssh/known_hosts</code>. Những lần sau, nếu khóa khác đi, SSH cảnh báo vì có thể có kẻ đứng giữa giả mạo máy chủ (tấn công man-in-the-middle). Sách lưu ý trường hợp này hiếm; thường là máy chủ được cài lại.</li>
+<li><b>Mã hóa</b> toàn bộ dữ liệu giữa hai bên, nên mật khẩu và nội dung không bị đọc trộm.</li>
+</ul>
+<pre><code>ssh user@server 'ls -l' &gt; list.txt
+ │                │        └─ chuyển hướng chạy ở MÁY BẠN
+ │                └─ lệnh chạy ở máy chủ, output truyền về qua đường hầm mã hóa
+ └─ đăng nhập</code></pre>
+<p>SSH còn tạo được “đường hầm” (tunnel) cho giao thức khác, như <code>ssh -X</code> để chạy ứng dụng đồ họa từ xa. <code>scp</code> và <code>sftp</code> chạy trên nền SSH nên truyền file an toàn. <code>wget</code> tải file qua HTTP/FTP mà không cần tương tác, hợp để dùng trong script. Thực tế ngày nay người ta hay dùng thêm <b>khóa SSH</b> (<code>ssh-keygen</code>) thay cho mật khẩu, và <code>rsync</code> qua SSH (chương 18).</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Bỏ qua cảnh báo host key thay đổi</b> — xóa dòng trong <code>known_hosts</code> mà không kiểm tra có thể khiến bạn kết nối vào máy giả mạo. Hỏi quản trị viên xem máy có được cài lại không trước khi chạy <code>ssh-keygen -R host</code>.</li>
+<li><b>Dùng ftp/telnet gửi mật khẩu</b> — mật khẩu đi dạng chữ thường. Dùng <code>sftp</code>, <code>scp</code>, <code>ssh</code>.</li>
+<li><b>Nhầm cú pháp scp</b> — thiếu dấu <code>:</code> thì <code>scp server/file .</code> chép file local. Đúng: <code>scp user@server:~/file .</code>.</li>
+<li><b>Quên nháy khi chạy lệnh từ xa</b> — <code>ssh server ls *</code> thì dấu <code>*</code> bị mở rộng ở máy bạn trước khi gửi đi. Viết <code>ssh server 'ls *'</code>.</li>
+<li><b>Kết luận sai từ ping</b> — máy chặn ICMP vẫn có thể chạy web bình thường. Thử thêm <code>curl -I https://host</code>.</li>
+<li><b>ping chạy mãi không dừng</b> — trên Linux, ping lặp vô hạn. Dùng <code>-c 4</code> hoặc nhấn <code>Ctrl-C</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c17" data-title="Tìm kiếm file">
 <div class="ch-head"><span class="ch-num">17</span><h3>Tìm kiếm file</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Một hệ thống Linux có hàng trăm nghìn file. Biết tên gần đúng của một file mà không biết nó ở đâu, hoặc cần tìm “mọi file ảnh lớn hơn 1 MB sửa trong tuần qua”, là chuyện thường ngày. Chương này dạy hai công cụ: <code>locate</code> tìm nhanh theo tên, và <code>find</code> tìm mạnh theo đủ mọi thuộc tính rồi thực hiện hành động lên kết quả.</p>
+<p><code>find</code> đặc biệt quan trọng vì nó là nền tảng cho rất nhiều tác vụ tự động: dọn file tạm cũ, sửa quyền hàng loạt, sao lưu file mới thay đổi.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p><b>locate</b> nhanh nhưng dựa vào cơ sở dữ liệu cập nhật định kỳ (<code>sudo updatedb</code>). <b>find</b> chậm hơn nhưng tìm thật theo nhiều tiêu chí.</p>
 <pre><code><span class="p">$ </span>locate bin/zip
 <span class="p">$ </span>find ~ -type f -name "*.jpg" -size +1M
@@ -438,10 +891,37 @@ alias ll='ls -l --color=auto'
 <li><b>Tùy chọn</b>: <code>-maxdepth n</code>, <code>-mindepth n</code>, <code>-mount</code>.</li>
 </ul>
 <p class="tip">Luôn chạy với <code>-print</code> (mặc định) để xem trước, rồi mới thêm <code>-delete</code>.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>locate</b> không quét đĩa mỗi lần tìm. Nó tra một <b>cơ sở dữ liệu</b> tên file do <code>updatedb</code> tạo ra, thường chạy định kỳ mỗi ngày bằng cron. Vì vậy rất nhanh, nhưng file mới tạo sẽ chưa có trong kết quả cho tới lần cập nhật sau.</p>
+<p><b>find</b> thực sự đi qua cây thư mục, xét từng file. Biểu thức của find gồm ba loại thành phần: <b>test</b> (kiểm tra thuộc tính: <code>-name</code>, <code>-size</code>, <code>-mtime</code>…), <b>action</b> (hành động: <code>-print</code>, <code>-delete</code>, <code>-exec</code>…) và <b>toán tử</b> nối chúng (<code>-and</code>, <code>-or</code>, <code>-not</code>, ngoặc).</p>
+<p><b>Đánh giá từ trái sang phải, có “đoản mạch”.</b> Với mỗi file, find tính biểu thức từ trái qua phải. Giữa hai thành phần không ghi gì thì mặc định là <code>-and</code>. Với <code>-and</code>, nếu vế trái sai thì vế phải không được thực hiện; với <code>-or</code>, vế trái đúng thì bỏ qua vế phải. Action cũng là một thành phần trong biểu thức, nên <b>thứ tự quyết định</b> điều gì bị tác động:</p>
+<pre><code>find ~ -type f -name '*.bak' -delete
+  với mỗi file: là file thường? → không: dừng
+                tên khớp *.bak? → không: dừng
+                → -delete
+
+find ~ -delete -name '*.bak'      ← NGUY HIỂM: xóa trước rồi mới xét tên!</code></pre>
+<p>Nếu không có action nào, find ngầm thêm <code>-print</code>. Ngoặc phải viết <code>\(</code> <code>\)</code> vì shell coi <code>( )</code> là ký tự đặc biệt. <code>-exec lệnh '{}' ';'</code> chạy lệnh một lần cho mỗi file (<code>{}</code> thay bằng tên file); kết thúc bằng <code>+</code> thì gom nhiều file vào một lần chạy, nhanh hơn nhiều. <code>xargs</code> làm việc tương tự: biến danh sách từ stdin thành đối số cho lệnh khác; dùng cặp <code>-print0</code> / <code>xargs -0</code> để an toàn với tên file có dấu cách.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Đặt -delete sai chỗ</b> — action đứng trước test sẽ tác động lên mọi file. Luôn chạy thử không có action (chỉ in ra) trước, rồi mới thêm <code>-delete</code> ở <b>cuối</b>.</li>
+<li><b>Quên nháy cho mẫu tên</b> — <code>find . -name *.txt</code>: nếu thư mục hiện tại có file .txt, shell mở rộng <code>*</code> trước, find nhận sai đối số. Viết <code>-name '*.txt'</code>.</li>
+<li><b>Quên thoát dấu ngoặc và dấu chấm phẩy</b> — <code>-exec rm {} ;</code> báo lỗi “missing argument to -exec”. Viết <code>';'</code> hoặc <code>\;</code>, và <code>\( \)</code>.</li>
+<li><b>Hiểu sai -or</b> — <code>find . -name '*.jpg' -or -name '*.png' -delete</code> chỉ xóa file png, vì <code>-and</code> ưu tiên hơn <code>-or</code>. Dùng ngoặc: <code>\( -name '*.jpg' -or -name '*.png' \) -delete</code>.</li>
+<li><b>locate không thấy file vừa tạo</b> — cơ sở dữ liệu chưa cập nhật. Chạy <code>sudo updatedb</code> hoặc dùng find.</li>
+<li><b>Tên file có dấu cách làm hỏng xargs</b> — <code>find . | xargs rm</code> tách sai tên. Dùng <code>find . -print0 | xargs -0 rm</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c18" data-title="Lưu trữ & sao lưu">
 <div class="ch-head"><span class="ch-num">18</span><h3>Nén, đóng gói và sao lưu</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Dữ liệu cần được bảo vệ, và sao lưu là việc của mọi người dùng máy tính, không chỉ quản trị viên. Chương này giới thiệu ba nhóm công cụ: <b>nén</b> (gzip, bzip2) để giảm dung lượng, <b>đóng gói</b> (tar, zip) để gom nhiều file thành một, và <b>đồng bộ</b> (rsync) để sao lưu hiệu quả giữa thư mục hoặc giữa các máy.</p>
+<p>Tình huống thực tế: gửi một thư mục dự án cho đồng nghiệp, giải nén mã nguồn tải về dạng <code>.tar.gz</code>, sao lưu thư mục home lên ổ ngoài mỗi ngày mà chỉ chép phần thay đổi.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code><span class="p">$ </span>gzip foo.txt ; gunzip foo.txt.gz      <span class="c"># nén/giải nén (.gz)</span>
 <span class="p">$ </span>gzip -c foo.txt &gt; foo.gz ; zcat foo.gz
 <span class="p">$ </span>bzip2 foo.txt ; bunzip2 foo.txt.bz2   <span class="c"># nén tốt hơn, chậm hơn</span>
@@ -455,10 +935,36 @@ alias ll='ls -l --color=auto'
 <span class="p">$ </span>rsync -av --delete source/ dest/      <span class="c"># xóa file ở đích không còn ở nguồn</span>
 <span class="p">$ </span>rsync -av --delete --rsh=ssh /etc user@server:/backup</code></pre>
 <p class="tip"><code>tar</code> chỉ gộp file, không nén; gzip/bzip2 chỉ nén từng file. Kết hợp lại ra <code>.tar.gz</code>/<code>.tgz</code>. Chú ý <code>rsync source/</code> (có dấu <code>/</code>) chép <i>nội dung</i>, còn <code>source</code> chép cả thư mục.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Nén</b> là loại bỏ phần dư thừa trong dữ liệu. Ví dụ một ảnh toàn màu đen không cần lưu từng điểm ảnh, chỉ cần ghi “100 000 điểm màu đen”. Có hai loại: <b>lossless</b> (không mất dữ liệu, giải nén ra đúng y bản gốc, dùng cho gzip, bzip2) và <b>lossy</b> (bỏ bớt chi tiết, dùng cho JPEG, MP3). Dữ liệu đã nén rồi (ảnh JPEG, video) nén thêm gần như không nhỏ đi, thậm chí to hơn.</p>
+<p><b>Triết lý Unix: mỗi công cụ một việc.</b> gzip chỉ nén <i>từng file</i>, và thay file gốc bằng file <code>.gz</code>. tar chỉ <i>gom</i> nhiều file và thư mục (giữ cả cấu trúc, quyền, thời gian) thành một file lưu trữ, không nén. Kết hợp lại ta có <code>.tar.gz</code>: gom bằng tar, rồi nén bằng gzip. Tùy chọn <code>z</code>/<code>j</code> của tar chỉ là gọi gzip/bzip2 giùm bạn.</p>
+<pre><code>tar czf backup.tgz project/
+     │││
+     ││└─ f: tên file lưu trữ (phải đứng ngay trước tên file)
+     │└── z: lọc qua gzip
+     └─── c: create (x = giải nén, t = liệt kê)</code></pre>
+<p>tar lưu đường dẫn <b>tương đối</b> theo cách bạn chỉ định lúc tạo, và khi giải nén sẽ tạo lại đúng đường dẫn đó trong thư mục hiện tại. zip thì vừa gom vừa nén, chủ yếu để trao đổi với Windows.</p>
+<p><b>rsync</b> so sánh nguồn và đích (theo kích thước và thời gian sửa) và chỉ chép phần khác biệt; qua mạng, nó còn chỉ gửi những khối dữ liệu thay đổi trong file. Vì vậy lần sao lưu thứ hai trở đi rất nhanh. Dấu <code>/</code> cuối nguồn quan trọng: <code>src/</code> nghĩa là “nội dung của src”, còn <code>src</code> là “chính thư mục src”.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Thiếu hoặc thừa dấu / trong rsync</b> — <code>rsync -av src dest/</code> tạo <code>dest/src/</code>, còn <code>rsync -av src/ dest/</code> chép nội dung vào thẳng <code>dest/</code>. Chạy thử với <code>-n</code> (dry run) trước.</li>
+<li><b>Dùng --delete sai hướng</b> — đảo nguồn và đích sẽ xóa dữ liệu thật để khớp với bản sao lưu cũ. Kiểm tra thứ tự, luôn <code>rsync -avn --delete</code> trước.</li>
+<li><b>Đặt f không đứng cuối cụm tùy chọn</b> — <code>tar cfz backup.tgz dir</code> khiến tar hiểu <code>z</code> là tên file. Viết <code>tar czf backup.tgz dir</code>.</li>
+<li><b>Giải nén “bom tar”</b> — file tar không có thư mục gốc rải hàng trăm file vào thư mục hiện tại. Xem trước bằng <code>tar tzf file.tgz | head</code>, hoặc giải vào thư mục riêng bằng <code>-C</code>.</li>
+<li><b>Tạo tar với đường dẫn tuyệt đối</b> — <code>tar cf x.tar /home/me/docs</code>: GNU tar bỏ dấu <code>/</code> đầu nhưng vẫn lưu cả <code>home/me/docs</code>. <code>cd</code> vào thư mục cha trước rồi tar theo đường dẫn tương đối.</li>
+<li><b>Quên rằng gzip xóa file gốc</b> — dùng <code>gzip -k</code> (giữ bản gốc) hoặc <code>gzip -c f &gt; f.gz</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c19" data-title="Biểu thức chính quy">
 <div class="ch-head"><span class="ch-num">19</span><h3>Biểu thức chính quy (Regex)</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Các chương sắp tới làm việc với văn bản, và để làm tốt ta cần một cách mô tả <b>mẫu</b> văn bản: “mọi dòng bắt đầu bằng số điện thoại”, “mọi từ có 5 chữ cái kết thúc bằng r”. Đó là <b>biểu thức chính quy</b> (regular expression, regex). Sách gọi đây là một trong những tính năng “khó nhằn” nhưng đáng học nhất, vì regex dùng ở khắp nơi: grep, sed, find, less, vim và hầu hết ngôn ngữ lập trình.</p>
+<p>Ví dụ thực tế: lọc log tìm mọi dòng chứa địa chỉ IP, kiểm tra danh sách số điện thoại sai định dạng, tìm tên file chứa ký tự lạ.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p><b>Regex</b> là ký hiệu mô tả mẫu văn bản, dùng trong <code>grep</code>, <code>sed</code>, <code>find -regex</code>, <code>less</code>, <code>vim</code>… Nhiều ký hiệu giống wildcard nhưng <b>ý nghĩa khác</b>.</p>
 <div class="tbl"><table><tr><th>Ký hiệu</th><th>Ý nghĩa</th><th>Ví dụ</th></tr>
 <tr><td><code>.</code></td><td>Một ký tự bất kỳ</td><td><code>.zip</code></td></tr>
@@ -474,10 +980,40 @@ alias ll='ls -l --color=auto'
 <span class="p">$ </span>find . -regex '.*[^-_./0-9a-zA-Z].*'   <span class="c"># tìm tên file "xấu"</span>
 <span class="p">$ </span>locate --regex 'bin/(bz|gz|zip)'</code></pre>
 <p>Tùy chọn grep hay dùng: <code>-i</code> bỏ qua hoa thường, <code>-v</code> đảo, <code>-c</code> đếm, <code>-l</code> chỉ in tên file, <code>-n</code> số dòng, <code>-h</code> không in tên file, <code>-r</code> tìm đệ quy.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Ký tự thường và ký tự đặc biệt.</b> Regex gồm <b>literal</b> (ký tự khớp chính nó, như <code>z</code>, <code>i</code>, <code>p</code>) và <b>metacharacter</b> (ký tự có nghĩa đặc biệt: <code>^ $ . [ ] { } - ? * + ( ) | \</code>). Muốn khớp một metacharacter như ký tự thường thì đặt <code>\</code> trước: <code>\.</code> khớp đúng dấu chấm.</p>
+<p><b>Cách so khớp:</b> grep xét từng dòng; một dòng được chọn nếu <b>ở đâu đó trong dòng</b> có một đoạn khớp mẫu. Vì vậy <code>grep zip</code> chọn cả “gunzip” và “zipcloak”. Muốn ràng buộc vị trí, dùng neo: <code>^</code> (đầu dòng) và <code>$</code> (cuối dòng). <code>^zip$</code> chỉ khớp dòng đúng bằng “zip”.</p>
+<p><b>Lượng từ áp dụng cho phần tử ngay trước nó.</b> Trong <code>colou?r</code>, dấu <code>?</code> chỉ áp dụng cho <code>u</code>. Muốn áp dụng cho cả cụm thì nhóm bằng ngoặc: <code>(ab)+</code>. Phân tích mẫu số điện thoại trong sách:</p>
+<pre><code>^\(?[0-9]{3}\)? [0-9]{3}-[0-9]{4}$
+^          bắt đầu dòng
+\(?        có thể có dấu "(" (thoát vì ( là đặc biệt trong ERE)
+[0-9]{3}   đúng 3 chữ số
+\)?        có thể có dấu ")"
+␣          một dấu cách
+[0-9]{3}-  3 chữ số rồi dấu gạch
+[0-9]{4}$  4 chữ số rồi hết dòng</code></pre>
+<p><b>BRE và ERE.</b> POSIX định nghĩa hai kiểu. Trong <b>BRE</b> (grep mặc định), chỉ <code>^ $ . [ ] *</code> là đặc biệt; <code>( ) { } ? + |</code> là ký tự thường, muốn dùng nghĩa đặc biệt phải thêm <code>\</code>. Trong <b>ERE</b> (<code>grep -E</code>) thì ngược lại. Vì thế cùng một mẫu có thể cho kết quả khác nhau tùy có <code>-E</code> hay không.</p>
+<p><b>Lớp ký tự POSIX</b> như <code>[[:alpha:]]</code> an toàn hơn khoảng <code>[a-z]</code>: tùy ngôn ngữ hệ thống (locale), thứ tự sắp xếp có thể xen kẽ chữ hoa và thường (aAbB…), khiến <code>[A-Z]</code> khớp cả chữ thường. Sách giải thích kỹ chuyện này và khuyên dùng lớp POSIX.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Nhầm regex với wildcard</b> — trong wildcard <code>*</code> là “chuỗi bất kỳ”, trong regex <code>*</code> là “phần tử trước lặp 0+ lần”. Regex tương đương <code>*.txt</code> là <code>.*\.txt$</code>.</li>
+<li><b>Quên thoát dấu chấm</b> — <code>grep 192.168.1.1</code> cũng khớp “192a168b1c1”. Viết <code>grep '192\.168\.1\.1'</code> hoặc dùng <code>grep -F</code> để tìm chuỗi cố định.</li>
+<li><b>Quên -E khi dùng + ? { } |</b> — <code>grep 'a+b'</code> ở BRE tìm đúng chuỗi “a+b”. Dùng <code>grep -E 'a+b'</code>.</li>
+<li><b>Không đặt mẫu trong nháy đơn</b> — shell mở rộng <code>*</code>, <code>$</code>, <code>[</code> trước khi grep thấy. Luôn viết <code>grep '^[A-Z].*$' file</code>.</li>
+<li><b>Quên neo nên khớp quá rộng</b> — <code>grep -E '[0-9]{3}'</code> khớp cả chuỗi 10 chữ số. Thêm <code>^</code> và <code>$</code> để khớp nguyên dòng.</li>
+<li><b>Dùng [a-z] và bị ảnh hưởng bởi locale</b> — kết quả khác nhau giữa các máy. Dùng <code>[[:lower:]]</code> hoặc đặt <code>LC_ALL=C</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c20" data-title="Xử lý văn bản">
 <div class="ch-head"><span class="ch-num">20</span><h3>Xử lý văn bản</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Trên Unix, <b>văn bản là định dạng dữ liệu phổ quát</b>: file cấu hình, log, mã nguồn, CSV, HTML, email, output của các lệnh đều là văn bản thuần. Vì vậy hệ thống có sẵn cả bộ công cụ để sắp xếp, cắt cột, ghép, so sánh và biến đổi văn bản. Chương này (dài nhất phần 3) giới thiệu các công cụ đó và cách nối chúng thành pipeline.</p>
+<p>Ví dụ thực tế: thống kê địa chỉ IP truy cập nhiều nhất từ log web server, lấy một cột từ file CSV, so sánh hai bản cấu hình, tạo bản vá (patch) để gửi cho người khác, đổi hàng loạt chuỗi trong file.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Unix coi văn bản là dữ liệu chung: tài liệu, web, email, mã nguồn, log. Bộ công cụ sau giúp “cắt gọt” văn bản.</p>
 <pre><code><span class="p">$ </span>cat -A file          <span class="c"># hiện ký tự ẩn (tab = ^I, cuối dòng = $)</span>
 <span class="p">$ </span>sort -nr -k 5 data   <span class="c"># sắp theo cột 5, dạng số, giảm dần</span>
@@ -502,10 +1038,37 @@ alias ll='ls -l --color=auto'
 <span class="p">$ </span>sed -i 's/old/new/g' file               <span class="c"># sửa trực tiếp file</span>
 <span class="p">$ </span>sed -E 's/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/\3-\1-\2/' dates   <span class="c"># MM/DD/YYYY → YYYY-MM-DD</span></code></pre>
 <p class="tip">Ngoài ra: <code>aspell check file</code> để kiểm tra chính tả. Phần “Extra Credit” của sách gợi ý tìm hiểu thêm <code>split</code>, <code>csplit</code>, <code>sdiff</code>.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Mô hình filter.</b> Hầu hết công cụ ở đây đọc văn bản (từ file hoặc stdin) <b>từng dòng một</b>, biến đổi, rồi ghi ra stdout. Chúng không sửa file gốc (trừ khi được yêu cầu, như <code>sed -i</code>). Nhờ vậy có thể ghép nối tùy ý:</p>
+<pre><code>cut -d: -f7 /etc/passwd | sort | uniq -c | sort -nr
+ lấy cột 7   sắp xếp để    đếm các     sắp theo số
+ (shell)     dòng giống    dòng liền   lượng giảm dần
+             nhau đứng     kề giống
+             cạnh nhau     nhau</code></pre>
+<p><b>Dòng và trường.</b> Nhiều công cụ coi mỗi dòng là một bản ghi gồm các <b>trường</b> phân tách bởi ký tự ngăn cách (dấu cách/tab mặc định, hoặc chỉ định bằng <code>-t</code> với sort, <code>-d</code> với cut). <code>sort -k 2,2</code> nghĩa là “khóa sắp xếp bắt đầu và kết thúc ở trường 2”; chỉ viết <code>-k 2</code> thì khóa kéo dài từ trường 2 tới hết dòng. <code>sort -n</code> so sánh theo giá trị số (để 10 đứng sau 9), không có <code>-n</code> thì so theo chữ (“10” đứng trước “9”).</p>
+<p><b>So sánh và vá.</b> <code>diff</code> mô tả cần thay đổi những gì để biến file A thành file B. Định dạng <code>-u</code> (unified) hiển thị ngữ cảnh với dấu <code>-</code> (dòng bị bỏ) và <code>+</code> (dòng thêm). <code>patch</code> đọc mô tả đó và áp vào file gốc. Đây là cách các dự án như Linux kernel trao đổi thay đổi: gửi một file diff nhỏ thay vì cả cây mã nguồn.</p>
+<p><b>sed: trình soạn thảo luồng.</b> sed đọc từng dòng vào một vùng nhớ (pattern space), áp lần lượt các lệnh (như <code>s</code> thay thế, <code>d</code> xóa, <code>p</code> in), rồi in dòng đó ra và chuyển sang dòng tiếp. Mỗi lệnh có thể có <b>địa chỉ</b> chỉ định dòng nào bị tác động: số dòng (<code>5</code>), khoảng (<code>1,5</code>), regex (<code>/^#/</code>). Với <code>-n</code>, sed không tự in nên chỉ những dòng có lệnh <code>p</code> mới hiện. Trong thay thế, <code>\(...\)</code> (hoặc <code>(...)</code> với <code>-E</code>) bắt một nhóm và <code>\1</code>, <code>\2</code> chèn lại nhóm đó, giúp đảo thứ tự ngày tháng như ví dụ trong sách.</p>
+<p><b>tr</b> làm việc ở mức ký tự chứ không phải dòng: thay thế, xóa (<code>-d</code>) hoặc gộp ký tự lặp (<code>-s</code>). Ví dụ kinh điển là chuyển file văn bản Windows (kết thúc dòng bằng CR LF) sang Unix (chỉ LF) bằng <code>tr -d '\r'</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Dùng uniq trên dữ liệu chưa sắp xếp</b> — uniq chỉ gộp các dòng <i>liền kề</i> giống nhau. Luôn <code>sort | uniq</code> (hoặc <code>sort -u</code>).</li>
+<li><b>Sắp xếp số theo kiểu chữ</b> — <code>sort</code> đặt 100 trước 20. Dùng <code>sort -n</code>; với kích thước kiểu <code>1K 2M</code> dùng <code>sort -h</code>.</li>
+<li><b>Chuyển hướng output vào chính file đang đọc</b> — <code>sort data &gt; data</code> làm file rỗng, vì shell xóa nội dung file trước khi sort chạy. Ghi ra file khác rồi <code>mv</code>, hoặc <code>sort -o data data</code>.</li>
+<li><b>Dùng sed -i không sao lưu</b> — một regex sai sẽ sửa hỏng file ngay. Chạy thử không có <code>-i</code> trước, hoặc <code>sed -i.bak 's/a/b/' file</code>.</li>
+<li><b>cut với dữ liệu ngăn cách bằng nhiều dấu cách</b> — cut coi mỗi dấu cách là một ranh giới, nên cột bị lệch. Gộp trước bằng <code>tr -s ' '</code>, hoặc dùng <code>awk '{print $2}'</code>.</li>
+<li><b>File có ký tự CR của Windows</b> — script và grep cư xử lạ, <code>$</code> không khớp cuối dòng. Kiểm tra bằng <code>cat -A</code> (thấy <code>^M$</code>), sửa bằng <code>tr -d '\r'</code> hoặc <code>dos2unix</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c21" data-title="Định dạng đầu ra">
 <div class="ch-head"><span class="ch-num">21</span><h3>Định dạng đầu ra</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Sau khi xử lý dữ liệu văn bản, ta thường cần trình bày nó cho đẹp: đánh số dòng, ngắt dòng cho vừa màn hình, căn cột thẳng hàng, chia trang để in. Chương này giới thiệu các công cụ định dạng đơn giản (<code>nl</code>, <code>fold</code>, <code>fmt</code>, <code>pr</code>, <code>printf</code>) và sơ lược về hệ thống soạn tài liệu như <code>groff</code> và TeX.</p>
+<p>Công cụ quan trọng nhất ở đây là <code>printf</code>: bạn sẽ dùng nó rất nhiều trong shell script để in báo cáo, bảng số liệu thẳng hàng, số có định dạng cố định.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code><span class="p">$ </span>nl file                  <span class="c"># đánh số dòng</span>
 <span class="p">$ </span>fold -w 50 -s file       <span class="c"># ngắt dòng ở 50 ký tự, tại dấu cách</span>
 <span class="p">$ </span>fmt -w 60 file           <span class="c"># căn lại đoạn văn, giữ thụt đầu dòng</span>
@@ -514,10 +1077,40 @@ alias ll='ls -l --color=auto'
 Táo       |    3|   12.50</code></pre>
 <p>Mã định dạng của <code>printf</code>: <code>%s</code> chuỗi, <code>%d</code> số nguyên, <code>%f</code> số thực, <code>%x</code> hex, <code>%o</code> bát phân, <code>%%</code> dấu %. Độ rộng/độ chính xác: <code>%-10s</code> căn trái 10 ô, <code>%05d</code> độn số 0, <code>%.2f</code> 2 chữ số thập phân.</p>
 <p>Hệ thống soạn tài liệu: họ <b>roff</b> (<code>groff</code>, dùng để tạo trang man) và <b>TeX</b>. Ví dụ: <code>zcat /usr/share/man/man1/ls.1.gz | groff -mandoc -T ps &gt; ls.ps</code> tạo bản PostScript của trang man.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>fold và fmt khác nhau ở “hiểu đoạn văn”.</b> <code>fold</code> chỉ cắt mỗi dòng ở độ rộng cho trước (với <code>-s</code> thì cắt tại dấu cách gần nhất), không gộp dòng ngắn. <code>fmt</code> hiểu khái niệm đoạn văn: nó gộp các dòng trong cùng đoạn rồi ngắt lại cho đều, giữ nguyên dòng trống giữa các đoạn và thụt đầu dòng.</p>
+<p><b>pr</b> chia văn bản thành trang (mặc định 66 dòng, theo khổ giấy cũ), thêm header có ngày giờ, tên file, số trang, và có thể xếp thành nhiều cột. Đây là bước chuẩn bị trước khi in (chương 22).</p>
+<p><b>printf hoạt động theo chuỗi định dạng.</b> Đối số đầu là “khuôn”; mỗi <b>mã chuyển đổi</b> bắt đầu bằng <code>%</code> sẽ được thay bằng một đối số tiếp theo, theo thứ tự. Mã có thể kèm cờ, độ rộng và độ chính xác:</p>
+<pre><code>printf "%-10s|%6.2f|%04d\n" "Táo" 3.14159 7
+         │ │    │ │ │  │ │
+         │ │    │ │ │  │ └─ d: số nguyên
+         │ │    │ │ │  └─── 04: rộng 4, độn số 0 → 0007
+         │ │    │ │ └────── f: số thực
+         │ │    │ └──────── .2: 2 chữ số thập phân → 3.14
+         │ │    └────────── 6: rộng 6, căn phải
+         │ └─────────────── s: chuỗi
+         └───────────────── -10: rộng 10, căn trái</code></pre>
+<p>Nếu đối số nhiều hơn số mã, printf <b>lặp lại khuôn</b> cho tới khi hết đối số, rất tiện để in bảng. Khác với echo, printf không tự xuống dòng; bạn phải thêm <code>\n</code>.</p>
+<p><b>Hệ thống soạn tài liệu</b> như <code>groff</code> (họ roff, dùng để định dạng trang man) và TeX/LaTeX mô tả tài liệu bằng văn bản thuần có lệnh định dạng, rồi “biên dịch” ra PostScript hay PDF. Đây là cách tài liệu kỹ thuật được làm từ trước thời trình soạn thảo đồ họa, và vẫn dùng rộng rãi trong giới khoa học.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Quên \n trong printf</b> — dấu nhắc lệnh dính liền vào output. Luôn kết thúc khuôn bằng <code>\n</code>.</li>
+<li><b>Truyền dữ liệu thẳng làm khuôn</b> — <code>printf "$input"</code> sẽ hỏng (hoặc in sai) nếu input chứa <code>%</code>. Viết <code>printf "%s\n" "$input"</code>.</li>
+<li><b>Sai kiểu dữ liệu</b> — <code>printf "%d" 3.5</code> báo “invalid number”. Dùng <code>%f</code> cho số thực.</li>
+<li><b>Tiếng Việt làm cột lệch</b> — một số bản printf đếm độ rộng theo byte, ký tự có dấu chiếm 2–3 byte nên cột bị thụt. Kiểm tra bằng mắt, hoặc thêm độ rộng dư cho cột chữ.</li>
+<li><b>Dùng fold thay cho fmt cho đoạn văn</b> — fold không gộp dòng ngắn nên đoạn văn trông lởm chởm. Dùng <code>fmt -w 60</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c22" data-title="In ấn">
 <div class="ch-head"><span class="ch-num">22</span><h3>In ấn</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Dù ngày nay ít in giấy hơn, in ấn vẫn là một phần của công việc văn phòng và quản trị. Chương này giải thích cách Linux in: lịch sử máy in ảnh hưởng tới công cụ hiện nay ra sao, cách chuẩn bị file, gửi lệnh in, theo dõi và hủy lệnh in từ dòng lệnh.</p>
+<p>Biết in từ dòng lệnh hữu ích khi cần in tự động trong script (báo cáo hằng ngày), in từ máy chủ không có giao diện, hoặc gỡ lỗi khi máy in “không chịu in”.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Linux dùng hệ thống <b>CUPS</b> để quản lý máy in và hàng đợi in. Máy in hiện đại thường nhận PostScript/PDF; CUPS tự chuyển đổi.</p>
 <pre><code><span class="p">$ </span>ls /usr/bin | pr -3 -w 65 | lpr   <span class="c"># định dạng 3 cột rồi in</span>
 <span class="p">$ </span>lpr -P printer_name file.txt        <span class="c"># kiểu Berkeley</span>
@@ -527,10 +1120,35 @@ Táo       |    3|   12.50</code></pre>
 <span class="p">$ </span>lpq                                 <span class="c"># xem hàng đợi</span>
 <span class="p">$ </span>cancel 603 ; lprm 603               <span class="c"># hủy lệnh in số 603</span></code></pre>
 <p class="tip">Có thể in ra file PDF ảo (máy in “PDF”) để thử mà không tốn giấy.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Một chút lịch sử giải thích vì sao.</b> Máy in đời đầu là máy in <b>ký tự</b> (như máy đánh chữ): chỉ nhận chuỗi ký tự ASCII và in theo lưới cố định, 66 dòng một trang, khoảng 80 ký tự một dòng. Đó là lý do <code>pr</code> mặc định 66 dòng. Sau đó đến máy in <b>đồ họa</b> (laser), và ngôn ngữ mô tả trang <b>PostScript</b> của Adobe ra đời: thay vì gửi điểm ảnh, máy tính gửi một “chương trình” mô tả trang, máy in tự vẽ ra.</p>
+<p><b>Đường đi của một lệnh in trên Linux:</b></p>
+<pre><code>lpr file.txt
+ → CUPS (Common Unix Printing System) nhận lệnh, xếp vào hàng đợi (spool)
+ → bộ lọc của CUPS chuyển file (text, PDF, ảnh) sang định dạng máy in hiểu
+   (thường qua Ghostscript nếu máy in không hiểu PostScript)
+ → gửi tới máy in qua USB hoặc mạng</code></pre>
+<p>Hàng đợi giúp nhiều người dùng chia sẻ một máy in: lệnh in được lưu lại và xử lý lần lượt, mỗi lệnh có số hiệu (job ID) để theo dõi hay hủy. CUPS cung cấp cả hai bộ lệnh cũ để tương thích: kiểu Berkeley (<code>lpr</code>, <code>lpq</code>, <code>lprm</code>) và kiểu System V (<code>lp</code>, <code>lpstat</code>, <code>cancel</code>). CUPS cũng có giao diện web quản lý tại <code>http://localhost:631</code>.</p>
+<p><b>Chuẩn bị file trước khi in:</b> <code>pr</code> thêm lề, header và chia trang; <code>a2ps</code> (sách giới thiệu là “Anything to PostScript”) chuyển văn bản sang PostScript với bố cục đẹp, mặc định 2 trang trên một tờ.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Không biết tên máy in</b> — <code>lpr -P hp file</code> báo không tồn tại. Xem danh sách bằng <code>lpstat -a</code>, máy mặc định bằng <code>lpstat -d</code>.</li>
+<li><b>Gửi file nhị phân lạ tới máy in</b> — máy in ra hàng chục trang ký tự rác. Chỉ in định dạng CUPS hỗ trợ (text, PDF, PostScript, ảnh); kiểm tra bằng <code>file</code> trước.</li>
+<li><b>Gửi lệnh in nhiều lần vì tưởng không chạy</b> — lệnh nằm chờ trong hàng đợi. Kiểm tra <code>lpq</code> trước khi in lại, hủy bớt bằng <code>cancel</code>.</li>
+<li><b>Máy in bị tạm dừng</b> — lệnh in cứ nằm im. Xem <code>lpstat -p</code>; nếu “disabled”, bật lại trong giao diện CUPS hoặc <code>cupsenable tên_máy_in</code>.</li>
+<li><b>Văn bản dài bị cắt mất chữ ở lề</b> — dòng dài hơn khổ giấy. Định dạng trước bằng <code>fmt</code>/<code>pr -w</code> hoặc dùng <code>a2ps</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c23" data-title="Biên dịch chương trình">
 <div class="ch-head"><span class="ch-num">23</span><h3>Biên dịch chương trình từ mã nguồn</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Hệ thống gói có sẵn hàng chục nghìn chương trình, vậy sao còn phải tự biên dịch? Sách nêu hai lý do: có những phần mềm (hoặc phiên bản mới nhất) chưa có trong kho, và quan trọng hơn, biên dịch thể hiện đúng tinh thần tự do của phần mềm mã nguồn mở: bạn có thể lấy mã nguồn, xem, sửa và tự build.</p>
+<p>Chương này hướng dẫn quy trình chuẩn của phần mềm GNU: tải mã nguồn, giải nén, <code>./configure</code>, <code>make</code>, <code>make install</code>, qua ví dụ chương trình <code>diction</code>. Hiểu quy trình này giúp bạn đọc được lỗi khi build phần mềm, điều rất hay gặp khi làm phát triển.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p><b>Biên dịch</b> là dịch mã nguồn (C…) sang mã máy. Ngôn ngữ thông dịch (shell, Python, Perl) chạy trực tiếp, không cần biên dịch. Quy trình chuẩn của phần mềm GNU:</p>
 <pre><code><span class="p">$ </span>mkdir src &amp;&amp; cd src
 <span class="p">$ </span>wget https://ftp.gnu.org/gnu/diction/diction-1.11.tar.gz
@@ -540,6 +1158,26 @@ Táo       |    3|   12.50</code></pre>
 <span class="p">$ </span>make                      <span class="c"># biên dịch theo Makefile</span>
 <span class="p">$ </span>sudo make install         <span class="c"># cài vào /usr/local/bin</span></code></pre>
 <p>Cần cài sẵn trình biên dịch <code>gcc</code> và <code>make</code> (Ubuntu: gói <code>build-essential</code>). <code>make</code> chỉ biên dịch lại phần thay đổi nhờ so sánh thời gian sửa file. Trong cây mã nguồn thường có <code>.c</code> (mã C), <code>.h</code> (header), <code>Makefile.in</code>, <code>configure</code>.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Biên dịch là gì?</b> CPU chỉ hiểu <b>mã máy</b> (các số nhị phân). Con người viết bằng ngôn ngữ cấp cao như C. <b>Trình biên dịch</b> (compiler, ví dụ <code>gcc</code>) dịch mã nguồn sang mã máy. Quá trình gồm hai bước chính: biên dịch mỗi file <code>.c</code> thành <b>file đối tượng</b> <code>.o</code>, rồi <b>liên kết</b> (link) các file <code>.o</code> với thư viện để ra chương trình chạy được. Ngôn ngữ <b>thông dịch</b> như shell, Python, Perl thì không cần bước này: trình thông dịch đọc và thực thi mã nguồn trực tiếp, chậm hơn nhưng tiện hơn.</p>
+<p><b>Ba bước của quy trình GNU:</b></p>
+<pre><code>./configure   kiểm tra hệ thống: có gcc không, có thư viện cần thiết không,
+              hệ điều hành gì → sinh ra Makefile phù hợp với máy bạn
+make          đọc Makefile, biên dịch và liên kết chương trình
+make install  chép file chạy được, trang man… vào /usr/local (cần sudo)</code></pre>
+<p><b>make thông minh nhờ phụ thuộc và thời gian.</b> Makefile mô tả các <b>đích</b> (target), mỗi đích phụ thuộc vào file nào và lệnh để tạo ra nó. Ví dụ “<code>diction</code> phụ thuộc <code>diction.o sentence.o</code>; <code>diction.o</code> phụ thuộc <code>diction.c</code>”. make so sánh thời gian sửa đổi: nếu đích mới hơn mọi file nó phụ thuộc thì không làm gì. Sách minh họa: <code>touch diction.c</code> rồi chạy <code>make</code>, chỉ phần liên quan được build lại. Với dự án lớn, việc này tiết kiệm rất nhiều thời gian.</p>
+<p>Mã nguồn thường có các file <code>README</code>, <code>INSTALL</code> (luôn đọc trước), <code>configure</code>, <code>Makefile.in</code> (khuôn để configure sinh Makefile), các file <code>.c</code> và <code>.h</code> (header: khai báo dùng chung giữa nhiều file mã nguồn). Phần mềm tự build nên cài vào <code>/usr/local</code> để không lẫn với file do hệ thống gói quản lý.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Chưa cài công cụ build</b> — <code>configure</code> báo “no acceptable C compiler found”. Cài <code>build-essential</code> (Ubuntu) hoặc “Development Tools” (Fedora).</li>
+<li><b>Thiếu thư viện phát triển</b> — configure báo không tìm thấy thư viện dù đã cài chương trình. Thứ cần là gói header, thường có đuôi <code>-dev</code> (Debian) hoặc <code>-devel</code> (Red Hat), ví dụ <code>libssl-dev</code>.</li>
+<li><b>Chạy make khi configure đã lỗi</b> — Makefile chưa được tạo hoặc sai, make báo “No targets specified and no makefile found”. Đọc dòng lỗi cuối của configure và sửa trước.</li>
+<li><b>Chạy make bằng sudo</b> — file build bị root sở hữu, lần sau bạn không sửa được. Chỉ dùng <code>sudo</code> cho bước <code>make install</code>.</li>
+<li><b>Cài đè lên file của hệ thống gói</b> — đặt <code>--prefix=/usr</code> có thể xung đột với gói đã cài. Để mặc định <code>/usr/local</code>.</li>
+<li><b>Lỗi “missing separator” khi tự viết Makefile</b> — dòng lệnh trong Makefile phải bắt đầu bằng ký tự TAB, không phải dấu cách.</li>
+</ul>
+</div>
 </section>
 </div>
 
@@ -549,6 +1187,11 @@ Táo       |    3|   12.50</code></pre>
 
 <section class="ch" id="c24" data-title="Script đầu tiên">
 <div class="ch-head"><span class="ch-num">24</span><h3>Viết script đầu tiên</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Đến đây bạn đã biết rất nhiều lệnh. Nhưng nếu một chuỗi lệnh phải gõ đi gõ lại mỗi ngày (sao lưu, dọn log, tạo báo cáo), gõ tay vừa mất thời gian vừa dễ sai. Chương này dạy cách gom các lệnh đó vào một <b>file văn bản</b> rồi chạy nó như một lệnh mới: đó là shell script.</p>
+<p>Điều tác giả muốn bạn nhận ra: script không phải một ngôn ngữ xa lạ. Mọi thứ gõ được trên dòng lệnh đều viết được trong script, và ngược lại. Script chỉ là “dòng lệnh được ghi lại”.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Shell script là file văn bản chứa các lệnh. Ba bước: <b>viết</b>, <b>cấp quyền thực thi</b>, <b>đặt ở nơi shell tìm thấy</b>.</p>
 <pre><code><span class="c">#!/bin/bash</span>
 <span class="c"># Script đầu tiên của tôi</span>
@@ -564,10 +1207,35 @@ echo 'Hello World!'</code></pre>
 <li>Trong script nên dùng <b>tùy chọn dài</b> (<code>ls --all --directory</code>) cho dễ đọc, và ngắt dòng dài bằng <code>\</code> kèm thụt lề.</li>
 </ul>
 <p class="tip">Trong vim, <code>:syntax on</code>, <code>:set autoindent</code>, <code>:set tabstop=4</code> giúp viết script dễ hơn.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Để một file văn bản trở thành lệnh chạy được cần ba điều kiện:</p>
+<ul>
+<li><b>Dòng shebang</b> <code>#!/bin/bash</code> ở dòng đầu. Khi bạn chạy file, kernel đọc hai byte đầu là <code>#!</code>, hiểu rằng đây không phải chương trình máy mà là script, và khởi động chương trình ghi sau đó (<code>/bin/bash</code>), đưa tên file cho nó đọc. Vì vậy cùng một cơ chế dùng được cho Python (<code>#!/usr/bin/env python3</code>), Perl… Với bash, dòng này lại là một chú thích (bắt đầu bằng <code>#</code>) nên bash bỏ qua.</li>
+<li><b>Quyền thực thi</b>. Kernel chỉ chịu chạy file có bit <code>x</code>. Script cần cả quyền <code>r</code> vì bash phải đọc được nội dung, nên quyền thường dùng là 755 (mọi người chạy được) hoặc 700 (chỉ mình bạn).</li>
+<li><b>Vị trí</b>. Khi bạn gõ <code>hello_world</code> không kèm đường dẫn, shell <i>không</i> tìm trong thư mục hiện tại mà duyệt lần lượt các thư mục trong <code>PATH</code>. Vì thế bạn phải gõ <code>./hello_world</code>, hoặc đặt script vào một thư mục nằm trong PATH như <code>~/bin</code>. Việc không tìm trong thư mục hiện tại là cố ý, để tránh vô tình chạy một chương trình lạ tên trùng với lệnh hệ thống.</li>
+</ul>
+<p>Script được đọc và chạy <b>từng dòng, từ trên xuống</b>, trong một tiến trình bash mới (shell con). Điều này có hệ quả quan trọng: biến hay lệnh <code>cd</code> trong script không ảnh hưởng tới shell bạn đang dùng. Muốn script tác động lên shell hiện tại (như <code>.bashrc</code>), phải chạy bằng <code>source</code>.</p>
+<p>Tác giả cũng khuyên: script là thứ bạn sẽ đọc lại nhiều tháng sau, nên ưu tiên dễ đọc. Dùng tùy chọn dài (<code>--all</code> thay vì <code>-a</code>), ngắt dòng dài bằng <code>\</code> ở cuối dòng và thụt lề để thấy cấu trúc.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Quên chmod</b> — chạy <code>./script</code> báo <code>Permission denied</code>. Sửa: <code>chmod 755 script</code>, hoặc chạy tạm bằng <code>bash script</code>.</li>
+<li><b>Gõ tên mà không có ./</b> — báo <code>command not found</code> vì thư mục hiện tại không nằm trong PATH. Gõ <code>./script</code> hoặc chuyển script vào <code>~/bin</code>.</li>
+<li><b>Sai shebang</b> — viết <code>#! /bin/bash</code> trên dòng thứ hai, hoặc gõ nhầm đường dẫn <code>#!/bin/bsah</code>, sẽ báo <code>bad interpreter</code>. Shebang phải nằm ở <i>dòng đầu tiên</i>, ký tự đầu tiên.</li>
+<li><b>Ký tự xuống dòng kiểu Windows</b> — file soạn trên Windows có <code>\r</code> cuối dòng, gây lỗi lạ như <code>/bin/bash^M: bad interpreter</code>. Sửa bằng <code>tr -d '\r' &lt; a.sh &gt; b.sh</code> hoặc <code>dos2unix</code>.</li>
+<li><b>Đặt tên script trùng lệnh có sẵn</b> — đặt tên <code>test</code> thì gõ <code>test</code> sẽ chạy builtin của bash chứ không phải script của bạn. Kiểm tra trước bằng <code>type tên</code>.</li>
+<li><b>Mong đợi cd trong script đổi thư mục của bạn</b> — script chạy trong shell con nên khi kết thúc bạn vẫn ở chỗ cũ. Dùng hàm hoặc <code>source</code> nếu cần.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c25" data-title="Bắt đầu một dự án">
 <div class="ch-head"><span class="ch-num">25</span><h3>Bắt đầu một dự án</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Chương này mở đầu dự án xuyên suốt Phần 4: script <code>sys_info_page</code> tạo một trang HTML báo cáo tình trạng máy. Mục đích là học cách một script lớn dần từ bản tối thiểu, mỗi bước thêm một chút và chạy thử ngay.</p>
+<p>Hai công cụ mới giải quyết hai vấn đề cụ thể: <b>biến</b> để không lặp lại cùng một chuỗi (như tiêu đề trang xuất hiện ở hai chỗ) và <b>here document</b> để in một khối văn bản dài mà không phải viết hàng chục lệnh <code>echo</code> với dấu nháy lồng nhau.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p><b>Biến</b> được tạo khi gán; <b>không có dấu cách</b> quanh <code>=</code>. Hằng số theo quy ước viết HOA.</p>
 <pre><code>title="System Information Report For $HOSTNAME"
 CURRENT_TIME=$(date +"%x %r %Z")
@@ -583,10 +1251,34 @@ declare -r PI=3.14   <span class="c"># hằng không đổi được</span></cod
 &lt;/html&gt;
 _EOF_</code></pre>
 <p class="tip"><code>&lt;&lt;-</code> (có dấu trừ) cho phép thụt lề bằng tab trong here document. Here document cũng dùng để “gõ hộ” lệnh cho chương trình tương tác như <code>ftp</code>.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Bản đầu tiên chỉ là một loạt <code>echo</code> in thẻ HTML. Tác giả chỉ ra nhược điểm: tiêu đề lặp lại, dấu nháy rối mắt. Bước tiếp theo đưa tiêu đề vào biến <code>title</code>, rồi thêm <code>CURRENT_TIME</code> và <code>TIMESTAMP</code>.</p>
+<p><b>Biến trong shell hoạt động thế nào:</b> biến được tạo ngay lúc gán lần đầu, không cần khai báo và không có kiểu, mọi giá trị đều là chuỗi. Khi shell gặp <code>$title</code>, nó thay bằng giá trị <i>trước khi</i> chạy lệnh (parameter expansion, chương 7). Vế phải của phép gán cũng được mở rộng: <code>CURRENT_TIME=$(date +"%x %r %Z")</code> chạy <code>date</code> một lần lúc gán và lưu kết quả, chứ không phải mỗi lần dùng biến. Một chi tiết quan trọng: phép gán không tách từ, nên <code>b="a string"</code> giữ nguyên dấu cách, nhưng khi <i>dùng</i> <code>$b</code> mà không có nháy thì shell sẽ tách thành hai từ.</p>
+<p>Quy ước của sách: hằng (giá trị không đổi) viết HOA, biến viết thường. <code>declare -r</code> biến quy ước thành ràng buộc thật: gán lại sẽ báo lỗi.</p>
+<p><b>Here document</b> chuyển hướng một khối văn bản vào stdin của lệnh:</p>
+<pre><code>cat &lt;&lt; _EOF_
+...nội dung, vẫn mở rộng $biến và $(lệnh)...
+_EOF_</code></pre>
+<p>Shell đọc từng dòng cho tới khi gặp dòng chỉ chứa đúng chuỗi kết thúc (<code>_EOF_</code>), rồi đưa cả khối cho <code>cat</code>. Khác với nháy kép, dấu nháy đơn và kép bên trong được giữ nguyên văn, nên viết HTML rất thoải mái. Dạng <code>&lt;&lt;-</code> bỏ các <b>tab</b> đầu dòng để bạn thụt lề cho đẹp. Here document dùng được với mọi chương trình đọc stdin, ví dụ tác giả dùng nó để “gõ hộ” chuỗi lệnh cho <code>ftp</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Dấu cách quanh dấu =</b> — <code>title = "abc"</code> khiến shell coi <code>title</code> là tên lệnh: <code>title: command not found</code>. Viết liền <code>title="abc"</code>.</li>
+<li><b>Gõ sai tên biến</b> — shell không báo lỗi, chỉ coi biến chưa đặt là chuỗi rỗng. <code>foo="yes"; echo $fool</code> in ra dòng trống. Đặt tên rõ ràng và kiểm tra bằng <code>bash -x</code>.</li>
+<li><b>Tên biến dính với chữ khác</b> — <code>echo "$f_backup"</code> tìm biến <code>f_backup</code>. Dùng <code>"${f}_backup"</code>.</li>
+<li><b>Dòng kết thúc here document có khoảng trắng</b> — <code>_EOF_ </code> (thừa dấu cách) hoặc thụt bằng dấu cách khiến shell không nhận ra, báo <code>here-document delimited by end-of-file</code>. Dòng kết thúc phải đứng một mình; với <code>&lt;&lt;-</code> chỉ được thụt bằng tab.</li>
+<li><b>Muốn in nguyên văn $ trong here document</b> — biến vẫn bị mở rộng. Đặt chuỗi kết thúc trong nháy: <code>cat &lt;&lt; '_EOF_'</code>, hoặc thoát từng ký tự <code>\$</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c26" data-title="Thiết kế từ trên xuống">
 <div class="ch-head"><span class="ch-num">26</span><h3>Thiết kế từ trên xuống (Top-Down)</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Khi script dài ra, viết mọi thứ thành một khối liền từ trên xuống rất khó đọc và khó sửa. Chương này giới thiệu cách làm của lập trình viên: <b>thiết kế từ trên xuống</b>, tức là chia một việc lớn thành vài bước lớn, rồi chia mỗi bước thành bước nhỏ hơn, cho tới khi mỗi phần đủ đơn giản để viết ngay.</p>
+<p>Tác giả lấy ví dụ đi chợ: “đi chợ” gồm ra xe, lái tới chợ, đỗ xe, mua đồ, về nhà. Với <code>sys_info_page</code>, phần thân trang được chia thành ba báo cáo: thời gian máy chạy, dung lượng đĩa, dung lượng thư mục home. Mỗi phần trở thành một <b>hàm shell</b>.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Chia việc lớn thành các bước nhỏ, mỗi bước là một <b>hàm</b>. Hàm phải được định nghĩa trước khi gọi.</p>
 <pre><code>report_uptime () {
   cat &lt;&lt;- _EOF_
@@ -603,10 +1295,33 @@ funct () {
   echo "trong hàm: foo = $foo"
 }</code></pre>
 <p class="tip">Kỹ thuật “stub”: viết hàm rỗng chỉ in ra tên mình trước, để kiểm tra luồng chương trình, rồi mới điền nội dung. Hàm có thể đặt vào <code>~/.bashrc</code> để dùng như lệnh.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Hàm</b> là một nhóm lệnh có tên. Khi bash đọc đến định nghĩa <code>report_uptime () { ... }</code>, nó chỉ <i>ghi nhớ</i> hàm, chưa chạy gì. Khi gặp tên hàm như một lệnh, bash nhảy vào thân hàm, chạy, rồi quay lại dòng sau lời gọi. Vì script được đọc tuần tự, hàm phải được định nghĩa <b>trước</b> chỗ gọi nó.</p>
+<p>Hàm có thể được gọi ngay bên trong here document nhờ command substitution: <code>$(report_uptime)</code>. Output của hàm được chèn vào đúng chỗ đó trong trang HTML. Đây là cách sách lắp các báo cáo vào khung trang.</p>
+<p><b>Phạm vi biến:</b> mặc định mọi biến trong bash là toàn cục, kể cả biến tạo trong hàm. Điều này nguy hiểm khi hai hàm vô tình dùng chung tên biến. Từ khóa <code>local</code> tạo biến chỉ tồn tại trong hàm đang chạy; khi hàm kết thúc, biến biến mất và biến cùng tên bên ngoài vẫn nguyên.</p>
+<pre><code>foo=0
+f () { local foo=1; echo "trong: $foo"; }   # trong: 1
+f; echo "ngoài: $foo"                       # ngoài: 0</code></pre>
+<p><b>Giữ script luôn chạy được:</b> tác giả khuyên viết hàm dạng <b>stub</b> trước, mỗi hàm chỉ in tên mình (“Function report_uptime executed.”). Chạy script để chắc chắn khung tổng thể đúng, rồi mới điền nội dung từng hàm. Cách này giúp lỗi luôn nằm ở phần vừa thêm, dễ khoanh vùng. Lệnh <code>return</code> kết thúc hàm và có thể trả về một exit status (số 0–255), không phải giá trị tính toán; muốn “trả về” dữ liệu thì hàm <code>echo</code> ra và người gọi bắt bằng <code>$( )</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Gọi hàm trước khi định nghĩa</b> — báo <code>command not found</code>. Đặt mọi định nghĩa hàm ở đầu script, phần chương trình chính ở cuối.</li>
+<li><b>Hàm rỗng</b> — <code>f () { }</code> là lỗi cú pháp; thân hàm phải có ít nhất một lệnh. Stub có thể chỉ là <code>return</code> hoặc một <code>echo</code>.</li>
+<li><b>Thiếu dấu cách hoặc dấu ;</b> — viết trên một dòng phải là <code>f () { echo hi; }</code>: cần dấu cách sau <code>{</code> và <code>;</code> trước <code>}</code>.</li>
+<li><b>Quên local</b> — hàm đổi biến <code>i</code> làm hỏng vòng lặp <code>i</code> bên ngoài. Khai báo biến làm việc trong hàm bằng <code>local</code>.</li>
+<li><b>Dùng return để trả kết quả</b> — <code>return 300</code> bị cắt thành 44, và <code>return "abc"</code> báo lỗi. Dùng <code>echo</code> và <code>kq=$(ham)</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c27" data-title="Rẽ nhánh với if">
 <div class="ch-head"><span class="ch-num">27</span><h3>Điều khiển luồng: rẽ nhánh với if</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Script đến giờ luôn chạy mọi dòng theo đúng thứ tự. Chương trình thực tế phải <b>ra quyết định</b>: file có tồn tại không, người dùng có phải root không, dữ liệu có hợp lệ không. Chương này giới thiệu <code>if</code> và các cách viết điều kiện.</p>
+<p>Ví dụ trong sách: hàm <code>report_home_space</code> chỉ có thể đọc mọi thư mục home khi chạy bằng root, nên script cần kiểm tra danh tính và báo cáo khác nhau cho root và người dùng thường.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p>Mỗi lệnh trả về <b>exit status</b> (xem bằng <code>echo $?</code>): <b>0 là thành công</b>, khác 0 là lỗi. <code>if</code> kiểm tra exit status.</p>
 <pre><code>if [ -f "$FILE" ]; then
   echo "$FILE là file thường"
@@ -629,10 +1344,36 @@ fi</code></pre>
 <li>Toán tử điều khiển: <code>mkdir temp &amp;&amp; cd temp</code> (chạy lệnh 2 nếu 1 thành công); <code>[ -d temp ] || mkdir temp</code> (chạy lệnh 2 nếu 1 thất bại).</li>
 </ul>
 <p class="tip">Luôn đặt biến trong nháy kép bên trong <code>[ ]</code> (<code>"$FILE"</code>) để tránh lỗi khi biến rỗng.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Điểm mấu chốt dễ gây bất ngờ: <code>if</code> trong bash <b>không đánh giá biểu thức đúng/sai</b> như các ngôn ngữ khác. Nó <i>chạy một lệnh</i> và nhìn <b>exit status</b> của lệnh đó. Exit status 0 nghĩa là thành công và được coi là “đúng”; mọi giá trị khác là “sai”. Bạn xem exit status của lệnh vừa chạy bằng <code>echo $?</code>. Hai lệnh <code>true</code> và <code>false</code> chỉ làm đúng một việc là trả về 0 và 1.</p>
+<p>Vậy <code>[ -f file ]</code> là gì? Đó là <b>một lệnh</b> tên <code>[</code> (giống hệt lệnh <code>test</code>), nhận các đối số <code>-f</code>, <code>file</code> và <code>]</code>. Vì là lệnh, các phần phải cách nhau bằng dấu cách, và biến bên trong bị mở rộng trước khi <code>[</code> nhận được. Đây là nguồn gốc của rất nhiều lỗi.</p>
+<p>Bash có ba cách viết điều kiện:</p>
+<ul>
+<li><code>[ ]</code> / <code>test</code>: chuẩn POSIX, chạy trên mọi shell, nhưng phải cẩn thận đặt biến trong nháy và thoát các ký tự <code>&lt;</code> <code>&gt;</code> <code>(</code> <code>)</code>.</li>
+<li><code>[[ ]]</code>: cú pháp đặc biệt của bash, shell hiểu trực tiếp nên không tách từ biến (an toàn hơn khi biến rỗng), hỗ trợ <code>==</code> với mẫu wildcard và <code>=~</code> với regex.</li>
+<li><code>(( ))</code>: dành cho số nguyên. Bên trong viết như toán học (<code>a &gt; b</code>, <code>i % 2 == 0</code>), không cần <code>$</code> trước tên biến. Kết quả khác 0 được coi là đúng.</li>
+</ul>
+<p>Các <b>toán tử điều khiển</b> <code>&amp;&amp;</code> và <code>||</code> cũng dựa trên exit status: <code>lệnh1 &amp;&amp; lệnh2</code> chỉ chạy lệnh2 nếu lệnh1 thành công; <code>lệnh1 || lệnh2</code> chỉ chạy lệnh2 nếu lệnh1 thất bại. Script của bạn cũng nên trả exit status có nghĩa bằng <code>exit 0</code> hoặc <code>exit 1</code> để script khác dùng được nó trong <code>if</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Thiếu dấu cách trong [ ]</b> — <code>[$x = 1]</code> báo <code>[1: command not found</code>. Phải có cách: <code>[ "$x" = 1 ]</code>.</li>
+<li><b>Biến rỗng trong [ ]</b> — <code>[ $x = 1 ]</code> với x rỗng thành <code>[ = 1 ]</code>: <code>unary operator expected</code>. Luôn đặt biến trong nháy kép, hoặc dùng <code>[[ ]]</code>.</li>
+<li><b>Nhầm so sánh chuỗi và số</b> — <code>[ 10 &gt; 9 ]</code> không so sánh số mà <i>chuyển hướng</i> output vào file tên “9”. Dùng <code>-gt</code> hoặc <code>(( 10 &gt; 9 ))</code>.</li>
+<li><b>Dùng = trong (( ))</b> — <code>(( x = 5 ))</code> là phép gán, luôn “đúng”. So sánh phải là <code>==</code>.</li>
+<li><b>Thiếu ; trước then</b> — <code>if [ -f f ] then</code> làm <code>then</code> thành đối số của lệnh, lỗi báo ở dòng <code>else</code> phía dưới. Viết <code>if [ -f f ]; then</code> hoặc đặt <code>then</code> xuống dòng.</li>
+<li><b>Lạm dụng a &amp;&amp; b || c</b> — nó không giống if/else: nếu <code>b</code> thất bại thì <code>c</code> cũng chạy. Dùng <code>if</code> khi logic quan trọng.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c28" data-title="Đọc dữ liệu bàn phím">
 <div class="ch-head"><span class="ch-num">28</span><h3>Đọc dữ liệu từ bàn phím</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Script đến giờ chỉ làm đúng một việc cố định. Chương này làm script <b>tương tác</b>: hỏi người dùng và hành động theo câu trả lời. Đây là cách viết các công cụ nhỏ như trình cài đặt hỏi thư mục đích, script xác nhận trước khi xóa, hay một menu chọn chức năng.</p>
+<p>Chương cũng đưa ra một nguyên tắc quan trọng: dữ liệu người dùng nhập vào <b>không bao giờ đáng tin</b>. Chương trình tốt phải kiểm tra đầu vào và xử lý được cả khi người dùng gõ sai, gõ trống hoặc gõ thứ lạ.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code>read -p "Nhập một số nguyên: " int
 read -s -p "Mật khẩu: " pass       <span class="c"># -s: không hiện ký tự</span>
 read -t 10 -p "Trả lời trong 10s: " ans   <span class="c"># -t: timeout</span>
@@ -650,10 +1391,31 @@ if [[ $REPLY == 1 ]]; then uptime
 elif [[ $REPLY == 2 ]]; then df -h
 fi</code></pre>
 <p class="tip">Lưu ý: không thể dùng <code>echo "x" | read var</code> vì <code>read</code> chạy trong subshell, biến mất ngay sau đó.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><code>read</code> là builtin đọc <b>một dòng</b> từ stdin, rồi chia dòng đó thành các từ và gán lần lượt vào các biến. Nếu số từ nhiều hơn số biến, biến cuối cùng nhận <i>toàn bộ phần còn lại</i>; nếu ít hơn, các biến thừa là chuỗi rỗng. Không ghi tên biến thì cả dòng vào biến <code>REPLY</code>.</p>
+<p>Việc chia từ dựa vào biến <b>IFS</b> (Internal Field Separator), mặc định là dấu cách, tab và xuống dòng. Đổi IFS chỉ cho riêng lệnh <code>read</code> bằng cách viết phép gán ngay trước lệnh:</p>
+<pre><code>IFS=":" read user pw uid gid name home shell &lt;&lt;&lt; "$line"</code></pre>
+<p>Phép gán đứng trước một lệnh chỉ có hiệu lực trong lúc lệnh đó chạy, nên IFS của shell không bị thay đổi. <code>&lt;&lt;&lt;</code> là <b>here string</b>: đưa một chuỗi vào stdin, giống here document nhưng một dòng.</p>
+<p>Tại sao không dùng <code>echo "$line" | IFS=: read ...</code>? Vì mỗi lệnh trong pipeline chạy trong một <b>shell con</b>. <code>read</code> gán biến trong shell con đó, rồi shell con kết thúc và biến mất theo. Shell chính không bao giờ thấy giá trị. Đây là cái bẫy kinh điển mà tác giả cảnh báo.</p>
+<p>Các tùy chọn hữu ích: <code>-p</code> in câu hỏi, <code>-s</code> không hiện ký tự (mật khẩu), <code>-t</code> giới hạn thời gian (exit status khác 0 khi hết giờ), <code>-n</code> đọc đúng số ký tự, <code>-e</code> và <code>-i</code> cho phép sửa với giá trị gợi ý, <code>-r</code> giữ nguyên dấu <code>\</code>. Để <b>kiểm tra đầu vào</b>, sách dùng chuỗi phép thử: có rỗng không, có phải số nguyên (regex), có phải số chẵn, số âm… và với menu thì kiểm tra lựa chọn có nằm trong khoảng hợp lệ trước khi xử lý.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>read trong pipeline</b> — <code>echo "a b" | read x y; echo $x</code> in dòng trống. Dùng here string <code>read x y &lt;&lt;&lt; "a b"</code> hoặc chuyển hướng từ file.</li>
+<li><b>Không kiểm tra đầu vào</b> — người dùng gõ chữ vào chỗ cần số làm <code>$((n * 2))</code> cho kết quả sai hoặc lỗi. Kiểm tra bằng <code>[[ $n =~ ^-?[0-9]+$ ]]</code> trước khi tính.</li>
+<li><b>Mất dấu \</b> — không có <code>-r</code>, <code>read</code> coi <code>\</code> là ký tự thoát, đường dẫn Windows <code>C:\temp</code> bị biến đổi. Thói quen tốt: <code>read -r</code>.</li>
+<li><b>Đổi IFS toàn cục rồi quên</b> — <code>IFS=:</code> đứng riêng một dòng làm mọi phép tách từ sau đó hỏng. Chỉ gán IFS ngay trước lệnh <code>read</code>, hoặc lưu và khôi phục.</li>
+<li><b>Tưởng -s là an toàn tuyệt đối</b> — mật khẩu không hiện ra màn hình nhưng vẫn nằm trong biến; đừng <code>echo</code> nó hoặc ghi vào log.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c29" data-title="Vòng lặp while & until">
 <div class="ch-head"><span class="ch-num">29</span><h3>Vòng lặp while và until</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Máy tính giỏi nhất ở việc làm đi làm lại. Chương này giới thiệu <b>vòng lặp</b> <code>while</code> và <code>until</code>: lặp một nhóm lệnh chừng nào một điều kiện còn đúng (hoặc cho tới khi nó đúng). Tình huống thực tế: lặp lại menu cho tới khi người dùng chọn Thoát, xử lý từng dòng của một file dữ liệu, chờ cho tới khi một dịch vụ khởi động xong.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code>count=1
 while [[ $count -le 5 ]]; do
   echo $count
@@ -672,10 +1434,34 @@ sort -k 1,1 distros.txt | while read distro version release; do ... done</code><
 <li><code>break</code> thoát vòng lặp; <code>continue</code> bỏ qua phần còn lại, sang lượt tiếp.</li>
 <li><code>while true; do ... done</code> là vòng lặp vô hạn, kết hợp <code>break</code> để làm menu lặp lại tới khi chọn “Thoát”.</li>
 </ul>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><code>while</code> hoạt động giống <code>if</code>: nó chạy lệnh điều kiện, xem exit status. Nếu là 0, chạy thân vòng lặp (giữa <code>do</code> và <code>done</code>) rồi quay lại kiểm tra điều kiện. Nếu khác 0, thoát vòng lặp. <code>until</code> là ngược lại: lặp chừng nào điều kiện còn <i>sai</i>. Chọn cái nào là để điều kiện viết ra dễ đọc nhất.</p>
+<p>Vì điều kiện được kiểm tra trước mỗi lượt, thân vòng lặp phải làm gì đó thay đổi điều kiện (tăng bộ đếm, đọc dòng mới), nếu không vòng lặp chạy mãi. <code>break</code> thoát ngay khỏi vòng lặp; <code>continue</code> bỏ phần còn lại của lượt này và quay lên kiểm tra điều kiện. Kiểu <code>while true; do ... break ... done</code> dùng cho menu: lặp vô hạn, thoát bằng <code>break</code> khi người dùng chọn 0.</p>
+<p><b>Đọc file bằng vòng lặp:</b></p>
+<pre><code>while read distro version release; do
+  ...
+done &lt; distros.txt</code></pre>
+<p>Chuyển hướng <code>&lt;</code> đặt sau <code>done</code> áp dụng cho <i>cả vòng lặp</i>: mỗi lượt <code>read</code> lấy dòng tiếp theo từ cùng một luồng. Khi hết file, <code>read</code> trả exit status khác 0 và vòng lặp dừng tự nhiên. Đây là cách chuẩn để xử lý file từng dòng.</p>
+<p>Cũng có thể đưa dữ liệu vào bằng pipeline (<code>sort file | while read ...</code>), nhưng tác giả lưu ý: vòng lặp khi đó chạy trong shell con, nên biến gán bên trong (bộ đếm, tổng) sẽ mất sau <code>done</code>.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Quên tăng bộ đếm</b> — <code>while [[ $i -le 5 ]]; do echo $i; done</code> lặp vô hạn. Nhấn <code>Ctrl-C</code> để dừng, rồi thêm <code>((i++))</code>.</li>
+<li><b>Lệch một (off-by-one)</b> — dùng <code>-lt</code> thay vì <code>-le</code> làm thiếu lượt cuối. Thử với giá trị biên trước khi tin kết quả.</li>
+<li><b>Biến mất sau pipeline</b> — <code>count=0; cat f | while read l; do ((count++)); done; echo $count</code> in 0. Dùng <code>done &lt; f</code> thay cho pipeline.</li>
+<li><b>Mất dòng cuối</b> — nếu file không có ký tự xuống dòng ở cuối, <code>read</code> đọc được dòng cuối nhưng trả lỗi nên vòng lặp bỏ qua nó. Dùng <code>while read -r l || [[ -n $l ]]; do</code>.</li>
+<li><b>Lệnh trong vòng lặp “ăn” mất stdin</b> — <code>ssh</code> hay <code>read</code> bên trong vòng lặp đọc file sẽ đọc luôn các dòng còn lại. Cho lệnh đó đọc từ nơi khác: <code>ssh host cmd &lt; /dev/null</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c30" data-title="Gỡ lỗi (Troubleshooting)">
 <div class="ch-head"><span class="ch-num">30</span><h3>Gỡ lỗi</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Script càng lớn thì càng nhiều lỗi, và lỗi trong shell thường khó hiểu: thông báo trỏ sai dòng, script chạy “bình thường” nhưng làm sai. Chương này dạy cách phân loại lỗi, cách viết script để lỗi khó xảy ra, và cách tìm lỗi khi nó đã xảy ra.</p>
+<p>Tác giả kể một câu chuyện có thật: một quản trị viên viết <code>cd $dir_name</code> rồi <code>rm *</code>. Thư mục không tồn tại, <code>cd</code> thất bại, và <code>rm *</code> xóa sạch thư mục hiện tại trên một máy chủ quan trọng. Bài học: phải kiểm tra mọi giả định.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <p><b>Lỗi cú pháp</b> hay gặp: thiếu dấu nháy đóng, thiếu <code>;</code> trước <code>then</code>/<code>do</code>, thiếu <code>fi</code>/<code>done</code>, biến rỗng làm <code>[ $x = 1 ]</code> thành <code>[ = 1 ]</code> (sửa: <code>[ "$x" = 1 ]</code>).</p>
 <p><b>Lỗi logic</b>: điều kiện sai, “lệch một” (off-by-one), tình huống không lường trước (tên file có dấu cách, bắt đầu bằng dấu gạch). <b>Lập trình phòng thủ</b>:</p>
 <pre><code><span class="c"># Nguy hiểm: nếu cd thất bại, rm xóa ở thư mục hiện tại!</span>
@@ -691,10 +1477,30 @@ else echo "không có thư mục '$dir_name'" &gt;&amp;2; exit 1; fi</code></pre
 set -x  ...  set +x         <span class="c"># chỉ theo vết một đoạn</span>
 echo "number=$number" &gt;&amp;2  <span class="c"># in giá trị biến khi chạy</span>
 <span class="c"># Chú thích (#) một đoạn để khoanh vùng lỗi</span></code></pre>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Lỗi cú pháp</b> làm shell từ chối chạy. Shell báo lỗi ở chỗ nó <i>phát hiện</i> ra vấn đề, thường ở xa chỗ gây ra. Ví dụ thiếu một dấu nháy đóng: shell tiếp tục đọc cho tới khi gặp dấu nháy kế tiếp ở dòng dưới, nuốt cả đoạn code ở giữa, và cuối cùng báo <code>unexpected end of file</code> ở cuối script. Thiếu <code>;</code> trước <code>then</code> thì <code>then</code> bị coi là đối số của lệnh <code>[</code>, và lỗi chỉ lộ ra khi shell gặp <code>else</code> không có <code>if</code> nào đi kèm. Vì vậy, khi đọc thông báo lỗi, hãy nhìn <b>lên phía trên</b> dòng được báo.</p>
+<p><b>Lỗi do mở rộng</b> xảy ra lúc này lúc không, tùy giá trị biến: biến rỗng hoặc chứa dấu cách làm số đối số thay đổi. Cách phòng: đặt biến trong nháy kép.</p>
+<p><b>Lỗi logic</b> không ngăn script chạy mà làm nó chạy sai: điều kiện ngược, lệch một trong vòng lặp, tình huống không lường trước (tên file có dấu cách, thư mục không tồn tại). Cách phòng là <b>lập trình phòng thủ</b>: kiểm tra tiền điều kiện (thư mục có tồn tại, <code>cd</code> có thành công), dừng script với thông báo lỗi ra stderr (<code>&gt;&amp;2</code>) và <code>exit 1</code> thay vì cố chạy tiếp.</p>
+<p><b>Kiểm thử:</b> thay lệnh nguy hiểm bằng <code>echo</code> (stub) để xem nó <i>sẽ</i> làm gì; chuẩn bị ca kiểm thử cho trường hợp bình thường, biến rỗng, thư mục không tồn tại. <b>Gỡ lỗi:</b> chú thích bớt từng đoạn để khoanh vùng; bật <b>tracing</b> bằng <code>bash -x</code> hoặc <code>set -x</code>: shell in mỗi lệnh <i>sau khi đã mở rộng</i>, có dấu <code>+</code> đứng trước, nên bạn thấy đúng thứ shell thực sự chạy. Thêm <code>echo "x=$x" &gt;&amp;2</code> để xem giá trị biến tại từng điểm.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Tin vào số dòng trong thông báo lỗi</b> — lỗi thiếu nháy hay thiếu <code>fi</code> được báo ở cuối file. Tìm ngược lên, và bật tô màu cú pháp trong vim (<code>:syntax on</code>) để thấy chỗ nháy chưa đóng.</li>
+<li><b>Chạy lệnh nguy hiểm sau lệnh có thể thất bại</b> — <code>cd $d; rm *</code>. Viết <code>cd "$d" &amp;&amp; rm *</code> hoặc kiểm tra bằng <code>if</code> rồi <code>exit 1</code>.</li>
+<li><b>Không đặt biến trong nháy</b> — script chạy tốt với “report.txt” nhưng hỏng với “my report.txt”. Viết <code>"$file"</code>.</li>
+<li><b>In lỗi ra stdout</b> — thông báo lỗi lẫn vào dữ liệu khi output được chuyển hướng vào file. Gửi lỗi ra stderr: <code>echo "lỗi" &gt;&amp;2</code>.</li>
+<li><b>Quên tắt code kiểm thử</b> — để lại <code>echo rm *</code> hay <code>exit # TESTING</code>. Đánh dấu mọi dòng tạm bằng chú thích <code># TESTING</code> để tìm và xóa dễ.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c31" data-title="Rẽ nhánh với case">
 <div class="ch-head"><span class="ch-num">31</span><h3>Điều khiển luồng: rẽ nhánh với case</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Khi một biến có thể nhận nhiều giá trị và mỗi giá trị cần một hành động khác nhau (như lựa chọn trong menu), chuỗi <code>if/elif/elif...</code> trở nên dài và lặp lại. Lệnh <code>case</code> giải quyết đúng vấn đề này: so một giá trị với nhiều mẫu và chạy nhánh đầu tiên khớp.</p>
+<p>Trong sách, chương trình menu ở chương 28–29 được viết lại bằng <code>case</code>, ngắn và rõ hơn hẳn. <code>case</code> cũng hay gặp trong script khởi động dịch vụ (<code>start|stop|restart</code>) và trong phần xử lý tùy chọn dòng lệnh.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code>read -p "Nhập ký tự: " c
 case "$c" in
   [[:alpha:]])  echo "chữ cái" ;;
@@ -709,10 +1515,34 @@ esac</code></pre>
 <li>Bash 4+: kết thúc bằng <code>;;&amp;</code> thay cho <code>;;</code> để tiếp tục kiểm tra các mẫu sau (khớp nhiều nhánh).</li>
 <li><code>case</code> gọn hơn chuỗi <code>if/elif</code> dài, rất hợp cho menu.</li>
 </ul>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><code>case</code> mở rộng giá trị cần so (<code>"$REPLY"</code>), rồi lần lượt so với từng mẫu từ trên xuống. Mẫu kết thúc bằng <code>)</code>. Ở mẫu khớp đầu tiên, nó chạy các lệnh tới <code>;;</code> rồi nhảy ra sau <code>esac</code>; các mẫu còn lại không được xét nữa.</p>
+<p>Mẫu dùng <b>cú pháp wildcard giống pathname expansion</b>, không phải regex: <code>*</code> khớp mọi chuỗi, <code>?</code> một ký tự, <code>[a-z]</code> một ký tự trong tập, <code>[[:digit:]]</code> lớp ký tự. Điều khác là mẫu được so với chuỗi chứ không phải với tên file trên đĩa. Dấu <code>|</code> gộp nhiều mẫu cho cùng một nhánh (<code>q|Q)</code>). Mẫu <code>*)</code> khớp mọi thứ nên đặt cuối cùng làm nhánh mặc định, thường để báo lựa chọn không hợp lệ.</p>
+<pre><code>case "$1" in
+  *.tar.gz|*.tgz) tar xzf "$1" ;;
+  *.zip)          unzip "$1" ;;
+  *)              echo "không hỗ trợ" &gt;&amp;2 ;;
+esac</code></pre>
+<p>Vì thứ tự quan trọng, mẫu cụ thể phải đứng trước mẫu tổng quát. Từ bash 4, kết thúc nhánh bằng <code>;;&amp;</code> cho phép tiếp tục so các mẫu phía sau, nên một giá trị có thể kích hoạt nhiều nhánh (ví dụ ký tự “a” vừa là chữ thường, vừa là chữ cái, vừa là ký tự in được).</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Tưởng mẫu là regex</b> — <code>[0-9]+)</code> không có nghĩa “một hoặc nhiều chữ số” mà là “một chữ số rồi dấu +”. Dùng <code>[[ $x =~ ^[0-9]+$ ]]</code> nếu cần regex.</li>
+<li><b>Đặt *) lên trước</b> — mọi giá trị đều khớp nhánh mặc định, các nhánh sau không bao giờ chạy. Luôn để <code>*)</code> cuối cùng.</li>
+<li><b>Quên ;;</b> — gây lỗi cú pháp <code>syntax error near unexpected token</code> ở mẫu kế tiếp.</li>
+<li><b>Quên esac</b> — báo <code>unexpected end of file</code> ở cuối script.</li>
+<li><b>Mẫu có dấu cách không được trích dẫn</b> — <code>my file) ...</code> lỗi. Viết <code>"my file")</code> hoặc <code>my\ file)</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c32" data-title="Tham số vị trí">
 <div class="ch-head"><span class="ch-num">32</span><h3>Tham số vị trí (đối số dòng lệnh)</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Các lệnh Linux nhận đối số: <code>ls -l /etc</code>, <code>cp a b</code>. Chương này giúp script của bạn cũng làm được như vậy: nhận tên file, tùy chọn, tham số từ dòng lệnh thay vì hỏi bằng <code>read</code> hay sửa code mỗi lần. Script nhận đối số dùng được trong pipeline, cron và script khác, nên linh hoạt hơn nhiều.</p>
+<p>Cuối chương, <code>sys_info_page</code> được nâng cấp thành chương trình hoàn chỉnh: <code>-f file</code> ghi trang ra file, <code>-i</code> hỏi tên file một cách tương tác (và hỏi trước khi ghi đè), <code>-h</code> in hướng dẫn.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <div class="tbl"><table><tr><th>Biến</th><th>Ý nghĩa</th></tr>
 <tr><td><code>$0</code></td><td>Tên script</td></tr>
 <tr><td><code>$1</code> … <code>$9</code>, <code>${10}</code></td><td>Đối số thứ n</td></tr>
@@ -730,10 +1560,34 @@ esac</code></pre>
 done
 PROGNAME=$(basename "$0")    <span class="c"># tên chương trình không kèm đường dẫn</span></code></pre>
 <p>Trong hàm, <code>$1 $2…</code> là đối số của hàm (riêng <code>$0</code> vẫn là tên script). Cuối chương, sách hoàn thiện <code>sys_info_page</code> với tùy chọn <code>-f file</code> (ghi ra file), <code>-i</code> (hỏi trước khi ghi đè), <code>-h</code> (trợ giúp).</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Khi script chạy, shell đặt sẵn các <b>tham số vị trí</b>: <code>$0</code> là tên script như được gọi (có thể kèm đường dẫn, nên sách dùng <code>basename "$0"</code> để lấy tên gọn), <code>$1</code> đến <code>$9</code> là đối số, từ thứ 10 phải viết <code>${10}</code>. <code>$#</code> là số đối số.</p>
+<p><b>shift</b> dịch mọi tham số sang trái một vị trí: <code>$2</code> thành <code>$1</code>, <code>$3</code> thành <code>$2</code>, đối số đầu tiên bị bỏ và <code>$#</code> giảm 1. Kết hợp vòng lặp <code>while [[ -n $1 ]]</code> (hoặc <code>$# -gt 0</code>) với <code>case "$1"</code> và <code>shift</code> ở cuối, bạn xử lý được số đối số tùy ý: mỗi lượt nhìn đối số đầu tiên, xử lý, rồi “ăn” nó. Với tùy chọn cần giá trị như <code>-f file</code>, nhánh đó gọi thêm một <code>shift</code> để lấy tên file.</p>
+<p><b>"$@" và "$*"</b>: không có nháy, cả hai đều tách thành từng từ, làm vỡ đối số có dấu cách. <code>"$*"</code> gộp mọi đối số thành <i>một</i> chuỗi; <code>"$@"</code> giữ nguyên <i>từng</i> đối số thành một từ riêng, đúng như người dùng truyền vào.</p>
+<pre><code>./s "word" "words with spaces"
+"$@"  →  2 đối số: word | words with spaces
+"$*"  →  1 đối số: word words with spaces
+$@    →  4 đối số: word | words | with | spaces</code></pre>
+<p>Vì vậy khi chuyển tiếp đối số cho lệnh khác, gần như luôn dùng <code>"$@"</code>. Trong hàm, <code>$1 $2 $#</code> là đối số của hàm, tạm che đối số của script; riêng <code>$0</code> vẫn là tên script.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Viết $10</b> — shell hiểu là <code>${1}0</code>. Dùng <code>${10}</code>.</li>
+<li><b>Dùng $@ không có nháy</b> — đối số “my file.txt” thành hai file “my” và “file.txt”. Luôn viết <code>"$@"</code>.</li>
+<li><b>Quên shift trong vòng lặp</b> — <code>while [[ -n $1 ]]</code> mà không <code>shift</code> sẽ lặp vô hạn với cùng một đối số.</li>
+<li><b>Không kiểm tra số đối số</b> — script chạy với <code>$1</code> rỗng có thể thao tác nhầm lên thư mục hiện tại. Kiểm tra <code>[[ $# -eq 0 ]]</code> rồi in cách dùng và <code>exit 1</code>.</li>
+<li><b>Ghi đè file mà không hỏi</b> — đó là lý do sách thêm tùy chọn <code>-i</code> kiểm tra <code>[[ -e $filename ]]</code> và hỏi trước khi ghi.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c33" data-title="Vòng lặp for">
 <div class="ch-head"><span class="ch-num">33</span><h3>Vòng lặp for</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p><code>while</code> lặp theo điều kiện; còn rất nhiều khi bạn muốn lặp qua <b>một danh sách</b> đã biết: mọi file <code>.jpg</code> trong thư mục, mọi đối số, các số từ 1 đến 100. Vòng lặp <code>for</code> sinh ra cho việc này, ngắn gọn hơn nhiều so với tự quản lý bộ đếm.</p>
+<p>Sách minh họa bằng việc tìm từ dài nhất trong các file, và cải tiến <code>report_home_space</code> để liệt kê từng thư mục home kèm số file, số thư mục con và dung lượng.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code>for i in A B C D; do echo $i; done
 for i in {1..5}; do echo $i; done
 for f in *.txt; do                 <span class="c"># duyệt file</span>
@@ -745,10 +1599,35 @@ for arg in "$@"; do echo "$arg"; done   <span class="c"># bỏ "in ..." = duyệ
 <span class="c"># Dạng giống C</span>
 for (( i=0; i&lt;5; i++ )); do echo $i; done</code></pre>
 <p class="tip">Ví dụ trong sách: tìm từ dài nhất trong các file văn bản bằng cách lặp qua từng từ của <code>strings "$f"</code>.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Dạng truyền thống <code>for biến in danh_sách; do ... done</code>: shell <b>mở rộng danh sách trước</b> (brace expansion, wildcard, command substitution, biến), được một dãy từ, rồi gán lần lượt từng từ vào biến và chạy thân vòng lặp. Sức mạnh nằm ở chỗ mọi kiểu mở rộng của chương 7 đều sinh danh sách được:</p>
+<ul>
+<li><code>for i in {1..10}</code>: dãy số.</li>
+<li><code>for f in *.txt</code>: danh sách file, mỗi tên file là một phần tử kể cả khi có dấu cách (wildcard không bị tách từ lại).</li>
+<li><code>for w in $(strings file)</code>: output của lệnh, bị tách theo IFS.</li>
+<li><code>for a</code> (bỏ <code>in</code>): mặc định duyệt <code>"$@"</code>, tức các đối số.</li>
+</ul>
+<p>Lưu ý một hành vi đặc biệt: nếu wildcard không khớp file nào, bash để nguyên chuỗi <code>*.txt</code>, nên vòng lặp chạy đúng một lượt với “file” tên <code>*.txt</code>. Vì vậy sách kiểm tra <code>[[ -e $f ]]</code> trong thân vòng lặp.</p>
+<p>Dạng giống C <code>for (( khởi_tạo; điều_kiện; bước )); do</code> dùng khi cần bộ đếm số: chạy khởi tạo một lần, kiểm tra điều kiện trước mỗi lượt, chạy bước sau mỗi lượt. Nó tương đương một vòng <code>while</code> với <code>(( ))</code>, chỉ gọn hơn.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Lặp qua output của ls</b> — <code>for f in $(ls)</code> tách tên “my file” thành hai phần tử. Dùng wildcard trực tiếp: <code>for f in *</code>.</li>
+<li><b>Không trích dẫn biến lặp</b> — <code>mv $f backup/</code> hỏng với tên có dấu cách. Viết <code>mv -- "$f" backup/</code>.</li>
+<li><b>Wildcard không khớp gì</b> — vòng lặp chạy với chuỗi <code>*.txt</code> nguyên văn và lệnh báo lỗi “No such file”. Thêm <code>[[ -e "$f" ]] || continue</code> hoặc bật <code>shopt -s nullglob</code>.</li>
+<li><b>Đặt danh sách trong nháy</b> — <code>for i in "1 2 3"</code> chỉ lặp một lần với giá trị “1 2 3”.</li>
+<li><b>Dùng biến trong brace expansion</b> — <code>{1..$n}</code> không hoạt động vì brace expansion chạy trước khi biến được mở rộng. Dùng <code>for ((i=1; i&lt;=n; i++))</code> hoặc <code>$(seq 1 $n)</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c34" data-title="Chuỗi và số">
 <div class="ch-head"><span class="ch-num">34</span><h3>Chuỗi và số</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Xử lý chuỗi và số là công việc hằng ngày của script: lấy tên file không có đuôi, đổi chữ hoa thường, kiểm tra biến có rỗng không, tính toán dung lượng hay phần trăm. Người mới thường gọi ra lệnh ngoài (<code>sed</code>, <code>cut</code>, <code>expr</code>) cho từng việc nhỏ. Chương này cho thấy bash làm được phần lớn những việc đó <b>ngay bên trong shell</b>, nhanh hơn nhiều vì không phải tạo tiến trình mới.</p>
+<p>Khi cần số thực (bash chỉ tính số nguyên), sách giới thiệu <code>bc</code>, và kết thúc bằng một script tính tiền trả góp khoản vay.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <div class="tbl"><table><tr><th>Mở rộng tham số</th><th>Tác dụng</th></tr>
 <tr><td><code>${x:-mặcđịnh}</code></td><td>Dùng “mặcđịnh” nếu x rỗng/chưa đặt</td></tr>
 <tr><td><code>${x:=mặcđịnh}</code></td><td>Như trên và gán luôn vào x</td></tr>
@@ -767,10 +1646,39 @@ report.tar report gz
 <span class="p">$ </span>((i++)) ; ((i += 5)) ; echo $((a &gt; b ? a : b))
 <span class="p">$ </span>echo "scale=4; 10/3" | bc               <span class="c"># số thực: 3.3333</span></code></pre>
 <p>Toán tử bit (<code>&lt;&lt; &gt;&gt; &amp; | ^ ~</code>) và logic (<code>&amp;&amp; || !</code>, so sánh) đều dùng được trong <code>(( ))</code>. <b>bc</b> là ngôn ngữ máy tính có độ chính xác tùy ý, dùng khi cần số thực.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Mở rộng tham số</b> có nhiều toán tử chạy ngay lúc mở rộng biến:</p>
+<ul>
+<li>Nhóm xử lý biến rỗng (<code>:-</code> <code>:=</code> <code>:?</code> <code>:+</code>) giúp đặt giá trị mặc định hoặc dừng script khi thiếu dữ liệu, thay cho cả một khối <code>if</code>.</li>
+<li>Nhóm cắt mẫu: <code>#</code> cắt ở <b>đầu</b>, <code>%</code> cắt ở <b>cuối</b>; một ký tự là khớp <i>ngắn nhất</i>, hai ký tự (<code>##</code>, <code>%%</code>) là khớp <i>dài nhất</i>. Mẫu ở đây là wildcard. Mẹo nhớ: trên bàn phím Mỹ, <code>#</code> nằm bên trái <code>$</code>, <code>%</code> bên phải.</li>
+</ul>
+<pre><code>f=archive.tar.gz
+${f%.*}   → archive.tar   (cắt ".gz", khớp ngắn nhất ở cuối)
+${f%%.*}  → archive       (cắt ".tar.gz", khớp dài nhất)
+${f#*.}   → tar.gz
+${f##*.}  → gz</code></pre>
+<p>Tác giả so sánh: thay <code>longest-word</code> dùng <code>wc -c</code> bằng <code>${#j}</code> giúp script chạy nhanh hơn hẳn, vì vòng lặp không còn tạo hàng nghìn tiến trình con.</p>
+<p><b>Số học</b> trong <code>$(( ))</code> và <code>(( ))</code> chỉ dùng số nguyên: phép chia bỏ phần thập phân (<code>5/2</code> là 2), <code>%</code> lấy dư. Số có thể viết ở cơ số khác: <code>0x</code> hex, <code>0</code> đầu là bát phân, <code>cơ_số#số</code> bất kỳ. Có đủ toán tử gán (<code>+=</code>, <code>++</code>), bit (<code>&lt;&lt;</code>, <code>&amp;</code>), logic và toán tử ba ngôi <code>a ? b : c</code>.</p>
+<p><b>bc</b> là một ngôn ngữ máy tính riêng với độ chính xác tùy ý. Script shell sinh ra chương trình bc (thường bằng here document có chèn biến) rồi đưa vào stdin của bc. Biến đặc biệt <code>scale</code> quyết định số chữ số sau dấu phẩy.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Mong đợi số thực</b> — <code>echo $((10/3))</code> in 3. Dùng <code>echo "scale=2; 10/3" | bc</code>.</li>
+<li><b>Số có số 0 đứng đầu</b> — <code>$((08 + 1))</code> báo lỗi vì 08 bị coi là bát phân (8 không hợp lệ). Gặp khi xử lý ngày tháng như “08”; viết <code>$((10#08 + 1))</code>.</li>
+<li><b>Nhầm # và %</b> — <code>${f#*.}</code> và <code>${f%.*}</code> cho kết quả ngược nhau. Thử trên dòng lệnh bằng <code>echo</code> trước khi đưa vào script.</li>
+<li><b>Quên dấu hai chấm</b> — <code>${x-mặc_định}</code> chỉ thay khi x <i>chưa đặt</i>, còn <code>${x:-mặc_định}</code> thay cả khi x <i>rỗng</i>. Thường bạn muốn dạng có <code>:</code>.</li>
+<li><b>Quên scale trong bc</b> — mặc định <code>scale=0</code> nên <code>10/3</code> vẫn ra 3. Đặt <code>scale</code> hoặc chạy <code>bc -l</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c35" data-title="Mảng (Arrays)">
 <div class="ch-head"><span class="ch-num">35</span><h3>Mảng</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Biến thường chỉ chứa một giá trị. Khi cần lưu <b>nhiều giá trị liên quan</b> (danh sách server, số file theo từng giờ, cấu hình theo từng màu), tạo hàng loạt biến <code>srv1</code>, <code>srv2</code>… rất vụng về. <b>Mảng</b> giải quyết việc này: một tên, nhiều ô, truy cập bằng chỉ số.</p>
+<p>Ví dụ trong sách: thống kê mỗi giờ trong ngày có bao nhiêu file trong một thư mục được sửa, bằng một mảng 24 phần tử, mỗi phần tử là bộ đếm cho một giờ.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code>a[1]=foo ; echo ${a[1]}
 days=(Sun Mon Tue Wed Thu Fri Sat)
 echo ${days[0]}              <span class="c"># Sun (chỉ số bắt đầu từ 0)</span>
@@ -786,10 +1694,32 @@ declare -A colors            <span class="c"># mảng kết hợp (bash 4): ch�
 colors[red]="#ff0000"; colors[green]="#00ff00"
 for k in "${!colors[@]}"; do echo "$k = ${colors[$k]}"; done</code></pre>
 <p class="tip">Luôn dùng <code>"${a[@]}"</code> có nháy kép để giữ nguyên phần tử chứa dấu cách. Ví dụ trong sách: đếm số file trong thư mục theo giờ sửa đổi bằng mảng 24 phần tử.</p>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p>Mảng trong bash là <b>một chiều</b>, chỉ số bắt đầu từ 0, và <b>thưa</b> (sparse): không cần liên tục. Gán <code>a[100]=x</code> không tạo 100 ô trống phía trước, nó chỉ tạo đúng một ô có chỉ số 100. Vì vậy <code>${#a[@]}</code> (số phần tử) có thể khác chỉ số lớn nhất, và <code>${!a[@]}</code> (danh sách chỉ số đang dùng) là cách đáng tin để duyệt.</p>
+<p>Truy cập phần tử phải dùng ngoặc nhọn: <code>${a[1]}</code>. Nếu viết <code>$a[1]</code>, shell mở rộng <code>$a</code> (tức <code>${a[0]}</code>) rồi nối thêm chuỗi “[1]”. <code>"${a[@]}"</code> mở rộng thành mọi phần tử, mỗi phần tử là một từ riêng, giống <code>"$@"</code>; <code>"${a[*]}"</code> gộp tất cả thành một chuỗi.</p>
+<pre><code>a=("x y" z)
+for i in "${a[@]}"; do echo "[$i]"; done   # [x y] [z]
+for i in ${a[@]};   do echo "[$i]"; done   # [x] [y] [z]</code></pre>
+<p>Bash không có lệnh sắp xếp mảng; sách dùng mẹo in từng phần tử ra một dòng, đưa qua <code>sort</code>, rồi gán kết quả vào mảng mới bằng <code>( $(...) )</code>. <code>unset a</code> xóa cả mảng, <code>unset 'a[2]'</code> xóa một phần tử (các chỉ số khác không dồn lại). <code>a+=(...)</code> thêm vào cuối.</p>
+<p>Từ bash 4 có <b>mảng kết hợp</b> (associative array) với chỉ số là chuỗi, giống dictionary. Bắt buộc khai báo trước bằng <code>declare -A</code>; nếu không, bash coi chỉ số chuỗi như số 0 và mọi giá trị đè lên nhau.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Viết $a[1]</b> — in phần tử 0 kèm chữ “[1]”. Phải là <code>${a[1]}</code>.</li>
+<li><b>Không trích dẫn "${a[@]}"</b> — phần tử chứa dấu cách bị tách đôi. Luôn viết <code>"${a[@]}"</code>.</li>
+<li><b>Quên declare -A</b> — <code>c[red]=1; c[blue]=2</code> trong mảng thường đều ghi vào ô 0. Khai báo <code>declare -A c</code> trước.</li>
+<li><b>Tưởng chỉ số liên tục sau unset</b> — xóa <code>a[1]</code> xong, vòng <code>for ((i=0;i&lt;${#a[@]};i++))</code> sẽ bỏ sót phần tử cuối. Duyệt bằng <code>"${!a[@]}"</code>.</li>
+<li><b>Dùng mảng kết hợp trên bash cũ</b> — macOS mặc định có bash 3.2, không hỗ trợ <code>declare -A</code>. Kiểm tra <code>bash --version</code>.</li>
+</ul>
+</div>
 </section>
 
 <section class="ch" id="c36" data-title="Những thứ lạ (Exotica)">
 <div class="ch-head"><span class="ch-num">36</span><h3>Những thứ “lạ”</h3></div>
+<div class="lesson lesson-muc"><h4>Mục đích</h4>
+<p>Chương cuối gom những kỹ thuật không dùng hằng ngày nhưng rất mạnh khi cần: gom nhóm lệnh, chạy trong shell con, biến output thành “file”, bắt tín hiệu để dọn dẹp, chạy nhiều việc song song và cho hai tiến trình giao tiếp qua named pipe. Chúng giải quyết những vấn đề của script nghiêm túc: script bị <code>Ctrl-C</code> giữa chừng để lại file tạm, cần chờ nhiều tác vụ nền xong, cần so sánh output của hai lệnh mà không tạo file trung gian.</p>
+</div>
+<h4 class="sub">Lệnh và ví dụ</h4>
 <pre><code>{ ls -l; echo "xong"; } &gt; out.txt   <span class="c"># group command: chạy trong shell hiện tại</span>
 (ls -l; echo "xong") &gt; out.txt      <span class="c"># subshell: chạy trong shell con, biến không giữ lại</span>
 while read line; do ...; done &lt; &lt;(ls -l)   <span class="c"># process substitution: biến output thành "file"</span>
@@ -809,6 +1739,21 @@ cat &lt; pipe1                        <span class="c"># terminal 2</span></code>
 <li><code>trap</code> giúp script dọn file tạm khi bị <code>Ctrl-C</code>; sách khuyên tạo file tạm bằng <code>mktemp</code> để tránh bị tấn công dự đoán tên file.</li>
 <li>Named pipe (FIFO) cho hai tiến trình không liên quan giao tiếp như một đường ống.</li>
 </ul>
+<div class="lesson lesson-cach"><h4>Cách hoạt động</h4>
+<p><b>Group command <code>{ }</code> và subshell <code>( )</code></b> đều gom nhiều lệnh để chuyển hướng output chung một lần (<code>{ ls; date; } &gt; f</code>), thay vì chuyển hướng từng lệnh. Khác biệt: <code>{ }</code> chạy trong <i>shell hiện tại</i>, còn <code>( )</code> tạo <i>shell con</i> là bản sao của shell hiện tại. Mọi thay đổi trong shell con (biến, <code>cd</code>) biến mất khi nó kết thúc. Đó cũng là lý do <code>read</code> trong pipeline mất biến: mỗi phần của pipeline là một shell con. <code>{ }</code> nhanh hơn và cần ít bộ nhớ hơn, nên ưu tiên khi không cần cô lập.</p>
+<p><b>Process substitution</b> <code>&lt;(lệnh)</code> chạy lệnh và đưa output của nó ra dưới dạng một tên file đặc biệt (như <code>/dev/fd/63</code>). Nhờ vậy lệnh nào cần tên file đều đọc được output đó: <code>diff &lt;(ls a) &lt;(ls b)</code>. Nó cũng giải bài toán vòng lặp: <code>while read l; do ...; done &lt; &lt;(lệnh)</code> giữ vòng lặp ở shell hiện tại nên biến không bị mất.</p>
+<p><b>trap</b> đăng ký lệnh chạy khi script nhận tín hiệu. <code>trap 'rm -f "$TEMP"' EXIT</code> bảo đảm file tạm bị xóa dù script kết thúc bình thường hay bị <code>Ctrl-C</code> (INT) hoặc <code>kill</code> (TERM). Sách nhấn mạnh tạo file tạm bằng <code>mktemp</code>: tên ngẫu nhiên tránh việc kẻ xấu đoán trước tên trong <code>/tmp</code> và tạo symlink trỏ tới file quan trọng.</p>
+<p><b>Chạy bất đồng bộ:</b> <code>lệnh &amp;</code> chạy nền và <code>$!</code> chứa PID của nó. <code>wait</code> dừng script cha cho tới khi tiến trình con kết thúc, nhờ vậy chạy được nhiều tác vụ song song rồi đồng bộ lại. <b>Named pipe</b> (<code>mkfifo</code>) là một “file” trên đĩa hoạt động như đường ống: tiến trình ghi bị chặn cho tới khi có tiến trình đọc, và ngược lại, cho phép hai chương trình không liên quan nối với nhau.</p>
+</div>
+<div class="lesson lesson-loi"><h4>Lỗi thường gặp</h4>
+<ul>
+<li><b>Thiếu dấu cách hoặc ; trong { }</b> — <code>{ls; date}</code> lỗi. Viết <code>{ ls; date; }</code>: có cách sau <code>{</code>, có <code>;</code> trước <code>}</code>.</li>
+<li><b>Mong đợi subshell thay đổi biến</b> — <code>(count=5); echo $count</code> in rỗng. Dùng <code>{ }</code> nếu cần giữ thay đổi.</li>
+<li><b>Tự đặt tên file tạm</b> — <code>/tmp/myscript.tmp</code> dễ bị đoán và dễ đè nhau khi chạy song song. Dùng <code>mktemp</code>.</li>
+<li><b>trap với nháy kép</b> — <code>trap "rm $TEMP" EXIT</code> mở rộng biến <i>ngay lúc đặt trap</i>; nếu TEMP được gán sau đó thì trap xóa nhầm chuỗi rỗng. Dùng nháy đơn để mở rộng lúc trap chạy, và đặt trap sau khi đã gán biến.</li>
+<li><b>Treo vì named pipe</b> — ghi vào FIFO mà không có ai đọc thì lệnh đứng im mãi. Mở đầu đọc ở terminal khác, hoặc chạy đầu ghi ở nền.</li>
+</ul>
+</div>
 </section>
 </div>
 
