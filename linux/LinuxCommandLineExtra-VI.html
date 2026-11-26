@@ -1,0 +1,1673 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Giáo trình Linux Command Line</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky chapter index on the left (stacks on phones), lessons as a long reading column; code blocks are the visual anchor */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --fg:#1b2329; --muted:#5b6a74; --line:#d9e0e4;
+  --accent:#0f7a6c; --accent-soft:#e1f1ee; --amber:#a35d00;
+  --code-bg:#1d2a31; --code-fg:#e3ecef; --code-dim:#8aa3ad; --code-prompt:#5fd4bf;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12191d; --surface:#18222740; --fg:#e4eaed; --muted:#93a4ad; --line:#2a373e;
+  --accent:#4fc7b3; --accent-soft:#1a3531; --amber:#f0b25a;
+  --code-bg:#0b1114; --code-fg:#e3ecef; --code-dim:#7d949d; --code-prompt:#5fd4bf; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12191d; --surface:#18222740; --fg:#e4eaed; --muted:#93a4ad; --line:#2a373e;
+  --accent:#4fc7b3; --accent-soft:#1a3531; --amber:#f0b25a;
+  --code-bg:#0b1114; --code-fg:#e3ecef; --code-dim:#7d949d; --code-prompt:#5fd4bf; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--accent)}
+a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:48px;padding-block:40px 80px}
+header.intro{grid-column:1/-1;display:grid;gap:12px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.eyebrow{font:600 12px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(28px,4.4vw,44px);line-height:1.15;margin:0;text-wrap:balance;font-weight:700}
+.lede{max-width:68ch;color:var(--muted);margin:0}
+.progress{display:flex;align-items:center;gap:12px;font:500 14px var(--f-mono);color:var(--muted)}
+.bar{flex:0 1 260px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;max-height:calc(100vh - 40px);overflow:auto;font-size:14px;padding-right:6px}
+nav h3{font:600 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
+nav h3:first-child{margin-top:0}
+nav ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+nav a{display:flex;gap:8px;text-decoration:none;color:var(--fg);padding:4px 8px;border-radius:6px}
+nav a:hover{background:var(--accent-soft)}
+nav a .n{font:500 12px/1.9 var(--f-mono);color:var(--muted);min-width:20px;font-variant-numeric:tabular-nums}
+nav a.done .t{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+main{min-width:0;display:grid;gap:56px}
+.part{display:grid;gap:40px}
+.part-head{display:grid;gap:6px;padding:20px 0 4px;border-top:3px solid var(--fg)}
+.part-head h2{margin:0;font-size:26px;line-height:1.25}
+.part-head p{margin:0;color:var(--muted);max-width:68ch}
+section.ch{display:grid;gap:14px;scroll-margin-top:24px}
+.ch-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.ch-num{font:600 13px var(--f-mono);color:var(--accent);font-variant-numeric:tabular-nums}
+.ch h3{margin:0;font-size:21px;line-height:1.3;flex:1 1 300px;text-wrap:balance}
+.ch-head label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+.ch-head input{accent-color:var(--accent);width:16px;height:16px}
+.ch p,.ch li{max-width:70ch}
+.ch p{margin:0}
+.ch ul{margin:0;padding-left:20px;display:grid;gap:4px}
+code{font-family:var(--f-mono);font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:4px}
+pre{margin:0;background:var(--code-bg);color:var(--code-fg);font:13.5px/1.6 var(--f-mono);padding:14px 16px;border-radius:8px;overflow-x:auto}
+pre code{background:none;padding:0;font-size:inherit;color:inherit}
+pre .p{color:var(--code-prompt);user-select:none}
+pre .c{color:var(--code-dim)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;font-size:14px;min-width:420px;width:100%}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td code{white-space:nowrap}
+.task{border-left:3px solid var(--amber);padding:10px 14px;background:var(--surface);border-radius:0 6px 6px 0}
+.task b{color:var(--amber);font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:2px}
+.tip{color:var(--muted);font-size:14.5px}
+footer{grid-column:1/-1;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:20px}
+.ex{display:grid;gap:10px;margin-top:4px}
+.ex h4{margin:0;font:600 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+.ex ol{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:ex}
+.ex li{counter-increment:ex;border:1px solid var(--line);border-radius:8px;padding:10px 14px;display:grid;gap:8px;min-width:0;max-width:none}
+.ex .q{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.ex .q::before{content:"Bài " counter(ex);font:600 12px var(--f-mono);color:var(--muted);white-space:nowrap}
+.ex .q span.txt{flex:1 1 260px;min-width:0}
+.lv{font:600 10.5px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 7px;border-radius:999px;white-space:nowrap}
+.lv1{background:var(--accent-soft);color:var(--accent)}
+.lv2{background:var(--line);color:var(--fg)}
+.lv3{background:var(--amber);color:var(--bg)}
+.ex details summary{cursor:pointer;font-size:13.5px;color:var(--accent);width:max-content}
+.ex details[open] summary{margin-bottom:8px}
+.ex-tools{display:flex;gap:8px;flex-wrap:wrap}
+.ex-tools button{font:500 13px var(--f-body);background:none;border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:5px 10px;cursor:pointer}
+.ex-tools button:hover{border-color:var(--accent);color:var(--accent)}
+.ex-tools button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:860px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:28px;padding-block:24px 60px}
+  nav{position:static;max-height:none;border:1px solid var(--line);border-radius:8px;padding:14px}
+  nav ol{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+}
+@media (prefers-reduced-motion:reduce){.bar span{transition:none}}
+</style>
+
+<div class="wrap">
+<header class="intro">
+  <div class="eyebrow">Học theo sách · William Shotts · 36 chương</div>
+  <h1>Giáo trình Linux Command Line</h1>
+  <p class="lede">Bản tóm lược tiếng Việt của cuốn <i>The Linux Command Line</i>. Mỗi chương gồm ý chính, lệnh cần nhớ kèm ví dụ, và 5 bài tập từ dễ đến khó kèm lời giải để bạn gõ thử ngay trên terminal (Linux, WSL hoặc macOS đều được, macOS có vài khác biệt nhỏ). Đánh dấu “Đã học” để theo dõi tiến độ.</p>
+  <div class="ex-tools"><button type="button" id="openAll">Mở mọi lời giải</button><button type="button" id="closeAll">Đóng mọi lời giải</button></div>
+  <div class="progress"><div class="bar"><span id="bar"></span></div><span id="count">0/36 chương</span></div>
+</header>
+
+<nav aria-label="Mục lục">
+  <h3>Phần 1 · Học shell</h3>
+  <ol id="nav1"></ol>
+  <h3>Phần 2 · Cấu hình &amp; môi trường</h3>
+  <ol id="nav2"></ol>
+  <h3>Phần 3 · Công việc thường ngày</h3>
+  <ol id="nav3"></ol>
+  <h3>Phần 4 · Viết shell script</h3>
+  <ol id="nav4"></ol>
+</nav>
+
+<main>
+
+<!-- ================= PART 1 ================= -->
+<div class="part" data-part="1">
+<div class="part-head"><div class="eyebrow">Phần 1</div><h2>Học shell</h2><p>Ngôn ngữ cơ bản của dòng lệnh: cấu trúc lệnh, di chuyển trong hệ thống file, chuyển hướng, mở rộng (expansion), quyền và tiến trình.</p></div>
+
+<section class="ch" id="c1" data-title="Shell là gì?">
+<div class="ch-head"><span class="ch-num">01</span><h3>Shell là gì?</h3></div>
+<p><b>Shell</b> là chương trình nhận lệnh bạn gõ và chuyển cho hệ điều hành thực thi. Trên hầu hết Linux, shell mặc định là <b>bash</b> (Bourne Again SHell). Bạn mở shell qua một <b>terminal emulator</b> (GNOME Terminal, Konsole…).</p>
+<ul>
+<li>Dấu nhắc <code>user@host:~$</code>: kết thúc bằng <code>$</code> là người dùng thường, <code>#</code> là root (quản trị).</li>
+<li>Phím ↑ ↓ duyệt lại lịch sử lệnh; ← → di chuyển con trỏ để sửa lệnh.</li>
+<li>Gõ <code>exit</code> hoặc <kbd>Ctrl</kbd>+<kbd>D</kbd> để đóng phiên.</li>
+</ul>
+<pre><code><span class="p">$ </span>date        <span class="c"># ngày giờ hiện tại</span>
+<span class="p">$ </span>cal         <span class="c"># lịch tháng này</span>
+<span class="p">$ </span>df          <span class="c"># dung lượng trống của các ổ đĩa</span>
+<span class="p">$ </span>free        <span class="c"># bộ nhớ RAM trống</span></code></pre>
+</section>
+
+<section class="ch" id="c2" data-title="Di chuyển (Navigation)">
+<div class="ch-head"><span class="ch-num">02</span><h3>Di chuyển trong hệ thống file</h3></div>
+<p>Linux tổ chức file thành <b>một cây thư mục duy nhất</b> bắt đầu từ gốc <code>/</code> (không có ổ C:, D: như Windows). Tại mỗi thời điểm bạn đứng ở một <b>thư mục làm việc hiện tại</b>.</p>
+<div class="tbl"><table><tr><th>Lệnh</th><th>Ý nghĩa</th></tr>
+<tr><td><code>pwd</code></td><td>In thư mục hiện tại</td></tr>
+<tr><td><code>ls</code></td><td>Liệt kê nội dung thư mục</td></tr>
+<tr><td><code>cd /usr/bin</code></td><td>Đường dẫn <b>tuyệt đối</b> (bắt đầu từ <code>/</code>)</td></tr>
+<tr><td><code>cd ..</code> / <code>cd ./bin</code></td><td>Đường dẫn <b>tương đối</b>: <code>..</code> thư mục cha, <code>.</code> thư mục hiện tại</td></tr>
+<tr><td><code>cd</code> · <code>cd ~</code></td><td>Về thư mục home</td></tr>
+<tr><td><code>cd -</code></td><td>Quay về thư mục vừa ở trước đó</td></tr>
+<tr><td><code>cd ~bob</code></td><td>Vào home của user bob</td></tr></table></div>
+<p class="tip">Lưu ý: tên file phân biệt hoa thường; file bắt đầu bằng dấu chấm (<code>.bashrc</code>) là file ẩn; tránh dùng dấu cách trong tên file, hãy dùng <code>_</code> hoặc <code>-</code>.</p>
+</section>
+
+<section class="ch" id="c3" data-title="Khám phá hệ thống">
+<div class="ch-head"><span class="ch-num">03</span><h3>Khám phá hệ thống</h3></div>
+<p>Cú pháp chung của lệnh: <code>lệnh -tùy_chọn đối_số</code>. Tùy chọn ngắn có thể gộp (<code>ls -lt</code>), tùy chọn dài dùng hai gạch (<code>--reverse</code>).</p>
+<pre><code><span class="p">$ </span>ls -l          <span class="c"># định dạng dài</span>
+<span class="p">$ </span>ls -la         <span class="c"># kể cả file ẩn</span>
+<span class="p">$ </span>ls -lh         <span class="c"># kích thước dễ đọc (K, M, G)</span>
+<span class="p">$ </span>ls -lt --reverse  <span class="c"># sắp theo thời gian, đảo ngược</span>
+-rw-r--r-- 1 me me 32059 2026-11-20 10:12 notes.txt
+<span class="c"># quyền  link chủ nhóm  size   ngày sửa       tên</span>
+<span class="p">$ </span>file notes.txt    <span class="c"># cho biết loại file (text, ảnh, ELF…)</span>
+<span class="p">$ </span>less /etc/passwd  <span class="c"># xem file văn bản từng trang</span></code></pre>
+<p>Trong <code>less</code>: <kbd>Space</kbd>/<kbd>b</kbd> trang sau/trước, <kbd>G</kbd> cuối file, <kbd>g</kbd> đầu file, <code>/từ</code> tìm, <kbd>n</kbd> kết quả tiếp, <kbd>q</kbd> thoát.</p>
+<p>Các thư mục quan trọng: <code>/bin</code> <code>/sbin</code> (chương trình hệ thống), <code>/etc</code> (cấu hình), <code>/home</code> (dữ liệu người dùng), <code>/root</code>, <code>/tmp</code>, <code>/usr</code> (chương trình người dùng), <code>/usr/local</code> (phần mềm tự cài), <code>/var</code> (dữ liệu thay đổi, log ở <code>/var/log</code>), <code>/dev</code> (thiết bị), <code>/proc</code> (cửa sổ nhìn vào kernel), <code>/boot</code>, <code>/lib</code>, <code>/media</code> <code>/mnt</code> (điểm gắn ổ).</p>
+<p><b>Symbolic link</b> (liên kết mềm) hiện trong <code>ls -l</code> dạng <code>libc.so.6 -&gt; libc-2.6.so</code>: một tên trỏ đến file khác.</p>
+</section>
+
+<section class="ch" id="c4" data-title="Thao tác file & thư mục">
+<div class="ch-head"><span class="ch-num">04</span><h3>Thao tác với file và thư mục</h3></div>
+<p><b>Wildcard</b> giúp chọn nhiều file cùng lúc:</p>
+<div class="tbl"><table><tr><th>Mẫu</th><th>Khớp với</th></tr>
+<tr><td><code>*</code></td><td>Mọi chuỗi ký tự</td></tr>
+<tr><td><code>?</code></td><td>Đúng một ký tự</td></tr>
+<tr><td><code>[abc]</code> · <code>[!abc]</code></td><td>Một ký tự trong tập / ngoài tập</td></tr>
+<tr><td><code>[[:digit:]]</code> <code>[[:upper:]]</code> <code>[[:alpha:]]</code></td><td>Lớp ký tự: số, chữ hoa, chữ cái</td></tr>
+<tr><td><code>Data???</code> · <code>*.html</code> · <code>[[:upper:]]*</code></td><td>Ví dụ: “Data” + 3 ký tự, đuôi .html, bắt đầu bằng chữ hoa</td></tr></table></div>
+<pre><code><span class="p">$ </span>mkdir -p a/b/c          <span class="c"># tạo thư mục (cả cha nếu thiếu)</span>
+<span class="p">$ </span>cp -i f1 f2             <span class="c"># chép, hỏi trước khi ghi đè</span>
+<span class="p">$ </span>cp -r dir1 dir2         <span class="c"># chép cả thư mục</span>
+<span class="p">$ </span>cp -u *.html dest/      <span class="c"># chỉ chép file mới hơn</span>
+<span class="p">$ </span>mv old new              <span class="c"># đổi tên / di chuyển</span>
+<span class="p">$ </span>rm -i file              <span class="c"># xóa có hỏi</span>
+<span class="p">$ </span>rm -r dir               <span class="c"># xóa thư mục và mọi thứ bên trong</span>
+<span class="p">$ </span>ln file hardlink        <span class="c"># hard link</span>
+<span class="p">$ </span>ln -s file symlink      <span class="c"># symbolic link</span></code></pre>
+<ul>
+<li><b>Không có thùng rác</b> trên dòng lệnh. Mẹo an toàn: thử wildcard bằng <code>ls *.html</code> trước rồi mới <code>rm *.html</code>. Cẩn thận lỗi gõ <code>rm * .html</code> (có dấu cách) sẽ xóa sạch thư mục.</li>
+<li><b>Hard link</b>: thêm một tên cho cùng dữ liệu (cùng inode, xem bằng <code>ls -li</code>); không trỏ tới thư mục, không vượt sang ổ khác. <b>Symlink</b>: file đặc biệt chứa đường dẫn tới file đích; xóa đích thì symlink thành “gãy”.</li>
+</ul>
+</section>
+
+<section class="ch" id="c5" data-title="Làm việc với lệnh">
+<div class="ch-head"><span class="ch-num">05</span><h3>Làm việc với lệnh</h3></div>
+<p>Một “lệnh” có thể là 4 thứ: <b>chương trình thực thi</b> (file trong <code>/usr/bin</code>), <b>lệnh dựng sẵn của shell</b> (builtin như <code>cd</code>), <b>hàm shell</b>, hoặc <b>alias</b>.</p>
+<pre><code><span class="p">$ </span>type ls        <span class="c"># ls is aliased to `ls --color=auto'</span>
+<span class="p">$ </span>type cd        <span class="c"># cd is a shell builtin</span>
+<span class="p">$ </span>which ls       <span class="c"># /usr/bin/ls (chỉ với chương trình thực thi)</span>
+<span class="p">$ </span>help cd        <span class="c"># trợ giúp cho builtin</span>
+<span class="p">$ </span>mkdir --help   <span class="c"># hầu hết chương trình hỗ trợ --help</span>
+<span class="p">$ </span>man ls         <span class="c"># trang hướng dẫn (manual)</span>
+<span class="p">$ </span>man 5 passwd   <span class="c"># chọn section 5: định dạng file</span>
+<span class="p">$ </span>apropos floppy <span class="c"># tìm lệnh theo từ khóa (= man -k)</span>
+<span class="p">$ </span>whatis ls      <span class="c"># mô tả một dòng</span>
+<span class="p">$ </span>info coreutils <span class="c"># tài liệu dạng info của GNU</span></code></pre>
+<p>Tự tạo lệnh bằng <b>alias</b>; nhiều lệnh trên một dòng nối bằng dấu <code>;</code>:</p>
+<pre><code><span class="p">$ </span>alias foo='cd /usr; ls; cd -'
+<span class="p">$ </span>foo
+<span class="p">$ </span>unalias foo
+<span class="p">$ </span>alias            <span class="c"># xem tất cả alias</span></code></pre>
+<p class="tip">Alias tạo trên dòng lệnh mất khi đóng shell; muốn giữ lâu dài thì ghi vào <code>~/.bashrc</code> (chương 11).</p>
+</section>
+
+<section class="ch" id="c6" data-title="Chuyển hướng (Redirection)">
+<div class="ch-head"><span class="ch-num">06</span><h3>Chuyển hướng và đường ống</h3></div>
+<p>Mọi chương trình có 3 luồng: <b>stdin</b> (số 0, bàn phím), <b>stdout</b> (1, màn hình), <b>stderr</b> (2, màn hình). Ta có thể chuyển hướng chúng.</p>
+<pre><code><span class="p">$ </span>ls -l /usr/bin &gt; out.txt      <span class="c"># ghi đè stdout vào file</span>
+<span class="p">$ </span>ls -l /usr/bin &gt;&gt; out.txt     <span class="c"># nối thêm</span>
+<span class="p">$ </span>&gt; out.txt                     <span class="c"># mẹo: làm rỗng file</span>
+<span class="p">$ </span>ls /khongco 2&gt; err.txt        <span class="c"># chuyển stderr</span>
+<span class="p">$ </span>ls /bin /khongco &amp;&gt; all.txt   <span class="c"># cả stdout và stderr (bash)</span>
+<span class="p">$ </span>ls /bin &gt; all.txt 2&gt;&amp;1        <span class="c"># cách cũ; thứ tự quan trọng!</span>
+<span class="p">$ </span>ls /khongco 2&gt; /dev/null      <span class="c"># vứt bỏ lỗi ("thùng rác bit")</span>
+<span class="p">$ </span>cat f1 f2 &gt; merged            <span class="c"># cat nối file</span>
+<span class="p">$ </span>cat &lt; notes.txt               <span class="c"># lấy stdin từ file</span></code></pre>
+<p><b>Pipeline</b> <code>|</code> nối stdout của lệnh trước vào stdin của lệnh sau. Các lệnh đọc stdin, biến đổi rồi ghi stdout gọi là <b>filter</b>:</p>
+<pre><code><span class="p">$ </span>ls /bin /usr/bin | sort | uniq | less
+<span class="p">$ </span>ls /bin /usr/bin | sort | uniq -d    <span class="c"># chỉ dòng trùng</span>
+<span class="p">$ </span>ls /usr/bin | wc -l                   <span class="c"># đếm số dòng</span>
+<span class="p">$ </span>ls /usr/bin | grep -i zip             <span class="c"># lọc dòng chứa "zip"</span>
+<span class="p">$ </span>head -n 5 file ; tail -n 5 file
+<span class="p">$ </span>tail -f /var/log/syslog               <span class="c"># theo dõi log trực tiếp</span>
+<span class="p">$ </span>ls /usr/bin | tee ls.txt | grep zip   <span class="c"># vừa lưu file vừa chuyển tiếp</span></code></pre>
+<p class="tip">Lỗi kinh điển: dùng <code>&gt;</code> thay cho <code>|</code> (<code>lệnh1 &gt; lệnh2</code>) sẽ ghi đè lên file tên lệnh2. Đừng làm thế trong <code>/usr/bin</code> với quyền root.</p>
+</section>
+
+<section class="ch" id="c7" data-title="Shell nhìn thế giới thế nào">
+<div class="ch-head"><span class="ch-num">07</span><h3>Nhìn thế giới như shell nhìn</h3></div>
+<p>Trước khi chạy lệnh, shell <b>mở rộng (expansion)</b> những gì bạn gõ. Dùng <code>echo</code> để thấy kết quả mở rộng.</p>
+<div class="tbl"><table><tr><th>Loại</th><th>Ví dụ</th><th>Kết quả</th></tr>
+<tr><td>Pathname</td><td><code>echo D*</code></td><td>Desktop Documents Downloads</td></tr>
+<tr><td>Tilde</td><td><code>echo ~</code></td><td>/home/me</td></tr>
+<tr><td>Số học</td><td><code>echo $((2 + 3 * 4))</code></td><td>14 (chỉ số nguyên; <code>**</code> là lũy thừa)</td></tr>
+<tr><td>Ngoặc nhọn</td><td><code>echo file{A,B,C}</code> · <code>{1..5}</code> · <code>{a..e}</code></td><td>fileA fileB fileC</td></tr>
+<tr><td>Tham số</td><td><code>echo $USER</code></td><td>me</td></tr>
+<tr><td>Thay thế lệnh</td><td><code>ls -l $(which cp)</code></td><td>output của lệnh trong <code>$( )</code></td></tr></table></div>
+<pre><code><span class="p">$ </span>mkdir {2025..2026}-{01..12}   <span class="c"># tạo 24 thư mục theo tháng</span></code></pre>
+<p><b>Trích dẫn (quoting)</b> để kiểm soát mở rộng:</p>
+<ul>
+<li><b>Nháy kép</b> <code>"..."</code>: tắt tách từ, wildcard, tilde, brace; <b>vẫn giữ</b> <code>$</code>, <code>\</code>, <code>`</code>. Dùng cho tên file có dấu cách: <code>ls -l "two words.txt"</code>.</li>
+<li><b>Nháy đơn</b> <code>'...'</code>: tắt <b>mọi</b> mở rộng.</li>
+<li><b>Dấu thoát</b> <code>\</code>: tắt ý nghĩa đặc biệt của một ký tự: <code>echo "Giá: \$5.00"</code>.</li>
+</ul>
+<pre><code><span class="p">$ </span>echo text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER
+<span class="p">$ </span>echo "text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER"
+<span class="p">$ </span>echo 'text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER'</code></pre>
+</section>
+
+<section class="ch" id="c8" data-title="Mẹo bàn phím nâng cao">
+<div class="ch-head"><span class="ch-num">08</span><h3>Mẹo bàn phím nâng cao</h3></div>
+<div class="tbl"><table><tr><th>Phím</th><th>Tác dụng</th></tr>
+<tr><td><code>Ctrl-A</code> / <code>Ctrl-E</code></td><td>Về đầu / cuối dòng</td></tr>
+<tr><td><code>Alt-F</code> / <code>Alt-B</code></td><td>Tiến / lùi một từ</td></tr>
+<tr><td><code>Ctrl-L</code></td><td>Xóa màn hình (như <code>clear</code>)</td></tr>
+<tr><td><code>Ctrl-K</code> / <code>Ctrl-U</code></td><td>Cắt từ con trỏ tới cuối / đầu dòng</td></tr>
+<tr><td><code>Alt-D</code> / <code>Alt-Backspace</code></td><td>Cắt một từ phía sau / phía trước</td></tr>
+<tr><td><code>Ctrl-Y</code></td><td>Dán (yank) phần vừa cắt</td></tr>
+<tr><td><code>Tab</code> · <code>Tab Tab</code></td><td>Tự hoàn thành tên lệnh/file · liệt kê khả năng</td></tr>
+<tr><td><code>Ctrl-R</code></td><td>Tìm ngược trong lịch sử</td></tr></table></div>
+<pre><code><span class="p">$ </span>history | grep /usr/bin   <span class="c"># tìm trong lịch sử (~/.bash_history)</span>
+<span class="p">$ </span>!88       <span class="c"># chạy lại lệnh số 88</span>
+<span class="p">$ </span>!!        <span class="c"># chạy lại lệnh vừa rồi (vd: sudo !!)</span>
+<span class="p">$ </span>!ls       <span class="c"># chạy lại lệnh gần nhất bắt đầu bằng "ls"</span></code></pre>
+<p class="tip">Lệnh <code>script</code> ghi lại toàn bộ phiên terminal vào file, hữu ích khi cần lưu lại thao tác.</p>
+</section>
+
+<section class="ch" id="c9" data-title="Quyền (Permissions)">
+<div class="ch-head"><span class="ch-num">09</span><h3>Quyền truy cập</h3></div>
+<p>Linux là hệ thống nhiều người dùng. Mỗi file có <b>chủ sở hữu (u)</b>, <b>nhóm (g)</b>, và <b>người khác (o)</b>; mỗi đối tượng có quyền <b>r</b> đọc, <b>w</b> ghi, <b>x</b> thực thi. Xem danh tính bằng <code>id</code>.</p>
+<pre><code>-rwxr-x---  1 me  dev  ...  script.sh
+<span class="c"># loại | u=rwx | g=r-x | o=---</span></code></pre>
+<p>Với thư mục: <b>r</b> cho phép liệt kê, <b>w</b> cho phép tạo/xóa/đổi tên file bên trong, <b>x</b> cho phép <code>cd</code> vào.</p>
+<div class="tbl"><table><tr><th>Bát phân</th><th>Quyền</th><th>Hay dùng cho</th></tr>
+<tr><td>7</td><td>rwx</td><td></td></tr><tr><td>6</td><td>rw-</td><td></td></tr><tr><td>5</td><td>r-x</td><td></td></tr><tr><td>4</td><td>r--</td><td></td></tr>
+<tr><td>755</td><td>rwxr-xr-x</td><td>Script, thư mục</td></tr>
+<tr><td>644</td><td>rw-r--r--</td><td>File thường</td></tr>
+<tr><td>700 / 600</td><td>chỉ chủ sở hữu</td><td>File riêng tư</td></tr></table></div>
+<pre><code><span class="p">$ </span>chmod 600 secret.txt
+<span class="p">$ </span>chmod u+x,go=rx script.sh   <span class="c"># dạng ký hiệu</span>
+<span class="p">$ </span>umask                       <span class="c"># 0002: mặt nạ trừ bớt quyền mặc định</span>
+<span class="p">$ </span>su -                        <span class="c"># mở shell của root</span>
+<span class="p">$ </span>sudo apt update             <span class="c"># chạy một lệnh với quyền root</span>
+<span class="p">$ </span>sudo chown bob:users file   <span class="c"># đổi chủ và nhóm</span>
+<span class="p">$ </span>chgrp users file
+<span class="p">$ </span>passwd                      <span class="c"># đổi mật khẩu</span></code></pre>
+<p class="tip">Quyền đặc biệt: <b>setuid</b> (4000, chạy với quyền chủ file, vd <code>passwd</code>), <b>setgid</b> (2000), <b>sticky bit</b> (1000, như ở <code>/tmp</code>: chỉ chủ mới xóa được file của mình).</p>
+</section>
+
+<section class="ch" id="c10" data-title="Tiến trình (Processes)">
+<div class="ch-head"><span class="ch-num">10</span><h3>Tiến trình</h3></div>
+<p>Mỗi chương trình đang chạy là một <b>tiến trình</b> có số hiệu <b>PID</b>. Tiến trình đầu tiên (init/systemd) có PID 1.</p>
+<pre><code><span class="p">$ </span>ps            <span class="c"># tiến trình của terminal này</span>
+<span class="p">$ </span>ps x          <span class="c"># mọi tiến trình của tôi</span>
+<span class="p">$ </span>ps aux        <span class="c"># mọi tiến trình của mọi user (có %CPU, %MEM)</span>
+<span class="p">$ </span>top           <span class="c"># theo dõi trực tiếp; q để thoát</span>
+<span class="p">$ </span>xlogo &amp;       <span class="c"># chạy nền</span>
+<span class="p">$ </span>jobs          <span class="c"># danh sách job</span>
+<span class="p">$ </span>fg %1         <span class="c"># đưa job 1 lên tiền cảnh</span>
+<span class="c">  Ctrl-C  ngắt (INT)    Ctrl-Z  tạm dừng (TSTP)</span>
+<span class="p">$ </span>bg %1         <span class="c"># cho job đang dừng chạy tiếp ở nền</span>
+<span class="p">$ </span>kill 2345     <span class="c"># gửi TERM (15) tới PID 2345</span>
+<span class="p">$ </span>kill -9 2345  <span class="c"># KILL: buộc dừng, dùng khi hết cách</span>
+<span class="p">$ </span>killall xlogo <span class="c"># theo tên</span></code></pre>
+<p>Trạng thái trong cột STAT: <code>R</code> đang chạy, <code>S</code> ngủ, <code>D</code> chờ I/O, <code>T</code> đã dừng, <code>Z</code> zombie, <code>&lt;</code> ưu tiên cao, <code>N</code> ưu tiên thấp (nice). Tín hiệu hay gặp: HUP (1), INT (2), KILL (9), TERM (15), CONT (18), STOP (19). Lệnh liên quan: <code>pstree</code>, <code>vmstat</code>, <code>shutdown</code>.</p>
+</section>
+</div>
+
+<!-- ================= PART 2 ================= -->
+<div class="part" data-part="2">
+<div class="part-head"><div class="eyebrow">Phần 2</div><h2>Cấu hình và môi trường</h2><p>Sửa các file cấu hình điều khiển cách shell và hệ thống hoạt động.</p></div>
+
+<section class="ch" id="c11" data-title="Môi trường (Environment)">
+<div class="ch-head"><span class="ch-num">11</span><h3>Môi trường</h3></div>
+<p>Shell lưu thông tin trong <b>môi trường</b>: biến môi trường, biến shell, alias, hàm.</p>
+<pre><code><span class="p">$ </span>printenv | less     <span class="c"># biến môi trường</span>
+<span class="p">$ </span>set | less          <span class="c"># cả biến shell và hàm</span>
+<span class="p">$ </span>echo $HOME $PATH $SHELL $USER $PWD $LANG $EDITOR $PS1</code></pre>
+<p><code>PATH</code> là danh sách thư mục (cách nhau bởi <code>:</code>) mà shell tìm chương trình khi bạn gõ tên lệnh.</p>
+<div class="tbl"><table><tr><th>Loại shell</th><th>File khởi động được đọc</th></tr>
+<tr><td>Login shell (đăng nhập)</td><td><code>/etc/profile</code>, rồi <code>~/.bash_profile</code> hoặc <code>~/.bash_login</code> hoặc <code>~/.profile</code></td></tr>
+<tr><td>Non-login (mở terminal trong GUI)</td><td><code>/etc/bash.bashrc</code>, <code>~/.bashrc</code></td></tr></table></div>
+<p>Quy tắc: thêm thư mục vào PATH hoặc biến môi trường thì sửa <code>~/.bash_profile</code>/<code>~/.profile</code>; mọi thứ khác (alias, hàm, <code>umask</code>) ghi vào <code>~/.bashrc</code>. Luôn sao lưu trước khi sửa: <code>cp .bashrc .bashrc.bak</code>.</p>
+<pre><code><span class="c"># Thêm vào cuối ~/.bashrc</span>
+umask 0002
+export HISTCONTROL=ignoredups
+export HISTSIZE=1000
+alias l.='ls -d .* --color=auto'
+alias ll='ls -l --color=auto'
+<span class="c"># Áp dụng ngay mà không cần mở terminal mới</span>
+<span class="p">$ </span>source ~/.bashrc</code></pre>
+</section>
+
+<section class="ch" id="c12" data-title="Làm quen với vi">
+<div class="ch-head"><span class="ch-num">12</span><h3>Nhập môn trình soạn thảo vi</h3></div>
+<p><b>vi</b> (thường là <b>vim</b>) có mặt trên gần như mọi hệ Unix, nhẹ và nhanh, nên rất đáng học. Điểm mấu chốt: vi có <b>chế độ</b>. Khi mở là <b>command mode</b> (phím là lệnh), nhấn <kbd>i</kbd> để vào <b>insert mode</b> (gõ chữ), <kbd>Esc</kbd> để quay lại.</p>
+<div class="tbl"><table><tr><th>Phím</th><th>Tác dụng</th></tr>
+<tr><td><code>:w</code> · <code>:q</code> · <code>:wq</code> · <code>:q!</code></td><td>Lưu · thoát · lưu và thoát · thoát không lưu</td></tr>
+<tr><td><code>h j k l</code></td><td>Trái, xuống, lên, phải</td></tr>
+<tr><td><code>w</code> <code>b</code> · <code>0</code> <code>$</code> · <code>gg</code> <code>G</code> · <code>5G</code></td><td>Từ tiếp/trước · đầu/cuối dòng · đầu/cuối file · đến dòng 5</td></tr>
+<tr><td><code>i</code> <code>a</code> <code>A</code> <code>o</code> <code>O</code></td><td>Chèn trước / sau con trỏ / cuối dòng · mở dòng mới dưới / trên</td></tr>
+<tr><td><code>x</code> · <code>dd</code> · <code>dw</code> · <code>d$</code> · <code>5dd</code></td><td>Xóa ký tự · dòng · từ · tới cuối dòng · 5 dòng</td></tr>
+<tr><td><code>yy</code> · <code>p</code> <code>P</code></td><td>Chép dòng · dán sau / trước</td></tr>
+<tr><td><code>u</code> · <code>J</code></td><td>Hoàn tác · nối dòng</td></tr>
+<tr><td><code>/từ</code> · <code>n</code></td><td>Tìm · kết quả tiếp</td></tr>
+<tr><td><code>:%s/cũ/mới/g</code> · <code>:%s/cũ/mới/gc</code></td><td>Thay thế toàn file · có hỏi xác nhận</td></tr>
+<tr><td><code>:bn</code> <code>:bp</code> · <code>:e file</code> · <code>:r file</code></td><td>Chuyển file · mở thêm file · chèn nội dung file khác</td></tr></table></div>
+<p class="tip">Bị “kẹt” trong vi? Nhấn <kbd>Esc</kbd> vài lần rồi gõ <code>:q!</code>. Gõ <code>vimtutor</code> để có bài học tương tác 30 phút.</p>
+</section>
+
+<section class="ch" id="c13" data-title="Tùy biến dấu nhắc">
+<div class="ch-head"><span class="ch-num">13</span><h3>Tùy biến dấu nhắc lệnh</h3></div>
+<p>Dấu nhắc được quy định bởi biến <code>PS1</code>. Các mã đặc biệt: <code>\u</code> user, <code>\h</code> host, <code>\w</code> thư mục đầy đủ, <code>\W</code> tên thư mục cuối, <code>\t</code> giờ, <code>\d</code> ngày, <code>\$</code> (<code>$</code> hoặc <code>#</code>), <code>\n</code> xuống dòng, <code>\!</code> số thứ tự lịch sử. Bọc mã điều khiển không in ra bằng <code>\[ \]</code>.</p>
+<pre><code><span class="p">$ </span>ps1_old="$PS1"                 <span class="c"># sao lưu</span>
+<span class="p">$ </span>PS1="\A \h:\W\$ "               <span class="c"># 17:33 host:dir$</span>
+<span class="p">$ </span>PS1="\[\033[0;32m\]\u@\h:\w\$\[\033[0m\] "   <span class="c"># màu xanh lá</span>
+<span class="p">$ </span>PS1="$ps1_old"                 <span class="c"># khôi phục</span></code></pre>
+<p>Mã màu ANSI: <code>\033[0;30m</code> đến <code>\033[0;37m</code> (đen, đỏ, xanh lá, nâu, xanh dương, tím, lục lam, xám); <code>1;</code> cho bản sáng; <code>4Xm</code> cho nền; <code>\033[0m</code> trả về mặc định. Muốn giữ lâu dài thì thêm <code>PS1=...</code> và <code>export PS1</code> vào <code>~/.bashrc</code>.</p>
+</section>
+</div>
+
+<!-- ================= PART 3 ================= -->
+<div class="part" data-part="3">
+<div class="part-head"><div class="eyebrow">Phần 3</div><h2>Công việc thường ngày và công cụ thiết yếu</h2><p>Quản lý gói, ổ đĩa, mạng, tìm file, nén/sao lưu, biểu thức chính quy và xử lý văn bản.</p></div>
+
+<section class="ch" id="c14" data-title="Quản lý gói phần mềm">
+<div class="ch-head"><span class="ch-num">14</span><h3>Quản lý gói phần mềm</h3></div>
+<p>Hai họ chính: <b>Debian</b> (<code>.deb</code>: Debian, Ubuntu, Mint) và <b>Red Hat</b> (<code>.rpm</code>: Fedora, RHEL, CentOS, openSUSE). Gói được lấy từ <b>kho (repository)</b>; công cụ cấp cao tự giải quyết <b>phụ thuộc (dependency)</b>.</p>
+<div class="tbl"><table><tr><th>Việc</th><th>Debian / Ubuntu</th><th>Red Hat / Fedora</th></tr>
+<tr><td>Tìm gói</td><td><code>apt-cache search x</code></td><td><code>yum search x</code></td></tr>
+<tr><td>Cài từ kho</td><td><code>apt-get install x</code></td><td><code>yum install x</code></td></tr>
+<tr><td>Cài từ file</td><td><code>dpkg -i x.deb</code></td><td><code>rpm -i x.rpm</code></td></tr>
+<tr><td>Gỡ</td><td><code>apt-get remove x</code></td><td><code>yum erase x</code></td></tr>
+<tr><td>Cập nhật tất cả</td><td><code>apt-get update; apt-get upgrade</code></td><td><code>yum update</code></td></tr>
+<tr><td>Liệt kê đã cài</td><td><code>dpkg -l</code></td><td><code>rpm -qa</code></td></tr>
+<tr><td>Đã cài chưa?</td><td><code>dpkg -s x</code></td><td><code>rpm -q x</code></td></tr>
+<tr><td>Thông tin gói</td><td><code>apt-cache show x</code></td><td><code>yum info x</code></td></tr>
+<tr><td>File thuộc gói nào</td><td><code>dpkg -S /bin/ls</code></td><td><code>rpm -qf /bin/ls</code></td></tr></table></div>
+<p class="tip">Ngày nay thường dùng <code>apt</code> (Ubuntu) và <code>dnf</code> (Fedora) thay cho <code>apt-get</code>/<code>yum</code>, cú pháp gần như giống hệt. Cần <code>sudo</code> cho các lệnh cài/gỡ.</p>
+</section>
+
+<section class="ch" id="c15" data-title="Thiết bị lưu trữ">
+<div class="ch-head"><span class="ch-num">15</span><h3>Thiết bị lưu trữ</h3></div>
+<p>Một thiết bị phải được <b>gắn (mount)</b> vào một thư mục trong cây file mới dùng được. Cấu hình gắn lúc khởi động nằm ở <code>/etc/fstab</code>.</p>
+<pre><code><span class="p">$ </span>mount                          <span class="c"># liệt kê hệ thống file đang gắn</span>
+<span class="p">$ </span>df -h                          <span class="c"># dung lượng từng phân vùng</span>
+<span class="p">$ </span>sudo umount /dev/sdb1          <span class="c"># tháo ra (trước khi rút USB!)</span>
+<span class="p">$ </span>sudo mount -t vfat /dev/sdb1 /mnt/usb
+<span class="p">$ </span>sudo tail -f /var/log/messages <span class="c"># cắm USB vào để xem tên thiết bị</span>
+<span class="p">$ </span>sudo fdisk /dev/sdb            <span class="c"># chia phân vùng (m = menu)</span>
+<span class="p">$ </span>sudo mkfs -t ext4 /dev/sdb1    <span class="c"># tạo hệ thống file (XÓA dữ liệu!)</span>
+<span class="p">$ </span>sudo fsck /dev/sdb1            <span class="c"># kiểm tra và sửa lỗi</span>
+<span class="p">$ </span>dd if=/dev/sdb of=usb.img      <span class="c"># sao chép thô cả thiết bị</span>
+<span class="p">$ </span>genisoimage -o cd.iso -R -J ~/cd-files   <span class="c"># tạo file ISO</span>
+<span class="p">$ </span>sudo mount -o loop image.iso /mnt/iso    <span class="c"># gắn ISO như một ổ đĩa</span>
+<span class="p">$ </span>md5sum image.iso               <span class="c"># kiểm tra toàn vẹn</span></code></pre>
+<p>Tên thiết bị: <code>/dev/sda</code>, <code>/dev/sdb</code>… là ổ đĩa (SATA/USB), <code>/dev/sda1</code> là phân vùng 1. Ổ NVMe hiện đại có dạng <code>/dev/nvme0n1p1</code>.</p>
+<p class="tip">Cảnh báo: <code>dd</code>, <code>mkfs</code>, <code>fdisk</code> ghi thẳng vào thiết bị. Gõ nhầm tên ổ là mất dữ liệu. Luôn kiểm tra lại bằng <code>lsblk</code> trước.</p>
+</section>
+
+<section class="ch" id="c16" data-title="Mạng (Networking)">
+<div class="ch-head"><span class="ch-num">16</span><h3>Mạng</h3></div>
+<pre><code><span class="p">$ </span>ping -c 4 example.com          <span class="c"># kiểm tra kết nối (Ctrl-C để dừng nếu không có -c)</span>
+<span class="p">$ </span>traceroute example.com         <span class="c"># các chặng gói tin đi qua</span>
+<span class="p">$ </span>netstat -ie                    <span class="c"># giao diện mạng (nay: ip addr)</span>
+<span class="p">$ </span>netstat -r                     <span class="c"># bảng định tuyến (nay: ip route)</span>
+<span class="p">$ </span>wget https://example.com/file.tar.gz   <span class="c"># tải file không tương tác</span>
+<span class="p">$ </span>ssh user@server                <span class="c"># đăng nhập từ xa an toàn</span>
+<span class="p">$ </span>ssh server 'ls *' &gt; list.txt   <span class="c"># chạy lệnh từ xa, lưu kết quả ở máy mình</span>
+<span class="p">$ </span>ssh -X server                  <span class="c"># chạy app đồ họa từ xa (X11 tunnel)</span>
+<span class="p">$ </span>scp server:doc.txt .           <span class="c"># chép file qua SSH</span>
+<span class="p">$ </span>sftp server                    <span class="c"># như ftp nhưng mã hóa</span></code></pre>
+<p><code>ftp</code> gửi mật khẩu dạng chữ thường, không an toàn; chỉ dùng cho FTP ẩn danh. <code>lftp</code> là bản ftp tốt hơn. SSH lần đầu kết nối sẽ hỏi xác nhận “host key”; nếu sau này cảnh báo key thay đổi, có thể là tấn công man-in-the-middle hoặc máy chủ đã cài lại.</p>
+</section>
+
+<section class="ch" id="c17" data-title="Tìm kiếm file">
+<div class="ch-head"><span class="ch-num">17</span><h3>Tìm kiếm file</h3></div>
+<p><b>locate</b> nhanh nhưng dựa vào cơ sở dữ liệu cập nhật định kỳ (<code>sudo updatedb</code>). <b>find</b> chậm hơn nhưng tìm thật theo nhiều tiêu chí.</p>
+<pre><code><span class="p">$ </span>locate bin/zip
+<span class="p">$ </span>find ~ -type f -name "*.jpg" -size +1M
+<span class="p">$ </span>find ~ -type d | wc -l            <span class="c"># đếm thư mục</span>
+<span class="p">$ </span>find ~ -mmin -60                   <span class="c"># sửa trong 60 phút qua</span>
+<span class="p">$ </span>find ~ \( -type f -not -perm 0600 \) -or \( -type d -not -perm 0700 \)
+<span class="p">$ </span>find . -name '*.bak' -delete       <span class="c"># hành động: xóa</span>
+<span class="p">$ </span>find . -name '*.txt' -exec ls -l '{}' ';'   <span class="c"># chạy lệnh cho từng file</span>
+<span class="p">$ </span>find . -name '*.txt' -exec ls -l '{}' +     <span class="c"># gộp thành một lần chạy</span>
+<span class="p">$ </span>find . -name '*.txt' -ok rm '{}' ';'        <span class="c"># hỏi trước mỗi file</span>
+<span class="p">$ </span>find . -name '*.txt' -print0 | xargs -0 ls -l</code></pre>
+<ul>
+<li><b>Test</b>: <code>-name</code>, <code>-iname</code>, <code>-type f|d|l</code>, <code>-size</code>, <code>-perm</code>, <code>-user</code>, <code>-mtime</code>, <code>-newer</code>, <code>-empty</code>.</li>
+<li><b>Toán tử</b>: <code>-and</code> (mặc định), <code>-or</code>, <code>-not</code>, ngoặc <code>\( \)</code>.</li>
+<li><b>Tùy chọn</b>: <code>-maxdepth n</code>, <code>-mindepth n</code>, <code>-mount</code>.</li>
+</ul>
+<p class="tip">Luôn chạy với <code>-print</code> (mặc định) để xem trước, rồi mới thêm <code>-delete</code>.</p>
+</section>
+
+<section class="ch" id="c18" data-title="Lưu trữ & sao lưu">
+<div class="ch-head"><span class="ch-num">18</span><h3>Nén, đóng gói và sao lưu</h3></div>
+<pre><code><span class="p">$ </span>gzip foo.txt ; gunzip foo.txt.gz      <span class="c"># nén/giải nén (.gz)</span>
+<span class="p">$ </span>gzip -c foo.txt &gt; foo.gz ; zcat foo.gz
+<span class="p">$ </span>bzip2 foo.txt ; bunzip2 foo.txt.bz2   <span class="c"># nén tốt hơn, chậm hơn</span>
+<span class="p">$ </span>tar cf  backup.tar  project/          <span class="c"># c=create f=file</span>
+<span class="p">$ </span>tar tvf backup.tar                    <span class="c"># t=list v=verbose</span>
+<span class="p">$ </span>tar xf  backup.tar                    <span class="c"># x=extract</span>
+<span class="p">$ </span>tar czf backup.tgz project/           <span class="c"># z = nén gzip; j = bzip2</span>
+<span class="p">$ </span>tar xzf backup.tgz project/docs       <span class="c"># chỉ giải nén một phần</span>
+<span class="p">$ </span>zip -r project.zip project/ ; unzip project.zip
+<span class="p">$ </span>rsync -av source/ dest/               <span class="c"># đồng bộ, chỉ chép phần thay đổi</span>
+<span class="p">$ </span>rsync -av --delete source/ dest/      <span class="c"># xóa file ở đích không còn ở nguồn</span>
+<span class="p">$ </span>rsync -av --delete --rsh=ssh /etc user@server:/backup</code></pre>
+<p class="tip"><code>tar</code> chỉ gộp file, không nén; gzip/bzip2 chỉ nén từng file. Kết hợp lại ra <code>.tar.gz</code>/<code>.tgz</code>. Chú ý <code>rsync source/</code> (có dấu <code>/</code>) chép <i>nội dung</i>, còn <code>source</code> chép cả thư mục.</p>
+</section>
+
+<section class="ch" id="c19" data-title="Biểu thức chính quy">
+<div class="ch-head"><span class="ch-num">19</span><h3>Biểu thức chính quy (Regex)</h3></div>
+<p><b>Regex</b> là ký hiệu mô tả mẫu văn bản, dùng trong <code>grep</code>, <code>sed</code>, <code>find -regex</code>, <code>less</code>, <code>vim</code>… Nhiều ký hiệu giống wildcard nhưng <b>ý nghĩa khác</b>.</p>
+<div class="tbl"><table><tr><th>Ký hiệu</th><th>Ý nghĩa</th><th>Ví dụ</th></tr>
+<tr><td><code>.</code></td><td>Một ký tự bất kỳ</td><td><code>.zip</code></td></tr>
+<tr><td><code>^</code> <code>$</code></td><td>Neo đầu / cuối dòng</td><td><code>^zip$</code></td></tr>
+<tr><td><code>[abc]</code> <code>[^abc]</code> <code>[a-z]</code></td><td>Tập ký tự, phủ định, khoảng</td><td><code>^[A-Z]</code></td></tr>
+<tr><td><code>[[:digit:]]</code> <code>[[:space:]]</code> <code>[[:alnum:]]</code></td><td>Lớp ký tự POSIX</td><td></td></tr>
+<tr><td><code>?</code> <code>*</code> <code>+</code></td><td>0–1 lần, 0+ lần, 1+ lần</td><td><code>colou?r</code></td></tr>
+<tr><td><code>{n}</code> <code>{n,m}</code> <code>{n,}</code></td><td>Đúng n, từ n tới m, ít nhất n lần</td><td><code>[0-9]{3}</code></td></tr>
+<tr><td><code>a|b</code> · <code>( )</code></td><td>Hoặc · nhóm</td><td><code>^(bz|gz|zip)</code></td></tr></table></div>
+<p><b>BRE vs ERE</b>: trong regex cơ bản (BRE, <code>grep</code> mặc định) các ký tự <code>? + { } ( ) |</code> phải có <code>\</code> mới mang nghĩa đặc biệt; regex mở rộng (ERE, <code>grep -E</code>) thì không cần.</p>
+<pre><code><span class="p">$ </span>grep -E '^\(?[0-9]{3}\)? [0-9]{3}-[0-9]{4}$' phones.txt   <span class="c"># kiểm tra số điện thoại</span>
+<span class="p">$ </span>grep -v -E '^...$' file          <span class="c"># -v: dòng KHÔNG khớp</span>
+<span class="p">$ </span>find . -regex '.*[^-_./0-9a-zA-Z].*'   <span class="c"># tìm tên file "xấu"</span>
+<span class="p">$ </span>locate --regex 'bin/(bz|gz|zip)'</code></pre>
+<p>Tùy chọn grep hay dùng: <code>-i</code> bỏ qua hoa thường, <code>-v</code> đảo, <code>-c</code> đếm, <code>-l</code> chỉ in tên file, <code>-n</code> số dòng, <code>-h</code> không in tên file, <code>-r</code> tìm đệ quy.</p>
+</section>
+
+<section class="ch" id="c20" data-title="Xử lý văn bản">
+<div class="ch-head"><span class="ch-num">20</span><h3>Xử lý văn bản</h3></div>
+<p>Unix coi văn bản là dữ liệu chung: tài liệu, web, email, mã nguồn, log. Bộ công cụ sau giúp “cắt gọt” văn bản.</p>
+<pre><code><span class="p">$ </span>cat -A file          <span class="c"># hiện ký tự ẩn (tab = ^I, cuối dòng = $)</span>
+<span class="p">$ </span>sort -nr -k 5 data   <span class="c"># sắp theo cột 5, dạng số, giảm dần</span>
+<span class="p">$ </span>sort -t ':' -k 7 /etc/passwd   <span class="c"># -t: ký tự ngăn cách</span>
+<span class="p">$ </span>sort f | uniq -c     <span class="c"># đếm số lần lặp (uniq cần dữ liệu đã sort)</span>
+<span class="p">$ </span>cut -d ':' -f 1 /etc/passwd    <span class="c"># lấy cột 1</span>
+<span class="p">$ </span>cut -c 7-10 file     <span class="c"># lấy ký tự 7–10</span>
+<span class="p">$ </span>paste a.txt b.txt    <span class="c"># ghép cột từ 2 file</span>
+<span class="p">$ </span>join a.txt b.txt     <span class="c"># nối 2 file theo trường chung (như SQL join)</span>
+<span class="p">$ </span>comm f1 f2           <span class="c"># so sánh 2 file đã sort: 3 cột</span>
+<span class="p">$ </span>diff -u old new &gt; fix.diff   <span class="c"># tạo bản vá</span>
+<span class="p">$ </span>patch &lt; fix.diff             <span class="c"># áp bản vá</span>
+<span class="p">$ </span>echo "abc" | tr a-z A-Z      <span class="c"># chuyển hoa</span>
+<span class="p">$ </span>tr -d '\r' &lt; dos.txt &gt; unix.txt   <span class="c"># bỏ ký tự CR của Windows</span>
+<span class="p">$ </span>echo "aaabbb" | tr -s ab     <span class="c"># gộp ký tự lặp: ab</span></code></pre>
+<p><b>sed</b> (stream editor) sửa văn bản theo lệnh:</p>
+<pre><code><span class="p">$ </span>echo "front" | sed 's/front/back/'     <span class="c"># thay thế lần đầu</span>
+<span class="p">$ </span>sed 's/foo/bar/g' file                  <span class="c"># mọi lần trên mỗi dòng</span>
+<span class="p">$ </span>sed -n '1,5p' file                      <span class="c"># in dòng 1–5</span>
+<span class="p">$ </span>sed -n '/regex/p' file                  <span class="c"># như grep</span>
+<span class="p">$ </span>sed '/^#/d' file                        <span class="c"># xóa dòng chú thích</span>
+<span class="p">$ </span>sed -i 's/old/new/g' file               <span class="c"># sửa trực tiếp file</span>
+<span class="p">$ </span>sed -E 's/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/\3-\1-\2/' dates   <span class="c"># MM/DD/YYYY → YYYY-MM-DD</span></code></pre>
+<p class="tip">Ngoài ra: <code>aspell check file</code> để kiểm tra chính tả. Phần “Extra Credit” của sách gợi ý tìm hiểu thêm <code>split</code>, <code>csplit</code>, <code>sdiff</code>.</p>
+</section>
+
+<section class="ch" id="c21" data-title="Định dạng đầu ra">
+<div class="ch-head"><span class="ch-num">21</span><h3>Định dạng đầu ra</h3></div>
+<pre><code><span class="p">$ </span>nl file                  <span class="c"># đánh số dòng</span>
+<span class="p">$ </span>fold -w 50 -s file       <span class="c"># ngắt dòng ở 50 ký tự, tại dấu cách</span>
+<span class="p">$ </span>fmt -w 60 file           <span class="c"># căn lại đoạn văn, giữ thụt đầu dòng</span>
+<span class="p">$ </span>pr -l 15 -w 65 file      <span class="c"># chia trang có header để in</span>
+<span class="p">$ </span>printf "%-10s|%5d|%8.2f\n" "Táo" 3 12.5
+Táo       |    3|   12.50</code></pre>
+<p>Mã định dạng của <code>printf</code>: <code>%s</code> chuỗi, <code>%d</code> số nguyên, <code>%f</code> số thực, <code>%x</code> hex, <code>%o</code> bát phân, <code>%%</code> dấu %. Độ rộng/độ chính xác: <code>%-10s</code> căn trái 10 ô, <code>%05d</code> độn số 0, <code>%.2f</code> 2 chữ số thập phân.</p>
+<p>Hệ thống soạn tài liệu: họ <b>roff</b> (<code>groff</code>, dùng để tạo trang man) và <b>TeX</b>. Ví dụ: <code>zcat /usr/share/man/man1/ls.1.gz | groff -mandoc -T ps &gt; ls.ps</code> tạo bản PostScript của trang man.</p>
+</section>
+
+<section class="ch" id="c22" data-title="In ấn">
+<div class="ch-head"><span class="ch-num">22</span><h3>In ấn</h3></div>
+<p>Linux dùng hệ thống <b>CUPS</b> để quản lý máy in và hàng đợi in. Máy in hiện đại thường nhận PostScript/PDF; CUPS tự chuyển đổi.</p>
+<pre><code><span class="p">$ </span>ls /usr/bin | pr -3 -w 65 | lpr   <span class="c"># định dạng 3 cột rồi in</span>
+<span class="p">$ </span>lpr -P printer_name file.txt        <span class="c"># kiểu Berkeley</span>
+<span class="p">$ </span>lp -d printer_name -n 2 file.txt    <span class="c"># kiểu System V, 2 bản</span>
+<span class="p">$ </span>a2ps file.txt                       <span class="c"># chuyển văn bản sang PostScript đẹp</span>
+<span class="p">$ </span>lpstat -a ; lpstat -s               <span class="c"># trạng thái máy in</span>
+<span class="p">$ </span>lpq                                 <span class="c"># xem hàng đợi</span>
+<span class="p">$ </span>cancel 603 ; lprm 603               <span class="c"># hủy lệnh in số 603</span></code></pre>
+<p class="tip">Có thể in ra file PDF ảo (máy in “PDF”) để thử mà không tốn giấy.</p>
+</section>
+
+<section class="ch" id="c23" data-title="Biên dịch chương trình">
+<div class="ch-head"><span class="ch-num">23</span><h3>Biên dịch chương trình từ mã nguồn</h3></div>
+<p><b>Biên dịch</b> là dịch mã nguồn (C…) sang mã máy. Ngôn ngữ thông dịch (shell, Python, Perl) chạy trực tiếp, không cần biên dịch. Quy trình chuẩn của phần mềm GNU:</p>
+<pre><code><span class="p">$ </span>mkdir src &amp;&amp; cd src
+<span class="p">$ </span>wget https://ftp.gnu.org/gnu/diction/diction-1.11.tar.gz
+<span class="p">$ </span>tar xzf diction-1.11.tar.gz &amp;&amp; cd diction-1.11
+<span class="p">$ </span>less README INSTALL       <span class="c"># luôn đọc trước</span>
+<span class="p">$ </span>./configure               <span class="c"># kiểm tra hệ thống, tạo Makefile</span>
+<span class="p">$ </span>make                      <span class="c"># biên dịch theo Makefile</span>
+<span class="p">$ </span>sudo make install         <span class="c"># cài vào /usr/local/bin</span></code></pre>
+<p>Cần cài sẵn trình biên dịch <code>gcc</code> và <code>make</code> (Ubuntu: gói <code>build-essential</code>). <code>make</code> chỉ biên dịch lại phần thay đổi nhờ so sánh thời gian sửa file. Trong cây mã nguồn thường có <code>.c</code> (mã C), <code>.h</code> (header), <code>Makefile.in</code>, <code>configure</code>.</p>
+</section>
+</div>
+
+<!-- ================= PART 4 ================= -->
+<div class="part" data-part="4">
+<div class="part-head"><div class="eyebrow">Phần 4</div><h2>Viết shell script</h2><p>Lập trình bằng bash để tự động hóa công việc. Sách xây dựng dần một dự án mẫu: script <code>sys_info_page</code> tạo trang HTML báo cáo thông tin hệ thống.</p></div>
+
+<section class="ch" id="c24" data-title="Script đầu tiên">
+<div class="ch-head"><span class="ch-num">24</span><h3>Viết script đầu tiên</h3></div>
+<p>Shell script là file văn bản chứa các lệnh. Ba bước: <b>viết</b>, <b>cấp quyền thực thi</b>, <b>đặt ở nơi shell tìm thấy</b>.</p>
+<pre><code><span class="c">#!/bin/bash</span>
+<span class="c"># Script đầu tiên của tôi</span>
+echo 'Hello World!'</code></pre>
+<pre><code><span class="p">$ </span>chmod 755 hello_world
+<span class="p">$ </span>./hello_world              <span class="c"># chạy với đường dẫn tường minh</span>
+<span class="p">$ </span>mkdir -p ~/bin &amp;&amp; mv hello_world ~/bin
+<span class="p">$ </span>export PATH=~/bin:"$PATH"  <span class="c"># (thường đã có sẵn trên Ubuntu)</span>
+<span class="p">$ </span>hello_world</code></pre>
+<ul>
+<li>Dòng <b>shebang</b> <code>#!/bin/bash</code> cho hệ thống biết dùng trình thông dịch nào.</li>
+<li><code>~/bin</code> cho script cá nhân; <code>/usr/local/bin</code> cho script dùng chung; <code>/usr/local/sbin</code> cho script quản trị.</li>
+<li>Trong script nên dùng <b>tùy chọn dài</b> (<code>ls --all --directory</code>) cho dễ đọc, và ngắt dòng dài bằng <code>\</code> kèm thụt lề.</li>
+</ul>
+<p class="tip">Trong vim, <code>:syntax on</code>, <code>:set autoindent</code>, <code>:set tabstop=4</code> giúp viết script dễ hơn.</p>
+</section>
+
+<section class="ch" id="c25" data-title="Bắt đầu một dự án">
+<div class="ch-head"><span class="ch-num">25</span><h3>Bắt đầu một dự án</h3></div>
+<p><b>Biến</b> được tạo khi gán; <b>không có dấu cách</b> quanh <code>=</code>. Hằng số theo quy ước viết HOA.</p>
+<pre><code>title="System Information Report For $HOSTNAME"
+CURRENT_TIME=$(date +"%x %r %Z")
+TIMESTAMP="Generated $CURRENT_TIME, by $USER"
+a=z ; b="a string" ; c="a string and $b" ; d=$(ls -l foo.txt) ; e=$((5 * 7))
+echo "${a}_file"     <span class="c"># dùng {} khi tên biến dính với chữ khác</span>
+declare -r PI=3.14   <span class="c"># hằng không đổi được</span></code></pre>
+<p><b>Here document</b> giúp in khối văn bản lớn, vẫn mở rộng biến:</p>
+<pre><code>cat &lt;&lt; _EOF_
+&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;$title&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;&lt;h1&gt;$title&lt;/h1&gt;&lt;p&gt;$TIMESTAMP&lt;/p&gt;&lt;/body&gt;
+&lt;/html&gt;
+_EOF_</code></pre>
+<p class="tip"><code>&lt;&lt;-</code> (có dấu trừ) cho phép thụt lề bằng tab trong here document. Here document cũng dùng để “gõ hộ” lệnh cho chương trình tương tác như <code>ftp</code>.</p>
+</section>
+
+<section class="ch" id="c26" data-title="Thiết kế từ trên xuống">
+<div class="ch-head"><span class="ch-num">26</span><h3>Thiết kế từ trên xuống (Top-Down)</h3></div>
+<p>Chia việc lớn thành các bước nhỏ, mỗi bước là một <b>hàm</b>. Hàm phải được định nghĩa trước khi gọi.</p>
+<pre><code>report_uptime () {
+  cat &lt;&lt;- _EOF_
+	&lt;h2&gt;System Uptime&lt;/h2&gt;
+	&lt;pre&gt;$(uptime)&lt;/pre&gt;
+	_EOF_
+  return
+}
+report_disk_space () { echo "&lt;pre&gt;$(df -h)&lt;/pre&gt;"; }
+report_home_space () { echo "&lt;pre&gt;$(du -sh /home/*)&lt;/pre&gt;"; }
+
+funct () {
+  local foo=2      <span class="c"># biến cục bộ, không ảnh hưởng biến foo bên ngoài</span>
+  echo "trong hàm: foo = $foo"
+}</code></pre>
+<p class="tip">Kỹ thuật “stub”: viết hàm rỗng chỉ in ra tên mình trước, để kiểm tra luồng chương trình, rồi mới điền nội dung. Hàm có thể đặt vào <code>~/.bashrc</code> để dùng như lệnh.</p>
+</section>
+
+<section class="ch" id="c27" data-title="Rẽ nhánh với if">
+<div class="ch-head"><span class="ch-num">27</span><h3>Điều khiển luồng: rẽ nhánh với if</h3></div>
+<p>Mỗi lệnh trả về <b>exit status</b> (xem bằng <code>echo $?</code>): <b>0 là thành công</b>, khác 0 là lỗi. <code>if</code> kiểm tra exit status.</p>
+<pre><code>if [ -f "$FILE" ]; then
+  echo "$FILE là file thường"
+elif [ -d "$FILE" ]; then
+  echo "$FILE là thư mục"
+else
+  echo "Không tồn tại"; exit 1
+fi</code></pre>
+<div class="tbl"><table><tr><th>Biểu thức</th><th>Đúng khi</th></tr>
+<tr><td><code>-e f</code> <code>-f f</code> <code>-d f</code> <code>-L f</code></td><td>Tồn tại · là file thường · thư mục · symlink</td></tr>
+<tr><td><code>-r f</code> <code>-w f</code> <code>-x f</code> <code>-s f</code></td><td>Đọc được · ghi được · thực thi được · không rỗng</td></tr>
+<tr><td><code>f1 -nt f2</code></td><td>f1 mới hơn f2</td></tr>
+<tr><td><code>-z s</code> · <code>-n s</code></td><td>Chuỗi rỗng · không rỗng</td></tr>
+<tr><td><code>s1 = s2</code> · <code>s1 != s2</code></td><td>So sánh chuỗi</td></tr>
+<tr><td><code>a -eq b</code> <code>-ne</code> <code>-lt</code> <code>-le</code> <code>-gt</code> <code>-ge</code></td><td>So sánh số nguyên</td></tr></table></div>
+<ul>
+<li><code>[[ ]]</code> là bản hiện đại của <code>test</code>/<code>[ ]</code>: hỗ trợ regex <code>[[ $x =~ ^-?[0-9]+$ ]]</code> và mẫu <code>[[ $f == *.txt ]]</code>.</li>
+<li><code>(( ))</code> cho phép so sánh số tự nhiên: <code>if ((INT % 2 == 0)); then</code>.</li>
+<li>Kết hợp: trong <code>[ ]</code> dùng <code>-a -o !</code>; trong <code>[[ ]]</code>/<code>(( ))</code> dùng <code>&amp;&amp; || !</code>.</li>
+<li>Toán tử điều khiển: <code>mkdir temp &amp;&amp; cd temp</code> (chạy lệnh 2 nếu 1 thành công); <code>[ -d temp ] || mkdir temp</code> (chạy lệnh 2 nếu 1 thất bại).</li>
+</ul>
+<p class="tip">Luôn đặt biến trong nháy kép bên trong <code>[ ]</code> (<code>"$FILE"</code>) để tránh lỗi khi biến rỗng.</p>
+</section>
+
+<section class="ch" id="c28" data-title="Đọc dữ liệu bàn phím">
+<div class="ch-head"><span class="ch-num">28</span><h3>Đọc dữ liệu từ bàn phím</h3></div>
+<pre><code>read -p "Nhập một số nguyên: " int
+read -s -p "Mật khẩu: " pass       <span class="c"># -s: không hiện ký tự</span>
+read -t 10 -p "Trả lời trong 10s: " ans   <span class="c"># -t: timeout</span>
+read -e -i "giá trị mặc định" -p "Sửa: " val
+read a b c        <span class="c"># tách thành nhiều biến theo dấu cách</span>
+read              <span class="c"># không tên biến → lưu vào $REPLY</span>
+IFS=":" read user pw uid gid name home shell &lt;&lt;&lt; "$line"   <span class="c"># IFS đổi ký tự tách; &lt;&lt;&lt; là here string</span></code></pre>
+<p><b>Kiểm tra đầu vào</b> là bắt buộc: chương trình tốt phải xử lý được dữ liệu sai. Ví dụ kiểm tra số nguyên: <code>[[ "$int" =~ ^-?[0-9]+$ ]]</code>.</p>
+<p><b>Menu</b> đơn giản:</p>
+<pre><code>echo "1. Thông tin hệ thống
+2. Dung lượng đĩa
+0. Thoát"
+read -p "Chọn [0-2] &gt; "
+if [[ $REPLY == 1 ]]; then uptime
+elif [[ $REPLY == 2 ]]; then df -h
+fi</code></pre>
+<p class="tip">Lưu ý: không thể dùng <code>echo "x" | read var</code> vì <code>read</code> chạy trong subshell, biến mất ngay sau đó.</p>
+</section>
+
+<section class="ch" id="c29" data-title="Vòng lặp while & until">
+<div class="ch-head"><span class="ch-num">29</span><h3>Vòng lặp while và until</h3></div>
+<pre><code>count=1
+while [[ $count -le 5 ]]; do
+  echo $count
+  count=$((count + 1))
+done
+
+until [[ $count -gt 5 ]]; do ... done   <span class="c"># lặp cho tới khi điều kiện ĐÚNG</span>
+
+<span class="c"># Đọc file từng dòng</span>
+while read distro version release; do
+  printf "Distro: %s\tVersion: %s\n" "$distro" "$version"
+done &lt; distros.txt
+
+sort -k 1,1 distros.txt | while read distro version release; do ... done</code></pre>
+<ul>
+<li><code>break</code> thoát vòng lặp; <code>continue</code> bỏ qua phần còn lại, sang lượt tiếp.</li>
+<li><code>while true; do ... done</code> là vòng lặp vô hạn, kết hợp <code>break</code> để làm menu lặp lại tới khi chọn “Thoát”.</li>
+</ul>
+</section>
+
+<section class="ch" id="c30" data-title="Gỡ lỗi (Troubleshooting)">
+<div class="ch-head"><span class="ch-num">30</span><h3>Gỡ lỗi</h3></div>
+<p><b>Lỗi cú pháp</b> hay gặp: thiếu dấu nháy đóng, thiếu <code>;</code> trước <code>then</code>/<code>do</code>, thiếu <code>fi</code>/<code>done</code>, biến rỗng làm <code>[ $x = 1 ]</code> thành <code>[ = 1 ]</code> (sửa: <code>[ "$x" = 1 ]</code>).</p>
+<p><b>Lỗi logic</b>: điều kiện sai, “lệch một” (off-by-one), tình huống không lường trước (tên file có dấu cách, bắt đầu bằng dấu gạch). <b>Lập trình phòng thủ</b>:</p>
+<pre><code><span class="c"># Nguy hiểm: nếu cd thất bại, rm xóa ở thư mục hiện tại!</span>
+cd $dir_name; rm *
+<span class="c"># An toàn hơn:</span>
+if [[ -d "$dir_name" ]]; then
+  if cd "$dir_name"; then rm *
+  else echo "không vào được '$dir_name'" &gt;&amp;2; exit 1; fi
+else echo "không có thư mục '$dir_name'" &gt;&amp;2; exit 1; fi</code></pre>
+<p><b>Kiểm thử</b>: dùng <b>stub</b> (thay lệnh nguy hiểm bằng <code>echo rm *</code>), và chuẩn bị <b>ca kiểm thử</b> cho trường hợp bình thường, biên và lỗi.</p>
+<pre><code><span class="p">$ </span>bash -x script.sh         <span class="c"># theo vết mọi lệnh</span>
+#!/bin/bash -x             <span class="c"># hoặc bật trong shebang</span>
+set -x  ...  set +x         <span class="c"># chỉ theo vết một đoạn</span>
+echo "number=$number" &gt;&amp;2  <span class="c"># in giá trị biến khi chạy</span>
+<span class="c"># Chú thích (#) một đoạn để khoanh vùng lỗi</span></code></pre>
+</section>
+
+<section class="ch" id="c31" data-title="Rẽ nhánh với case">
+<div class="ch-head"><span class="ch-num">31</span><h3>Điều khiển luồng: rẽ nhánh với case</h3></div>
+<pre><code>read -p "Nhập ký tự: " c
+case "$c" in
+  [[:alpha:]])  echo "chữ cái" ;;
+  [0-9])        echo "chữ số" ;;
+  q|Q)          echo "thoát"; exit ;;
+  *.txt)        echo "tên file văn bản" ;;
+  ???)          echo "đúng 3 ký tự" ;;
+  *)            echo "khác" ;;
+esac</code></pre>
+<ul>
+<li>Mẫu dùng cú pháp wildcard (không phải regex). <code>|</code> gộp nhiều mẫu. <code>*)</code> là trường hợp mặc định, đặt cuối.</li>
+<li>Bash 4+: kết thúc bằng <code>;;&amp;</code> thay cho <code>;;</code> để tiếp tục kiểm tra các mẫu sau (khớp nhiều nhánh).</li>
+<li><code>case</code> gọn hơn chuỗi <code>if/elif</code> dài, rất hợp cho menu.</li>
+</ul>
+</section>
+
+<section class="ch" id="c32" data-title="Tham số vị trí">
+<div class="ch-head"><span class="ch-num">32</span><h3>Tham số vị trí (đối số dòng lệnh)</h3></div>
+<div class="tbl"><table><tr><th>Biến</th><th>Ý nghĩa</th></tr>
+<tr><td><code>$0</code></td><td>Tên script</td></tr>
+<tr><td><code>$1</code> … <code>$9</code>, <code>${10}</code></td><td>Đối số thứ n</td></tr>
+<tr><td><code>$#</code></td><td>Số lượng đối số</td></tr>
+<tr><td><code>"$@"</code></td><td>Mọi đối số, mỗi cái là một từ riêng (nên dùng)</td></tr>
+<tr><td><code>"$*"</code></td><td>Mọi đối số gộp thành một chuỗi</td></tr></table></div>
+<pre><code>while [[ $# -gt 0 ]]; do     <span class="c"># xử lý tùy chọn</span>
+  case $1 in
+    -f|--file)        shift; filename="$1" ;;
+    -i|--interactive) interactive=1 ;;
+    -h|--help)        usage; exit ;;
+    *)                usage &gt;&amp;2; exit 1 ;;
+  esac
+  shift                      <span class="c"># dịch: $2 thành $1, $# giảm 1</span>
+done
+PROGNAME=$(basename "$0")    <span class="c"># tên chương trình không kèm đường dẫn</span></code></pre>
+<p>Trong hàm, <code>$1 $2…</code> là đối số của hàm (riêng <code>$0</code> vẫn là tên script). Cuối chương, sách hoàn thiện <code>sys_info_page</code> với tùy chọn <code>-f file</code> (ghi ra file), <code>-i</code> (hỏi trước khi ghi đè), <code>-h</code> (trợ giúp).</p>
+</section>
+
+<section class="ch" id="c33" data-title="Vòng lặp for">
+<div class="ch-head"><span class="ch-num">33</span><h3>Vòng lặp for</h3></div>
+<pre><code>for i in A B C D; do echo $i; done
+for i in {1..5}; do echo $i; done
+for f in *.txt; do                 <span class="c"># duyệt file</span>
+  [[ -e "$f" ]] || continue        <span class="c"># phòng khi không có file nào khớp</span>
+  echo "$f: $(wc -l &lt; "$f") dòng"
+done
+for arg in "$@"; do echo "$arg"; done   <span class="c"># bỏ "in ..." = duyệt các tham số vị trí</span>
+
+<span class="c"># Dạng giống C</span>
+for (( i=0; i&lt;5; i++ )); do echo $i; done</code></pre>
+<p class="tip">Ví dụ trong sách: tìm từ dài nhất trong các file văn bản bằng cách lặp qua từng từ của <code>strings "$f"</code>.</p>
+</section>
+
+<section class="ch" id="c34" data-title="Chuỗi và số">
+<div class="ch-head"><span class="ch-num">34</span><h3>Chuỗi và số</h3></div>
+<div class="tbl"><table><tr><th>Mở rộng tham số</th><th>Tác dụng</th></tr>
+<tr><td><code>${x:-mặcđịnh}</code></td><td>Dùng “mặcđịnh” nếu x rỗng/chưa đặt</td></tr>
+<tr><td><code>${x:=mặcđịnh}</code></td><td>Như trên và gán luôn vào x</td></tr>
+<tr><td><code>${x:?thông báo}</code></td><td>Báo lỗi và thoát nếu x rỗng</td></tr>
+<tr><td><code>${x:+khác}</code></td><td>Dùng “khác” nếu x CÓ giá trị</td></tr>
+<tr><td><code>${#x}</code></td><td>Độ dài chuỗi</td></tr>
+<tr><td><code>${x:5:3}</code></td><td>Chuỗi con: từ vị trí 5, dài 3</td></tr>
+<tr><td><code>${x#*.}</code> · <code>${x##*.}</code></td><td>Cắt phần khớp ngắn / dài nhất ở <b>đầu</b> (lấy đuôi file)</td></tr>
+<tr><td><code>${x%.*}</code> · <code>${x%%.*}</code></td><td>Cắt phần khớp ngắn / dài nhất ở <b>cuối</b> (bỏ đuôi file)</td></tr>
+<tr><td><code>${x/a/b}</code> · <code>${x//a/b}</code></td><td>Thay lần đầu · thay tất cả</td></tr>
+<tr><td><code>${x,,}</code> · <code>${x^^}</code></td><td>Chữ thường · chữ hoa (bash 4)</td></tr></table></div>
+<pre><code><span class="p">$ </span>f=report.tar.gz; echo ${f%.*} ${f%%.*} ${f##*.}
+report.tar report gz
+<span class="p">$ </span>echo $((16#ff)) $((2#1010)) $((0x1F))   <span class="c"># các hệ cơ số: 255 10 31</span>
+<span class="p">$ </span>echo $((5 / 2)) $((5 % 2)) $((2 ** 10)) <span class="c"># 2 1 1024 (chỉ số nguyên)</span>
+<span class="p">$ </span>((i++)) ; ((i += 5)) ; echo $((a &gt; b ? a : b))
+<span class="p">$ </span>echo "scale=4; 10/3" | bc               <span class="c"># số thực: 3.3333</span></code></pre>
+<p>Toán tử bit (<code>&lt;&lt; &gt;&gt; &amp; | ^ ~</code>) và logic (<code>&amp;&amp; || !</code>, so sánh) đều dùng được trong <code>(( ))</code>. <b>bc</b> là ngôn ngữ máy tính có độ chính xác tùy ý, dùng khi cần số thực.</p>
+</section>
+
+<section class="ch" id="c35" data-title="Mảng (Arrays)">
+<div class="ch-head"><span class="ch-num">35</span><h3>Mảng</h3></div>
+<pre><code>a[1]=foo ; echo ${a[1]}
+days=(Sun Mon Tue Wed Thu Fri Sat)
+echo ${days[0]}              <span class="c"># Sun (chỉ số bắt đầu từ 0)</span>
+echo "${days[@]}"            <span class="c"># toàn bộ phần tử</span>
+echo ${#days[@]}             <span class="c"># số phần tử: 7</span>
+echo ${!days[@]}             <span class="c"># các chỉ số đang dùng</span>
+days+=(Extra)                <span class="c"># thêm vào cuối</span>
+sorted=($(for i in "${a[@]}"; do echo $i; done | sort))   <span class="c"># sắp xếp</span>
+unset days                   <span class="c"># xóa cả mảng</span>
+unset 'days[2]'              <span class="c"># xóa một phần tử</span>
+
+declare -A colors            <span class="c"># mảng kết hợp (bash 4): chỉ số là chuỗi</span>
+colors[red]="#ff0000"; colors[green]="#00ff00"
+for k in "${!colors[@]}"; do echo "$k = ${colors[$k]}"; done</code></pre>
+<p class="tip">Luôn dùng <code>"${a[@]}"</code> có nháy kép để giữ nguyên phần tử chứa dấu cách. Ví dụ trong sách: đếm số file trong thư mục theo giờ sửa đổi bằng mảng 24 phần tử.</p>
+</section>
+
+<section class="ch" id="c36" data-title="Những thứ lạ (Exotica)">
+<div class="ch-head"><span class="ch-num">36</span><h3>Những thứ “lạ”</h3></div>
+<pre><code>{ ls -l; echo "xong"; } &gt; out.txt   <span class="c"># group command: chạy trong shell hiện tại</span>
+(ls -l; echo "xong") &gt; out.txt      <span class="c"># subshell: chạy trong shell con, biến không giữ lại</span>
+while read line; do ...; done &lt; &lt;(ls -l)   <span class="c"># process substitution: biến output thành "file"</span>
+diff &lt;(ls dir1) &lt;(ls dir2)
+
+trap "echo 'Đang dọn dẹp…'; rm -f $TEMP" SIGINT SIGTERM EXIT   <span class="c"># bắt tín hiệu</span>
+TEMP=$(mktemp /tmp/myscript.XXXXXX)   <span class="c"># file tạm an toàn</span>
+
+long_task &amp;  pid=$!                <span class="c"># chạy bất đồng bộ</span>
+wait $pid                          <span class="c"># chờ tiến trình con kết thúc</span>
+
+mkfifo pipe1                       <span class="c"># named pipe</span>
+ls -l &gt; pipe1                      <span class="c"># terminal 1: bị chặn cho tới khi có người đọc</span>
+cat &lt; pipe1                        <span class="c"># terminal 2</span></code></pre>
+<ul>
+<li>Group command <code>{ }</code> cần dấu cách sau <code>{</code> và <code>;</code> trước <code>}</code>. Subshell chậm hơn và không đổi được biến của shell cha.</li>
+<li><code>trap</code> giúp script dọn file tạm khi bị <code>Ctrl-C</code>; sách khuyên tạo file tạm bằng <code>mktemp</code> để tránh bị tấn công dự đoán tên file.</li>
+<li>Named pipe (FIFO) cho hai tiến trình không liên quan giao tiếp như một đường ống.</li>
+</ul>
+</section>
+</div>
+
+</main>
+
+<footer>Giáo trình tóm lược dựa trên <i>The Linux Command Line: A Complete Introduction</i> (William E. Shotts, Jr., No Starch Press, 2012). Một số lệnh cũ được ghi chú bản thay thế hiện đại (<code>ip</code>, <code>apt</code>, <code>dnf</code>). Tiến độ “Đã học” chỉ lưu trên trình duyệt của bạn.</footer>
+</div>
+
+<script type="text/plain" id="ex-data">
+@@ c1
+?1 Gõ một lệnh vô nghĩa như <code>kaekfjaeifj</code>. Shell báo gì? Sau đó dùng phím ↑ gọi lại lệnh trước đó.
+$ kaekfjaeifj
+bash: kaekfjaeifj: command not found
+# Nhấn ↑ để hiện lại lệnh vừa gõ, ↑ thêm lần nữa để lùi xa hơn trong lịch sử.
+?1 Hiển thị lịch của cả năm nay, rồi lịch tháng 2 năm 2028.
+$ cal -y        # hoặc: cal 2026
+$ cal 2 2028
+?2 Xem dung lượng ổ đĩa và bộ nhớ ở dạng dễ đọc (K, M, G).
+$ df -h
+$ free -h
+?2 Dấu nhắc của bạn kết thúc bằng <code>$</code> hay <code>#</code>? Lệnh nào cho biết bạn đang đăng nhập bằng user nào và máy tên gì?
+$ whoami
+$ hostname
+# "$" = người dùng thường, "#" = root
+?3 In ngày giờ theo định dạng <code>2026-11-26 14:05</code>. (Gợi ý: <code>man date</code>, phần FORMAT.)
+$ date +"%Y-%m-%d %H:%M"
+
+@@ c2
+?1 Đi từ home vào <code>/usr/bin</code>, lên <code>/usr</code>, về home, rồi quay lại thư mục trước. Gõ <code>pwd</code> sau mỗi bước.
+$ cd /usr/bin ; pwd
+$ cd .. ; pwd        # /usr
+$ cd ; pwd           # /home/ban
+$ cd - ; pwd         # /usr
+?1 Từ <code>/usr/share</code>, vào <code>/usr/bin</code> bằng đường dẫn tương đối (không bắt đầu bằng <code>/</code>).
+$ cd /usr/share
+$ cd ../bin
+$ pwd    # /usr/bin
+?2 Đứng ở <code>/etc</code>, viết 3 cách khác nhau để về thư mục home.
+$ cd
+$ cd ~
+$ cd "$HOME"
+?2 <code>cd ./bin</code> và <code>cd bin</code> có khác nhau không? Còn <code>cd /bin</code>?
+# "cd ./bin" và "cd bin" giống nhau: đều là thư mục bin bên trong thư mục hiện tại.
+# "cd /bin" là đường dẫn tuyệt đối: thư mục bin ngay dưới gốc /.
+?3 Liệt kê nội dung thư mục gốc <code>/</code> và home của bạn mà <b>không</b> rời thư mục hiện tại.
+$ ls / ~
+# ls nhận nhiều đối số, mỗi thư mục được liệt kê riêng.
+
+@@ c3
+?1 Liệt kê <code>/etc</code> ở định dạng dài, kích thước dễ đọc, kể cả file ẩn.
+$ ls -lah /etc
+?1 Dùng <code>file</code> để xác định loại của <code>/bin/ls</code>, <code>/etc/passwd</code> và một ảnh bất kỳ.
+$ file /bin/ls /etc/passwd ~/Pictures/*.png
+# /bin/ls: ELF 64-bit executable…  /etc/passwd: ASCII text
+?2 Liệt kê <code>/usr/bin</code> sắp theo kích thước, file lớn nhất ở cuối.
+$ ls -lS --reverse /usr/bin    # hoặc: ls -lSr /usr/bin
+?2 Mở <code>/etc/services</code> bằng <code>less</code>, tìm từ “ssh”, nhảy tới kết quả tiếp, về đầu file rồi thoát.
+$ less /etc/services
+/ssh     # tìm
+n        # kết quả tiếp theo
+g        # về đầu file
+q        # thoát
+?3 Tìm trong <code>/usr/lib</code> (hoặc <code>/lib</code>) một symlink. Nó trỏ đến đâu? Dùng <code>ls -l</code> để đọc.
+$ ls -l /usr/lib | grep '^l' | head
+# Dòng bắt đầu bằng "l" là symlink; phần sau "->" là file đích.
+
+@@ c4
+?1 Tạo cấu trúc <code>playground/dir1</code>, <code>playground/dir2</code> chỉ bằng một lệnh.
+$ mkdir -p playground/{dir1,dir2}
+# hoặc: mkdir -p playground/dir1 playground/dir2
+?1 Chép <code>/etc/passwd</code> vào <code>playground</code>, đổi tên thành <code>fun</code>, rồi chuyển vào <code>dir1</code>.
+$ cd playground
+$ cp /etc/passwd .
+$ mv passwd fun
+$ mv fun dir1
+?2 Tạo hard link <code>fun-hard</code> và symlink <code>fun-sym</code> trỏ tới <code>dir1/fun</code>. Dùng <code>ls -li</code> so sánh số inode.
+$ ln dir1/fun fun-hard
+$ ln -s dir1/fun fun-sym
+$ ls -li
+# fun-hard có cùng số inode với dir1/fun; fun-sym có inode riêng.
+?2 Xóa <code>dir1/fun</code>. Bây giờ <code>cat fun-hard</code> và <code>cat fun-sym</code> cho kết quả gì? Vì sao?
+$ rm dir1/fun
+$ cat fun-hard   # vẫn đọc được: dữ liệu còn vì còn một tên trỏ tới
+$ cat fun-sym    # lỗi: symlink "gãy" vì đường dẫn đích không còn
+?3 Viết wildcard chọn: (a) file bắt đầu bằng chữ hoa và kết thúc bằng <code>.txt</code>; (b) file có đúng 3 ký tự; (c) file không bắt đầu bằng số. Thử bằng <code>ls</code>.
+$ ls [[:upper:]]*.txt
+$ ls ???
+$ ls [![:digit:]]*
+
+@@ c5
+?1 Dùng <code>type</code> kiểm tra <code>ls</code>, <code>cd</code>, <code>cp</code>, <code>type</code>. Mỗi cái thuộc loại nào?
+$ type ls cd cp type
+# ls: alias · cd: builtin · cp: /usr/bin/cp (chương trình) · type: builtin
+?1 Tìm tùy chọn của <code>ls</code> để sắp xếp theo kích thước bằng <code>man</code>.
+$ man ls
+/size     # tìm trong man, thấy -S
+?2 Tìm các lệnh liên quan đến “partition” mà không biết tên lệnh.
+$ apropos partition    # hoặc: man -k partition
+?2 Tạo alias <code>today</code> in ngày và lịch tháng; rồi xóa alias đó.
+$ alias today='date; cal'
+$ today
+$ unalias today
+?3 Tại sao <code>which cd</code> không ra kết quả, còn <code>help cd</code> thì có?
+# cd là builtin của shell, không phải file trong PATH, nên which không tìm thấy.
+# help chỉ dành cho builtin của bash.
+$ type cd
+
+@@ c6
+?1 Lưu danh sách <code>/usr/bin</code> vào <code>ls.txt</code>, rồi nối thêm danh sách <code>/bin</code> vào cùng file.
+$ ls /usr/bin > ls.txt
+$ ls /bin >> ls.txt
+?1 Chạy <code>ls /etc /khongco</code>, ghi kết quả đúng vào <code>ok.txt</code> và lỗi vào <code>err.txt</code>.
+$ ls /etc /khongco > ok.txt 2> err.txt
+?2 Đếm số chương trình trong <code>/usr/bin</code> có “zip” trong tên.
+$ ls /usr/bin | grep zip | wc -l
+# hoặc: ls /usr/bin | grep -c zip
+?2 In 5 chương trình cuối cùng (theo thứ tự chữ cái) trong <code>/usr/bin</code> và đồng thời lưu toàn bộ danh sách vào file.
+$ ls /usr/bin | tee all.txt | tail -n 5
+?3 <code>ls /bin /khongco &gt; out.txt 2&gt;&amp;1</code> và <code>ls /bin /khongco 2&gt;&amp;1 &gt; out.txt</code> khác nhau thế nào? Chạy thử.
+# Cách 1: stdout vào file trước, rồi stderr "đi theo" stdout → cả hai vào out.txt.
+# Cách 2: stderr được nối với stdout lúc đó vẫn là màn hình → lỗi vẫn hiện ra màn hình.
+
+@@ c7
+?1 Dùng brace expansion tạo 12 thư mục <code>2026-01</code> … <code>2026-12</code> bằng một lệnh.
+$ mkdir 2026-{01..12}
+?1 Tính <code>(5 + 3) × 7</code> và <code>2^16</code> bằng arithmetic expansion.
+$ echo $(( (5 + 3) * 7 ))    # 56
+$ echo $((2 ** 16))          # 65536
+?2 In câu “Có X file trong /etc” với X là số file thực tế.
+$ echo "Có $(ls /etc | wc -l) file trong /etc"
+?2 Tạo file tên <code>two words.txt</code>, rồi liệt kê và xóa nó đúng cách.
+$ touch "two words.txt"
+$ ls -l "two words.txt"
+$ rm two\ words.txt     # hoặc dùng nháy
+?3 Dự đoán kết quả rồi chạy: <code>echo "$USER $((1+1)) *"</code>, <code>echo '$USER $((1+1)) *'</code>, <code>echo $USER $((1+1)) *</code>.
+# Nháy kép: tên user, 2, và dấu * nguyên văn.
+# Nháy đơn: in nguyên văn mọi thứ.
+# Không nháy: tên user, 2, và * bị mở rộng thành danh sách file trong thư mục.
+
+@@ c8
+?1 Gõ <code>ls -l /usr/bin/zip</code> nhưng chưa Enter. Dùng phím tắt để về đầu dòng, thêm <code>sudo </code>, rồi về cuối dòng.
+Ctrl-A   # về đầu
+(gõ "sudo ")
+Ctrl-E   # về cuối
+?1 Gõ <code>ls /usr/sh</code> rồi nhấn Tab. Gõ <code>ls /usr/</code> rồi nhấn Tab hai lần. Quan sát.
+# Tab một lần: tự hoàn thành thành /usr/share/
+# Tab hai lần: liệt kê mọi khả năng trong /usr/
+?2 Tìm lại lệnh <code>cal</code> đã gõ trước đó bằng tìm kiếm lịch sử, không dùng phím ↑.
+Ctrl-R
+(gõ "cal")   # Enter để chạy, Ctrl-J để đưa lên dòng lệnh mà chưa chạy
+?2 Liệt kê 10 lệnh gần nhất bạn đã gõ có chứa “ls”, rồi chạy lại một lệnh theo số thứ tự.
+$ history | grep ls | tail -n 10
+$ !123    # thay 123 bằng số trong danh sách
+?3 Bạn vừa gõ <code>apt update</code> và bị báo thiếu quyền. Chạy lại bằng sudo với ít phím nhất.
+$ sudo !!
+
+@@ c9
+?1 Tạo file <code>notes.txt</code>, đặt quyền lần lượt 600, 644, 755; xem <code>ls -l</code> sau mỗi lần.
+$ touch notes.txt
+$ chmod 600 notes.txt ; ls -l notes.txt   # -rw-------
+$ chmod 644 notes.txt ; ls -l notes.txt   # -rw-r--r--
+$ chmod 755 notes.txt ; ls -l notes.txt   # -rwxr-xr-x
+?1 Chuyển các quyền sau sang số bát phân: <code>rwxr-x---</code>, <code>rw-rw-r--</code>, <code>r--------</code>.
+# rwxr-x--- = 750
+# rw-rw-r-- = 664
+# r-------- = 400
+?2 Dùng dạng ký hiệu: thêm quyền thực thi cho chủ sở hữu, bỏ mọi quyền của “others”.
+$ chmod u+x,o= notes.txt
+?2 Đặt <code>chmod 000 notes.txt</code>, thử <code>cat</code>. Rồi khôi phục quyền đọc/ghi cho bạn.
+$ chmod 000 notes.txt
+$ cat notes.txt        # Permission denied
+$ chmod u+rw notes.txt
+?3 Tạo thư mục <code>shared</code> có quyền 700. Vì sao bỏ quyền <code>x</code> (chmod 600) thì không <code>cd</code> vào được dù có quyền <code>r</code>?
+$ mkdir shared ; chmod 700 shared
+$ chmod 600 shared ; cd shared   # Permission denied
+# Với thư mục, x là quyền "đi vào"; r chỉ cho đọc tên file bên trong.
+
+@@ c10
+?1 Liệt kê mọi tiến trình đang chạy và tìm tiến trình của trình duyệt.
+$ ps aux | grep -i firefox    # hoặc chrome
+?1 Mở <code>top</code>, sắp theo bộ nhớ (phím <code>M</code>), rồi theo CPU (phím <code>P</code>), rồi thoát.
+$ top
+M   # sắp theo %MEM
+P   # sắp theo %CPU
+q
+?2 Chạy <code>sleep 300</code>, tạm dừng nó, cho chạy tiếp ở nền, rồi đưa lại lên tiền cảnh và ngắt.
+$ sleep 300
+Ctrl-Z
+$ bg %1
+$ jobs
+$ fg %1
+Ctrl-C
+?2 Chạy 3 tiến trình <code>sleep 600 &amp;</code> rồi dừng tất cả cùng lúc.
+$ sleep 600 & sleep 600 & sleep 600 &
+$ killall sleep
+?3 Tìm PID của một <code>sleep</code> đang chạy nền và gửi tín hiệu TERM, rồi thử lại với KILL. Khác nhau ở đâu?
+$ sleep 600 &
+$ ps | grep sleep      # hoặc: pgrep sleep
+$ kill 12345           # TERM: xin chương trình tự kết thúc (có thể dọn dẹp)
+$ kill -9 12345        # KILL: kernel buộc dừng ngay, không dọn dẹp được
+
+@@ c11
+?1 In giá trị của <code>HOME</code>, <code>SHELL</code>, <code>PATH</code>, <code>LANG</code>.
+$ echo $HOME $SHELL $LANG
+$ echo $PATH
+?1 In <code>PATH</code> mỗi thư mục một dòng.
+$ echo $PATH | tr ':' '\n'
+?2 Tạo biến <code>GREETING</code> và kiểm tra nó có hiện trong <code>printenv</code> không, trước và sau khi <code>export</code>.
+$ GREETING="xin chao"
+$ printenv GREETING          # không ra gì: mới là biến shell
+$ export GREETING
+$ printenv GREETING          # xin chao
+?2 Sao lưu <code>~/.bashrc</code>, thêm alias <code>ll='ls -l'</code> và áp dụng ngay.
+$ cp ~/.bashrc ~/.bashrc.bak
+$ echo "alias ll='ls -l'" >> ~/.bashrc
+$ source ~/.bashrc
+$ ll
+?3 Thêm <code>~/bin</code> vào cuối <code>PATH</code> một cách lâu dài. Nên ghi vào file nào?
+# Ghi vào ~/.bash_profile (hoặc ~/.profile trên Ubuntu):
+export PATH="$PATH:$HOME/bin"
+# Áp dụng: source ~/.bash_profile hoặc đăng xuất/đăng nhập lại.
+
+@@ c12
+?1 Mở <code>vi foo.txt</code>, gõ “Hello vi”, lưu và thoát.
+$ vi foo.txt
+i            # vào insert mode
+Hello vi
+Esc
+:wq
+?1 Mở lại file, thêm dòng mới bên dưới mà không phải di chuyển tới cuối dòng rồi Enter.
+o            # mở dòng mới bên dưới và vào insert mode
+?2 Gõ 5 dòng “Line 1” … “Line 5”. Xóa dòng 3, chép dòng 1 và dán xuống cuối file.
+3G dd        # tới dòng 3, xóa
+1G yy        # tới dòng 1, chép
+G p          # tới cuối file, dán bên dưới
+?2 Thay mọi chữ “Line” thành “line” trong toàn file, có hỏi xác nhận từng chỗ.
+:%s/Line/line/gc
+?3 Xóa từ con trỏ đến cuối file, rồi hoàn tác. Sau đó nối dòng 1 và 2.
+dG           # xóa tới cuối file
+u            # hoàn tác
+1G J         # tới dòng 1, nối với dòng 2
+
+@@ c13
+?1 Sao lưu dấu nhắc hiện tại vào biến, đổi thành <code>$ </code> đơn giản rồi khôi phục.
+$ ps1_old="$PS1"
+$ PS1="\$ "
+$ PS1="$ps1_old"
+?1 Tạo dấu nhắc dạng <code>14:05 user:thư_mục$ </code>.
+$ PS1="\A \u:\W\$ "
+?2 Làm dấu nhắc màu xanh lá, chỉ phần chữ có màu, lệnh bạn gõ vẫn màu bình thường.
+$ PS1="\[\033[0;32m\]\u@\h:\w\$\[\033[0m\] "
+?2 Dấu nhắc 2 dòng: dòng 1 là thư mục đầy đủ, dòng 2 là <code>$ </code>.
+$ PS1="\w\n\$ "
+?3 Lưu dấu nhắc của bài trên vào <code>~/.bashrc</code> để dùng lâu dài.
+# Thêm vào cuối ~/.bashrc:
+PS1="\[\033[0;32m\]\w\[\033[0m\]\n\$ "
+export PS1
+$ source ~/.bashrc
+
+@@ c14
+?1 Máy bạn thuộc họ Debian hay Red Hat? Kiểm tra.
+$ cat /etc/os-release
+$ which apt dnf yum
+?1 Tìm gói có tên hoặc mô tả liên quan đến “htop”.
+$ apt search htop          # Debian/Ubuntu
+$ dnf search htop          # Fedora
+?2 Cài <code>tree</code>, chạy <code>tree -L 2 ~</code>, rồi gỡ nó.
+$ sudo apt install tree
+$ tree -L 2 ~
+$ sudo apt remove tree
+?2 Lệnh <code>ls</code> thuộc gói nào?
+$ dpkg -S /usr/bin/ls      # Debian/Ubuntu → coreutils
+$ rpm -qf /usr/bin/ls      # Red Hat
+?3 Đếm số gói đã cài trên máy bạn.
+$ dpkg -l | grep '^ii' | wc -l     # Debian/Ubuntu
+$ rpm -qa | wc -l                  # Red Hat
+
+@@ c15
+?1 Liệt kê các ổ đĩa và phân vùng trên máy.
+$ lsblk
+?1 Xem dung lượng đã dùng/còn trống của từng phân vùng ở dạng dễ đọc.
+$ df -h
+?2 Chỉ hiện các hệ thống file thật (thiết bị trong <code>/dev</code>) đang được gắn.
+$ mount | grep '^/dev'
+?2 Tạo checksum MD5 và SHA-256 cho một file bất kỳ.
+$ md5sum file.iso
+$ sha256sum file.iso
+?3 Tạo một file 10 MB toàn số 0 bằng <code>dd</code> (an toàn, không động tới ổ đĩa).
+$ dd if=/dev/zero of=test.img bs=1M count=10
+$ ls -lh test.img
+
+@@ c16
+?1 Gửi đúng 3 gói ping tới một trang web.
+$ ping -c 3 example.com
+?1 Xem địa chỉ IP của máy bạn.
+$ ip addr          # bản cũ: ifconfig / netstat -ie
+?2 Xem các chặng gói tin đi tới một trang web.
+$ traceroute example.com     # hoặc: tracepath example.com
+?2 Tải một trang web về file bằng <code>wget</code>, rồi đếm số dòng.
+$ wget -O page.html https://example.com
+$ wc -l page.html
+?3 (Nếu có máy chủ SSH) Chạy <code>df -h</code> trên máy chủ và lưu kết quả vào file ở máy bạn; chép một file từ máy chủ về.
+$ ssh user@server 'df -h' > server-df.txt
+$ scp user@server:~/notes.txt .
+
+@@ c17
+?1 Tìm mọi file <code>.conf</code> trong <code>/etc</code> (bỏ qua lỗi quyền).
+$ find /etc -name '*.conf' 2> /dev/null
+?1 Đếm số thư mục trong home của bạn.
+$ find ~ -type d | wc -l
+?2 Tìm file lớn hơn 100 MB trong home.
+$ find ~ -type f -size +100M
+?2 Tìm file trong home được sửa trong 24 giờ qua, chỉ đi sâu tối đa 2 cấp.
+$ find ~ -maxdepth 2 -type f -mtime -1
+?3 Trong <code>playground</code>, tìm mọi file <code>.bak</code> và xóa, nhưng hỏi trước từng file. Sau đó viết cách xóa nhanh cho nhiều file.
+$ find playground -name '*.bak' -ok rm '{}' ';'
+$ find playground -name '*.bak' -delete
+# hoặc: find playground -name '*.bak' -print0 | xargs -0 rm
+
+@@ c18
+?1 Nén một file văn bản bằng gzip, xem nội dung khi vẫn nén, rồi giải nén.
+$ gzip notes.txt
+$ zcat notes.txt.gz
+$ gunzip notes.txt.gz
+?1 Đóng gói và nén thư mục <code>playground</code> thành <code>playground.tgz</code>.
+$ tar czf playground.tgz playground
+?2 Liệt kê nội dung <code>playground.tgz</code> mà không giải nén; rồi giải nén vào thư mục <code>restore</code>.
+$ tar tzf playground.tgz
+$ mkdir restore
+$ tar xzf playground.tgz -C restore
+?2 So sánh kích thước khi nén cùng một thư mục bằng gzip (<code>z</code>) và bzip2 (<code>j</code>).
+$ tar czf a.tgz playground
+$ tar cjf a.tbz playground
+$ ls -lh a.tgz a.tbz
+?3 Sao lưu <code>playground</code> sang <code>backup/</code> bằng rsync; xóa một file ở nguồn rồi đồng bộ lại sao cho đích cũng bị xóa file đó.
+$ rsync -av playground/ backup/
+$ rm playground/dir1/fun
+$ rsync -av --delete playground/ backup/
+
+@@ c19
+?1 Tìm các dòng trong <code>/etc/passwd</code> bắt đầu bằng “root”.
+$ grep '^root' /etc/passwd
+?1 Đếm số dòng trong <code>/etc/passwd</code> kết thúc bằng <code>bash</code>.
+$ grep -c 'bash$' /etc/passwd
+?2 Tìm từ trong <code>/usr/share/dict/words</code> có đúng 5 chữ, bắt đầu bằng “j”, kết thúc bằng “r”.
+$ grep -E '^j...r$' /usr/share/dict/words
+?2 Viết regex khớp số điện thoại dạng <code>090-123-4567</code> hoặc <code>0901234567</code>.
+$ grep -E '^0[0-9]{2}-?[0-9]{3}-?[0-9]{4}$' phones.txt
+?3 Tìm mọi dòng trong <code>/var/log/syslog</code> (hoặc file log có sẵn) chứa địa chỉ IPv4, chỉ in phần địa chỉ.
+$ grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' /var/log/syslog | sort -u
+# -o: chỉ in phần khớp
+
+@@ c20
+?1 In tên người dùng (cột 1) trong <code>/etc/passwd</code>, sắp theo bảng chữ cái.
+$ cut -d: -f1 /etc/passwd | sort
+?1 Chuyển một câu sang chữ hoa bằng <code>tr</code>.
+$ echo "hello linux" | tr a-z A-Z
+?2 Thống kê mỗi shell có bao nhiêu user dùng, sắp giảm dần.
+$ cut -d: -f7 /etc/passwd | sort | uniq -c | sort -nr
+?2 Dùng <code>sed</code> in dòng 5–10 của file, rồi xóa mọi dòng chú thích (bắt đầu bằng #) trong <code>/etc/fstab</code> khi in ra.
+$ sed -n '5,10p' /etc/passwd
+$ sed '/^#/d' /etc/fstab
+?3 Tạo <code>old.txt</code> và <code>new.txt</code> khác nhau một dòng. Tạo bản vá bằng <code>diff</code>, rồi dùng <code>patch</code> biến old thành new.
+$ diff -u old.txt new.txt > fix.diff
+$ patch old.txt < fix.diff
+$ diff old.txt new.txt     # không còn khác biệt
+
+@@ c21
+?1 Đánh số dòng cho <code>/etc/hostname</code> hoặc một file văn bản bất kỳ.
+$ nl /etc/passwd | head
+?1 Ngắt một đoạn văn dài thành dòng tối đa 40 ký tự, không cắt giữa từ.
+$ fold -w 40 -s file.txt
+?2 Dùng <code>printf</code> in bảng 3 cột thẳng hàng: Táo 3 12.5, Cam 10 7.25.
+$ printf "%-6s %4d %8.2f\n" Táo 3 12.5 Cam 10 7.25
+# printf lặp lại định dạng khi còn đối số
+?2 In số 255 ở dạng thập lục phân và bát phân; in số 7 dạng 3 chữ số có số 0 đứng đầu.
+$ printf "%x %o\n" 255 255   # ff 377
+$ printf "%03d\n" 7          # 007
+?3 Định dạng danh sách <code>/usr/bin</code> thành 3 cột, rộng 65 ký tự, mỗi trang 20 dòng.
+$ ls /usr/bin | pr -3 -w 65 -l 20 | less
+
+@@ c22
+?1 Kiểm tra máy có máy in nào và máy in mặc định là gì.
+$ lpstat -a
+$ lpstat -d
+?1 Xem hàng đợi in.
+$ lpq       # hoặc: lpstat -o
+?2 Chuẩn bị file <code>/etc/passwd</code> để in: có header và số trang, xem trước bằng less.
+$ pr /etc/passwd | less
+?2 In 2 bản một file ra máy in tên <code>PDF</code> (nếu có máy in ảo).
+$ lp -d PDF -n 2 file.txt
+?3 Gửi một lệnh in, tìm số job của nó, rồi hủy.
+$ lp file.txt          # in ra: request id is Printer-42
+$ lpstat -o
+$ cancel Printer-42
+
+@@ c23
+?1 Kiểm tra máy đã có trình biên dịch C và make chưa.
+$ which gcc make
+$ gcc --version
+?1 Nếu chưa có, cài bộ công cụ build.
+$ sudo apt install build-essential      # Ubuntu/Debian
+$ sudo dnf groupinstall "Development Tools"   # Fedora
+?2 Viết chương trình C in “Hello”, biên dịch và chạy.
+$ cat > hello.c << 'EOF'
+#include <stdio.h>
+int main(void){ printf("Hello\n"); return 0; }
+EOF
+$ gcc -o hello hello.c
+$ ./hello
+?2 Viết Makefile đơn giản cho bài trên; chạy <code>make</code> hai lần và quan sát lần thứ hai.
+# Makefile (dòng lệnh phải bắt đầu bằng TAB):
+hello: hello.c
+	gcc -o hello hello.c
+$ make     # biên dịch
+$ make     # "hello is up to date": không làm gì vì hello.c không đổi
+?3 Tải, <code>./configure</code> và <code>make</code> chương trình <code>diction</code>, chạy thử mà không cài.
+$ wget https://ftp.gnu.org/gnu/diction/diction-1.11.tar.gz
+$ tar xzf diction-1.11.tar.gz && cd diction-1.11
+$ ./configure && make
+$ echo "This is a very good example." | ./diction
+
+@@ c24
+?1 Viết script <code>hello_world</code> in “Hello World!”, cấp quyền và chạy bằng <code>./</code>.
+#!/bin/bash
+echo 'Hello World!'
+$ chmod 755 hello_world
+$ ./hello_world
+?1 Chuyển script vào <code>~/bin</code> và chạy được từ bất kỳ đâu.
+$ mkdir -p ~/bin && mv hello_world ~/bin
+$ export PATH="$HOME/bin:$PATH"   # nếu ~/bin chưa có trong PATH
+$ cd /tmp && hello_world
+?2 Script <code>whoami_info</code> in tên user, thư mục hiện tại và ngày giờ.
+#!/bin/bash
+echo "User: $USER"
+echo "Thư mục: $PWD"
+echo "Lúc: $(date)"
+?2 Chạy script mà không cấp quyền thực thi. Có cách nào không?
+$ bash hello_world
+# Gọi trực tiếp trình thông dịch thì không cần quyền x.
+?3 Viết lại lệnh sau ở dạng tùy chọn dài và ngắt dòng cho dễ đọc: <code>find playground \( -type f -not -perm 0600 -exec chmod 0600 '{}' ';' \)</code>.
+find playground \
+    \( \
+        -type f \
+        -not -perm 0600 \
+        -exec chmod 0600 '{}' ';' \
+    \)
+
+@@ c25
+?1 Gán tên bạn vào biến <code>name</code> và in “Xin chào, &lt;tên&gt;!”.
+name="An"
+echo "Xin chào, $name!"
+?1 Lỗi gì ở dòng <code>name = "An"</code>?
+# Có dấu cách quanh "=" → shell hiểu "name" là một lệnh với đối số "=" và "An".
+# Đúng: name="An"
+?2 Biến <code>f=report</code>. In <code>report_2026.txt</code> mà không bị hiểu nhầm thành biến <code>f_2026</code>.
+f=report
+echo "${f}_2026.txt"
+?2 Dùng here document in một trang HTML có tiêu đề là tên máy và dòng “Tạo lúc …”.
+#!/bin/bash
+TITLE="Báo cáo cho $HOSTNAME"
+NOW=$(date +"%x %r %Z")
+cat << _EOF_
+<html><head><title>$TITLE</title></head>
+<body><h1>$TITLE</h1><p>Tạo lúc $NOW bởi $USER</p></body></html>
+_EOF_
+?3 Here document có <code>'_EOF_'</code> (trong nháy) khác gì <code>_EOF_</code>? Thử với dòng <code>$HOME</code>.
+cat << '_EOF_'
+$HOME
+_EOF_
+# In nguyên văn "$HOME": dấu nháy tắt mở rộng trong here document.
+
+@@ c26
+?1 Viết hàm <code>greet</code> in “Xin chào” và gọi nó 2 lần.
+greet () {
+  echo "Xin chào"
+}
+greet
+greet
+?1 Viết hàm <code>report_uptime</code> in kết quả <code>uptime</code> trong thẻ <code>&lt;pre&gt;</code>.
+report_uptime () {
+  echo "<pre>$(uptime)</pre>"
+}
+?2 Chạy đoạn sau và giải thích kết quả: biến <code>foo=0</code> bên ngoài, hàm đặt <code>local foo=1</code>.
+foo=0
+f () { local foo=1; echo "trong: $foo"; }
+f
+echo "ngoài: $foo"
+# trong: 1  ngoài: 0 → local chỉ tồn tại trong hàm.
+?2 Viết các hàm stub cho <code>sys_info_page</code>: mỗi hàm chỉ in tên mình, gọi chúng để kiểm tra luồng.
+report_uptime ()     { echo "Function report_uptime executed."; }
+report_disk_space () { echo "Function report_disk_space executed."; }
+report_home_space () { echo "Function report_home_space executed."; }
+report_uptime; report_disk_space; report_home_space
+?3 Đặt hàm <code>mkcd</code> (tạo thư mục rồi cd vào) trong <code>~/.bashrc</code>. Vì sao phải là hàm chứ không phải script?
+mkcd () { mkdir -p "$1" && cd "$1"; }
+# Script chạy trong shell con, "cd" trong script không đổi thư mục của shell bạn.
+# Hàm chạy ngay trong shell hiện tại.
+
+@@ c27
+?1 Viết script kiểm tra một đường dẫn là file, thư mục hay không tồn tại.
+#!/bin/bash
+p="$1"
+if [[ -f "$p" ]]; then echo "file"
+elif [[ -d "$p" ]]; then echo "thư mục"
+else echo "không tồn tại"
+fi
+?1 Chạy <code>ls /etc; echo $?</code> rồi <code>ls /khongco; echo $?</code>. Giá trị khác nhau thế nào?
+# 0 = thành công; khác 0 (thường 2 với ls) = lỗi.
+?2 Kiểm tra một số nguyên là âm/dương/0 và chẵn/lẻ bằng <code>(( ))</code>.
+INT=-5
+if ((INT == 0)); then echo "bằng 0"
+else
+  ((INT < 0)) && echo "âm" || echo "dương"
+  ((INT % 2 == 0)) && echo "chẵn" || echo "lẻ"
+fi
+?2 Một dòng lệnh: tạo thư mục <code>temp</code> nếu chưa có, rồi vào đó.
+$ [[ -d temp ]] || mkdir temp; cd temp
+# hoặc: mkdir -p temp && cd temp
+?3 Kiểm tra biến <code>x</code> có phải số nguyên (có thể âm) bằng regex trong <code>[[ ]]</code>.
+if [[ "$x" =~ ^-?[0-9]+$ ]]; then
+  echo "số nguyên"
+else
+  echo "không phải số nguyên"
+fi
+
+@@ c28
+?1 Hỏi tên người dùng và chào họ.
+read -p "Tên bạn: " name
+echo "Xin chào, $name"
+?1 Đọc 3 giá trị trên một dòng vào 3 biến và in từng cái.
+read -p "Nhập 3 từ: " a b c
+echo "a=$a b=$b c=$c"
+?2 Hỏi mật khẩu không hiện ký tự, hết giờ sau 10 giây.
+if read -t 10 -sp "Mật khẩu: " pw; then
+  echo; echo "Đã nhận."
+else
+  echo; echo "Hết giờ."
+fi
+?2 Tách một dòng của <code>/etc/passwd</code> thành các trường bằng IFS.
+line=$(grep "^$USER:" /etc/passwd)
+IFS=":" read user pw uid gid name home shell <<< "$line"
+echo "UID=$uid HOME=$home SHELL=$shell"
+?3 Hỏi một số nguyên, báo lỗi và thoát nếu không hợp lệ, ngược lại in số đó nhân 2.
+#!/bin/bash
+read -p "Số nguyên: " n
+if [[ ! "$n" =~ ^-?[0-9]+$ ]]; then
+  echo "'$n' không phải số nguyên" >&2
+  exit 1
+fi
+echo $((n * 2))
+
+@@ c29
+?1 In các số từ 1 đến 10 bằng <code>while</code>.
+i=1
+while [[ $i -le 10 ]]; do
+  echo $i
+  i=$((i + 1))
+done
+?1 Viết lại bài trên bằng <code>until</code>.
+i=1
+until [[ $i -gt 10 ]]; do
+  echo $i
+  ((i++))
+done
+?2 Đọc <code>/etc/passwd</code> từng dòng, in tên user và shell.
+while IFS=: read user _ _ _ _ _ shell; do
+  echo "$user → $shell"
+done < /etc/passwd
+?2 Đếm ngược 5 giây rồi in “Bắt đầu!”.
+n=5
+while ((n > 0)); do echo $n; sleep 1; ((n--)); done
+echo "Bắt đầu!"
+?3 Menu lặp lại cho tới khi chọn 0: 1 = uptime, 2 = df -h.
+while true; do
+  echo "1) Uptime  2) Ổ đĩa  0) Thoát"
+  read -p "Chọn: "
+  if [[ $REPLY == 0 ]]; then break
+  elif [[ $REPLY == 1 ]]; then uptime
+  elif [[ $REPLY == 2 ]]; then df -h
+  else echo "Lựa chọn không hợp lệ"; continue
+  fi
+done
+
+@@ c30
+?1 Tìm lỗi: <code>if [ $n = 1 ] then echo ok fi</code>.
+# Thiếu ";" trước then và trước fi, nên đặt biến trong nháy:
+if [ "$n" = 1 ]; then echo ok; fi
+?1 Chạy một script bằng chế độ theo vết để xem từng lệnh được thực thi.
+$ bash -x script.sh
+?2 Vì sao <code>[ $x = 1 ]</code> báo lỗi “unary operator expected” khi <code>x</code> rỗng? Sửa thế nào?
+# Khi x rỗng, lệnh thành [ = 1 ], thiếu vế trái.
+[ "$x" = 1 ]     # hoặc dùng [[ $x = 1 ]]
+?2 Chỉ bật theo vết cho một đoạn trong script.
+set -x
+for i in 1 2 3; do echo $i; done
+set +x
+?3 Viết lại an toàn: <code>cd $dir; rm *</code>. Kiểm tra bằng stub trước khi chạy thật.
+if [[ -d "$dir" ]] && cd "$dir"; then
+  echo rm *        # stub: chỉ in ra, xóa "echo" khi đã chắc chắn
+else
+  echo "Không vào được '$dir'" >&2; exit 1
+fi
+
+@@ c31
+?1 Hỏi y/n và in “Đồng ý” hay “Từ chối” bằng <code>case</code>, chấp nhận cả chữ hoa.
+read -p "Tiếp tục? (y/n) " a
+case "$a" in
+  y|Y) echo "Đồng ý" ;;
+  n|N) echo "Từ chối" ;;
+  *)   echo "Không hiểu" ;;
+esac
+?1 Phân loại đầu vào: chữ cái, chữ số, hay ký tự khác.
+read -n 1 -p "Gõ 1 ký tự: " c; echo
+case "$c" in
+  [[:alpha:]]) echo "chữ cái" ;;
+  [[:digit:]]) echo "chữ số" ;;
+  *)           echo "khác" ;;
+esac
+?2 Theo phần mở rộng của tên file, in “ảnh”, “tài liệu” hay “nén”.
+case "$1" in
+  *.jpg|*.png|*.gif) echo "ảnh" ;;
+  *.txt|*.md|*.pdf)  echo "tài liệu" ;;
+  *.tar.gz|*.zip)    echo "nén" ;;
+  *)                 echo "không rõ" ;;
+esac
+?2 Viết lại menu chương 29 bằng <code>case</code>.
+while true; do
+  read -p "1) Uptime 2) Ổ đĩa 0) Thoát: "
+  case $REPLY in
+    0) break ;;
+    1) uptime ;;
+    2) df -h ;;
+    *) echo "Không hợp lệ" ;;
+  esac
+done
+?3 Dùng <code>;;&amp;</code> để một ký tự có thể khớp nhiều nhánh: in mọi đặc điểm (chữ hoa, chữ thường, chữ cái, chữ số, dấu câu).
+read -n 1 -p "Ký tự: " c; echo
+case "$c" in
+  [[:upper:]]) echo "chữ hoa" ;;&
+  [[:lower:]]) echo "chữ thường" ;;&
+  [[:alpha:]]) echo "chữ cái" ;;&
+  [[:digit:]]) echo "chữ số" ;;&
+  [[:punct:]]) echo "dấu câu" ;;&
+esac
+
+@@ c32
+?1 Script in tên script, số đối số và từng đối số.
+#!/bin/bash
+echo "Tên: $(basename "$0")"
+echo "Số đối số: $#"
+for a in "$@"; do echo "- $a"; done
+?1 Báo lỗi và thoát nếu không có đối số nào.
+if [[ $# -eq 0 ]]; then
+  echo "Cách dùng: $(basename "$0") file..." >&2
+  exit 1
+fi
+?2 Dùng <code>shift</code> in lần lượt mọi đối số kèm số thứ tự.
+n=1
+while [[ $# -gt 0 ]]; do
+  echo "Đối số $n = $1"
+  n=$((n + 1)); shift
+done
+?2 Script <code>file_info</code> nhận tên file, in loại file và kích thước.
+#!/bin/bash
+f="$1"
+if [[ -e "$f" ]]; then
+  file "$f"
+  echo "Kích thước: $(stat -c %s "$f") byte"   # macOS: stat -f %z
+else
+  echo "Không có file '$f'" >&2; exit 1
+fi
+?3 Xử lý tùy chọn <code>-f FILE</code>, <code>-v</code>, <code>-h</code> bằng vòng <code>while</code> + <code>case</code>.
+usage () { echo "Cách dùng: $(basename "$0") [-f file] [-v] [-h]"; }
+verbose=0; filename=
+while [[ -n "$1" ]]; do
+  case "$1" in
+    -f|--file)    shift; filename="$1" ;;
+    -v|--verbose) verbose=1 ;;
+    -h|--help)    usage; exit ;;
+    *)            usage >&2; exit 1 ;;
+  esac
+  shift
+done
+echo "file=$filename verbose=$verbose"
+
+@@ c33
+?1 In các số chẵn từ 0 đến 20.
+for i in {0..20..2}; do echo $i; done
+?1 Viết lại bằng dạng giống C.
+for (( i=0; i<=20; i+=2 )); do echo $i; done
+?2 Với mỗi file <code>.txt</code> trong thư mục hiện tại, in tên và số dòng.
+for f in *.txt; do
+  [[ -e "$f" ]] || continue
+  echo "$f: $(wc -l < "$f") dòng"
+done
+?2 Đổi đuôi mọi file <code>.jpeg</code> thành <code>.jpg</code>.
+for f in *.jpeg; do
+  [[ -e "$f" ]] || continue
+  mv -- "$f" "${f%.jpeg}.jpg"
+done
+?3 In bảng cửu chương 1–9 (mỗi dòng một bảng) bằng 2 vòng <code>for</code> lồng nhau.
+for (( i=1; i<=9; i++ )); do
+  for (( j=1; j<=9; j++ )); do
+    printf "%3d" $((i * j))
+  done
+  echo
+done
+
+@@ c34
+?1 Với <code>f=/home/an/report.tar.gz</code>, lấy: tên file, thư mục, đuôi cuối, tên không đuôi.
+f=/home/an/report.tar.gz
+echo "${f##*/}"    # report.tar.gz
+echo "${f%/*}"     # /home/an
+echo "${f##*.}"    # gz
+echo "${f%%.*}"    # /home/an/report  (bỏ mọi đuôi)
+?1 In độ dài chuỗi và 5 ký tự đầu của <code>s="Linux Command Line"</code>.
+s="Linux Command Line"
+echo ${#s}       # 18
+echo ${s:0:5}    # Linux
+?2 Dùng giá trị mặc định “guest” nếu biến <code>user</code> rỗng; dừng script với lỗi nếu <code>file</code> rỗng.
+echo "Xin chào ${user:-guest}"
+: "${file:?Cần đặt biến file}"
+?2 Chuyển 255 sang nhị phân bằng <code>bc</code>; đổi <code>ff</code> (hex) sang thập phân bằng <code>$(( ))</code>.
+$ echo "obase=2; 255" | bc     # 11111111
+$ echo $((16#ff))              # 255
+?3 Script tính tiền trả góp hằng tháng: <code>loan P lãi_năm số_tháng</code>, công thức <code>P·r / (1 − (1+r)^−n)</code> với <code>r</code> = lãi tháng.
+#!/bin/bash
+P=$1; rate=$2; n=$3
+bc -l << _EOF_
+scale=10
+r = $rate / 12
+p = $P * r / (1 - (1 + r) ^ -$n)
+scale=2
+p / 1
+_EOF_
+# Ví dụ: ./loan 135000 0.0775 180
+# Lưu ý: trong bc, ^ chỉ nhận số mũ nguyên.
+
+@@ c35
+?1 Tạo mảng 5 ngôn ngữ lập trình, in phần tử đầu, phần tử cuối và số phần tử.
+langs=(bash python go rust c)
+echo ${langs[0]}
+echo ${langs[-1]}      # bash 4.3+; hoặc ${langs[${#langs[@]}-1]}
+echo ${#langs[@]}
+?1 Duyệt mảng và in từng phần tử kèm chỉ số.
+for i in "${!langs[@]}"; do
+  echo "$i: ${langs[$i]}"
+done
+?2 Thêm 2 phần tử vào cuối, xóa phần tử thứ 2, in lại các chỉ số còn dùng.
+langs+=(java ruby)
+unset 'langs[1]'
+echo ${!langs[@]}    # 0 2 3 4 5 6 (chỉ số không tự dồn lại)
+?2 Sắp xếp mảng theo thứ tự chữ cái vào mảng mới.
+sorted=($(printf "%s\n" "${langs[@]}" | sort))
+echo "${sorted[@]}"
+?3 Dùng mảng kết hợp đếm số file theo phần mở rộng trong thư mục hiện tại.
+declare -A count
+for f in *.*; do
+  [[ -f "$f" ]] || continue
+  ext="${f##*.}"
+  ((count[$ext]++))
+done
+for e in "${!count[@]}"; do
+  echo "$e: ${count[$e]}"
+done
+
+@@ c36
+?1 Ghi kết quả của <code>date</code>, <code>uptime</code>, <code>df -h</code> vào một file bằng một lần chuyển hướng.
+{ date; uptime; df -h; } > status.txt
+?1 Chạy <code>cd /tmp</code> trong subshell và kiểm tra thư mục của shell chính có đổi không.
+(cd /tmp; pwd)   # /tmp
+pwd              # vẫn là thư mục cũ
+?2 So sánh danh sách file của hai thư mục mà không tạo file tạm.
+$ diff <(ls dir1) <(ls dir2)
+?2 Chạy 2 lệnh <code>sleep</code> song song ở nền, chờ cả hai xong rồi in “Xong”.
+sleep 3 & sleep 5 &
+wait
+echo "Xong"
+?3 Script tạo file tạm bằng <code>mktemp</code>, đặt <code>trap</code> để luôn xóa nó khi thoát (kể cả Ctrl-C), rồi <code>sleep 30</code>.
+#!/bin/bash
+TEMP=$(mktemp /tmp/demo.XXXXXX)
+trap 'echo "Dọn dẹp $TEMP"; rm -f "$TEMP"' EXIT
+trap 'exit 1' INT TERM
+echo "File tạm: $TEMP"
+sleep 30
+
+</script>
+<script>
+(function(){
+  var raw=document.getElementById('ex-data').textContent, map={}, cur=null, item=null;
+  raw.split('\n').forEach(function(line){
+    var m;
+    if((m=line.match(/^@@ (c\d+)/))){cur=map[m[1]]=[];item=null;return;}
+    if((m=line.match(/^\?([123]) (.*)$/))){item={lv:+m[1],q:m[2],a:[]};cur.push(item);return;}
+    if(item) item.a.push(line);
+  });
+  var LV={1:'Cơ bản',2:'Vừa',3:'Nâng cao'};
+  Object.keys(map).forEach(function(id){
+    var sec=document.getElementById(id); if(!sec) return;
+    var box=document.createElement('div'); box.className='ex';
+    var h=document.createElement('h4'); h.textContent='Bài tập ('+map[id].length+')'; box.appendChild(h);
+    var ol=document.createElement('ol');
+    map[id].forEach(function(it){
+      while(it.a.length && !it.a[it.a.length-1].trim()) it.a.pop();
+      var li=document.createElement('li');
+      var q=document.createElement('div'); q.className='q';
+      var t=document.createElement('span'); t.className='txt'; t.innerHTML=it.q;
+      var b=document.createElement('span'); b.className='lv lv'+it.lv; b.textContent=LV[it.lv];
+      q.appendChild(t); q.appendChild(b); li.appendChild(q);
+      var d=document.createElement('details'), s=document.createElement('summary');
+      s.textContent='Xem lời giải'; d.appendChild(s);
+      var pre=document.createElement('pre'), code=document.createElement('code');
+      it.a.forEach(function(l,i){
+        if(i) code.appendChild(document.createTextNode('\n'));
+        if(l.indexOf('$ ')===0){var p=document.createElement('span');p.className='p';p.textContent='$ ';code.appendChild(p);l=l.slice(2);}
+        if(/^\s*#(?!!)/.test(l)){var c=document.createElement('span');c.className='c';c.textContent=l;code.appendChild(c);return;}
+        var k=l.indexOf('   # ');
+        if(k>0){code.appendChild(document.createTextNode(l.slice(0,k)));var c2=document.createElement('span');c2.className='c';c2.textContent=l.slice(k);code.appendChild(c2);}
+        else code.appendChild(document.createTextNode(l));
+      });
+      pre.appendChild(code); d.appendChild(pre); li.appendChild(d); ol.appendChild(li);
+    });
+    box.appendChild(ol); sec.appendChild(box);
+  });
+  function all(o){document.querySelectorAll('.ex details').forEach(function(d){d.open=o;});}
+  document.getElementById('openAll').addEventListener('click',function(){all(true);});
+  document.getElementById('closeAll').addEventListener('click',function(){all(false);});
+})();
+</script>
+<script>
+(function(){
+  var KEY='tlcl-done-v1', done={};
+  try{done=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){}
+  var secs=document.querySelectorAll('section.ch');
+  secs.forEach(function(s){
+    var id=s.id, n=id.slice(1), part=s.closest('.part').dataset.part;
+    var li=document.createElement('li'), a=document.createElement('a');
+    a.href='#'+id; a.innerHTML='<span class="n">'+n+'</span><span class="t"></span>';
+    a.querySelector('.t').textContent=s.dataset.title;
+    li.appendChild(a); document.getElementById('nav'+part).appendChild(li);
+    var lab=document.createElement('label'), cb=document.createElement('input');
+    cb.type='checkbox'; cb.id='done-'+id; cb.checked=!!done[id];
+    lab.appendChild(cb); lab.appendChild(document.createTextNode('Đã học'));
+    s.querySelector('.ch-head').appendChild(lab);
+    a.classList.toggle('done',cb.checked);
+    cb.addEventListener('change',function(){
+      done[id]=cb.checked; a.classList.toggle('done',cb.checked);
+      try{localStorage.setItem(KEY,JSON.stringify(done));}catch(e){}
+      update();
+    });
+  });
+  function update(){
+    var c=0; secs.forEach(function(s){if(done[s.id])c++;});
+    document.getElementById('count').textContent=c+'/'+secs.length+' chương';
+    document.getElementById('bar').style.width=(c/secs.length*100)+'%';
+  }
+  update();
+})();
+</script>
+
+</body></html>
